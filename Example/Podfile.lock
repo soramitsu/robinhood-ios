@@ -1,0 +1,16 @@
+PODS:
+  - RobinHood (0.1.0)
+
+DEPENDENCIES:
+  - RobinHood (from `../`)
+
+EXTERNAL SOURCES:
+  RobinHood:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  RobinHood: 8390b72fc2e73be31c8dfb197e812d7bc5d5c125
+
+PODFILE CHECKSUM: 6e580c331bba54d34ec9945f3a493827aaa8225a
+
+COCOAPODS: 1.6.1

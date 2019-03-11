@@ -1,42 +1,19 @@
-#
-# Be sure to run `pod lib lint RobinHood.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
   s.name             = 'RobinHood'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of RobinHood.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
+  s.summary          = 'Observable data provider implementation with cache support.'
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+  Library is aimed to solve a problem to display cached data when original one is fetched from data source. Currently there are two type of data providers. DataProvider implementation is aimed to manage identifiable list of entities while SingleValueProvider deals with single objects. Both types of data providers uses Core Data to store cached objects. Clients can subsribe for changes in data provider to update an interface as soon as fresh data is fetched from setup source.
                        DESC
 
   s.homepage         = 'https://github.com/ERussel/RobinHood'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'ERussel' => 'emkil.russel@gmail.com' }
   s.source           = { :git => 'https://github.com/ERussel/RobinHood.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
 
   s.source_files = 'RobinHood/Classes/**/*'
   
-  # s.resource_bundles = {
-  #   'RobinHood' => ['RobinHood/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 end

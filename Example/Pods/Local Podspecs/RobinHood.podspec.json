@@ -1,0 +1,22 @@
+{
+  "name": "RobinHood",
+  "version": "0.1.0",
+  "summary": "A short description of RobinHood.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/ERussel/RobinHood",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "ERussel": "emkil.russel@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/ERussel/RobinHood.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "RobinHood/Classes/**/*"
+}
