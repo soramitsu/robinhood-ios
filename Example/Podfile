@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'RobinHood_Example' do
+  pod 'RobinHood', :path => '../'
+
+  target 'RobinHood_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
