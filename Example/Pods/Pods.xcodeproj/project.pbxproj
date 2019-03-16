@@ -15,6 +15,7 @@
 			dependencies = (
 			);
 			name = SwiftLint;
+			productName = SwiftLint;
 		};
 /* End PBXAggregateTarget section */
 
@@ -112,17 +113,17 @@
 		075E0F00D39DA4B238E199EC1B682350 /* FireMockSelectionTableViewCell.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = FireMockSelectionTableViewCell.xib; path = FireMock/FireMockSelectionTableViewCell.xib; sourceTree = "<group>"; };
 		09C9E4D755FB612079FBB6F914321892 /* Utils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = FireMock/Utils.swift; sourceTree = "<group>"; };
 		0D4DFD5059F617FB89050A873476D71C /* RobinHood-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RobinHood-umbrella.h"; sourceTree = "<group>"; };
-		0FA99BFBDDC427934968E13343B280BB /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		0FA99BFBDDC427934968E13343B280BB /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		113A5115867D9A22767E3BF1E5B126B7 /* Pods-RobinHood_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-RobinHood_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		124936F7F14DA07D04CC1EAAAB49F8CB /* FireMock-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FireMock-dummy.m"; sourceTree = "<group>"; };
-		1543C48FF0A2EF19AB4CDC0F8E019C58 /* FireMock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = FireMock.framework; path = FireMock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1543C48FF0A2EF19AB4CDC0F8E019C58 /* FireMock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FireMock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		170D6400644954916690A2338C60F9A3 /* Pods-RobinHood_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-RobinHood_Example-frameworks.sh"; sourceTree = "<group>"; };
 		261A556E1DFC91D398421BD95AD52835 /* FireMock.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FireMock.h; path = FireMock/FireMock.h; sourceTree = "<group>"; };
 		26CC88F846B6B79565A602D9164DB0C9 /* ClosureOperation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClosureOperation.swift; sourceTree = "<group>"; };
 		289004A587348D24FE65936F64E6F873 /* RobinHood.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RobinHood.xcconfig; sourceTree = "<group>"; };
 		2AC6F67DA60EE4508AAA67C68528FBB9 /* Pods-RobinHood_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-RobinHood_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		2AD2FEFBC036BA74CA29819BBD737E3E /* RobinHood.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = RobinHood.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		2B622E32C2A2155AE64CCEA66E07B085 /* Pods_RobinHood_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_RobinHood_Example.framework; path = "Pods-RobinHood_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2AD2FEFBC036BA74CA29819BBD737E3E /* RobinHood.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = RobinHood.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		2B622E32C2A2155AE64CCEA66E07B085 /* Pods_RobinHood_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RobinHood_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		31AF8307D4EAC246635DDD85907F095B /* CoreDataCommon.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataCommon.swift; sourceTree = "<group>"; };
 		321BE5E91C17EB2144342393A44DD87E /* Pods-RobinHood_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-RobinHood_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		36A64D6A0F99A3C39908FD84427E9A2F /* NetworkRequestModifier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkRequestModifier.swift; sourceTree = "<group>"; };
@@ -151,13 +152,13 @@
 		82038C634F20C910CEFF07241ABEE461 /* FireMock-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "FireMock-Info.plist"; sourceTree = "<group>"; };
 		83ABF3B93F9C50029BA1811D5FF67CD5 /* FireMock.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FireMock.xcconfig; sourceTree = "<group>"; };
 		89D86F518E25D8A558D4B8075EC2EA38 /* FireMockTableViewCell.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = FireMockTableViewCell.xib; path = FireMock/FireMockTableViewCell.xib; sourceTree = "<group>"; };
-		8B8B0873093BF21F973C5CB321C10D2A /* RobinHood.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = RobinHood.framework; path = RobinHood.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B8B0873093BF21F973C5CB321C10D2A /* RobinHood.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RobinHood.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0F67C8E60BA484BE7A332F5812847B /* NetworkOperation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkOperation.swift; sourceTree = "<group>"; };
 		92D954FBB0A911FE47F40C6EA00785CA /* BaseOperation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BaseOperation.swift; sourceTree = "<group>"; };
 		96209A8C18FB633E8977FE96C41259D5 /* RobinHood.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = RobinHood.modulemap; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9DC1718C3E352C51DA3F71E6C6A664B8 /* SectionedListDifference.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SectionedListDifference.swift; sourceTree = "<group>"; };
-		A2FEE4209E950E626481AF4668ECEA60 /* Pods_RobinHood_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_RobinHood_Tests.framework; path = "Pods-RobinHood_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2FEE4209E950E626481AF4668ECEA60 /* Pods_RobinHood_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RobinHood_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A65FECD46129A5FC281011092630C16C /* FireMockViewController.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = FireMockViewController.xib; path = FireMock/FireMockViewController.xib; sourceTree = "<group>"; };
 		A914EE55E56CCB8B518255947A235E98 /* FireMockProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockProtocol.swift; path = FireMock/FireMockProtocol.swift; sourceTree = "<group>"; };
 		AB510CA196A87D6E864B241AC920E693 /* FireURLProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireURLProtocol.swift; path = FireMock/FireURLProtocol.swift; sourceTree = "<group>"; };
@@ -178,7 +179,7 @@
 		D16462764BFEA2CB15688C7ECEC07AF3 /* SingleValueProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SingleValueProvider.swift; sourceTree = "<group>"; };
 		D1DEBBE1F981A75FBEFBEF12BF422AAF /* DataProviderCommon.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataProviderCommon.swift; sourceTree = "<group>"; };
 		D56F70EB9B27C8DDE6BE2561593F50C3 /* CoreDataService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
-		DB5E61E8F9C551892E4E18D2F4AEFEA0 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		DB5E61E8F9C551892E4E18D2F4AEFEA0 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DFFB8FCC4827F9628EC1E5C4C0AE377E /* CacheObserver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CacheObserver.swift; sourceTree = "<group>"; };
 		E29C33CBFCFE040DAFC212AD9DDC40F1 /* CoreDataCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataCache.swift; sourceTree = "<group>"; };
 		E9609C63ACFF6A74A18704DA6EFEF151 /* FireMockTableViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockTableViewCell.swift; path = FireMock/FireMockTableViewCell.swift; sourceTree = "<group>"; };
@@ -261,7 +262,6 @@
 				36A64D6A0F99A3C39908FD84427E9A2F /* NetworkRequestModifier.swift */,
 				C0E5E086D0D3E18B9A5FBA7A3CF9B2DD /* NetworkResultFactory.swift */,
 			);
-			name = Network;
 			path = Network;
 			sourceTree = "<group>";
 		};
@@ -305,7 +305,6 @@
 			children = (
 				FA5B05418653E2403BC3DB8423330E6C /* DataProviderTrigger.swift */,
 			);
-			name = Triggers;
 			path = Triggers;
 			sourceTree = "<group>";
 		};
@@ -325,7 +324,6 @@
 				92D954FBB0A911FE47F40C6EA00785CA /* BaseOperation.swift */,
 				26CC88F846B6B79565A602D9164DB0C9 /* ClosureOperation.swift */,
 			);
-			name = Base;
 			path = Base;
 			sourceTree = "<group>";
 		};
@@ -402,7 +400,6 @@
 			children = (
 				BF8B899A3E49BCE48061CA593D4CFEE2 /* Support Files */,
 			);
-			name = SwiftLint;
 			path = SwiftLint;
 			sourceTree = "<group>";
 		};
@@ -458,7 +455,6 @@
 				6BA9B3B765253AC0E92A1A3038ABD955 /* Resources */,
 				F9021B8D37BBD148D51C8EF98B2C00A0 /* Support Files */,
 			);
-			name = FireMock;
 			path = FireMock;
 			sourceTree = "<group>";
 		};
@@ -1125,8 +1121,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.2;
 				SYMROOT = "${SRCROOT}/../build";
 			};

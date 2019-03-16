@@ -14,19 +14,19 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testSynchronizationOnInit() {
         // given
-        let project = createRandomProject()
+        let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onInitialization
-        let source = createSingleValueSourceMock(base: self, returns: project)
-        let dataProvider = SingleValueProvider<ProjectData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
+        let source = createSingleValueSourceMock(base: self, returns: object)
+        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
                                                source: source,
                                                cache: cache,
                                                updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
 
-        var optionalChanges: [DataProviderChange<ProjectData>]?
+        var optionalChanges: [DataProviderChange<FeedData>]?
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             optionalChanges = changes
             expectation.fulfill()
             return
@@ -53,7 +53,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
         switch change {
         case .insert(let newItem):
-            XCTAssertEqual(project, newItem)
+            XCTAssertEqual(object, newItem)
         default:
             XCTFail()
         }
@@ -61,10 +61,10 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testSynchronizationOnObserverAdd() {
         // given
-        let project = createRandomProject()
+        let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onAddObserver
-        let source = createSingleValueSourceMock(base: self, returns: project)
-        let dataProvider = SingleValueProvider<ProjectData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
+        let source = createSingleValueSourceMock(base: self, returns: object)
+        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
                                                                            source: source,
                                                                            cache: cache,
                                                                            updateTrigger: trigger)
@@ -72,9 +72,9 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        var allChanges: [[DataProviderChange<ProjectData>]] = []
+        var allChanges: [[DataProviderChange<FeedData>]] = []
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
             return
@@ -110,7 +110,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
         switch change {
         case .insert(let newItem):
-            XCTAssertEqual(newItem, project)
+            XCTAssertEqual(newItem, object)
         default:
             XCTFail()
         }
@@ -118,17 +118,17 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testFetchFromCache() {
         // given
-        let project = createRandomProject()
+        let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onInitialization
-        let source = createSingleValueSourceMock(base: self, returns: project)
-        let dataProvider = SingleValueProvider<ProjectData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
-                                                                           source: source,
-                                                                           cache: cache,
-                                                                           updateTrigger: trigger)
+        let source = createSingleValueSourceMock(base: self, returns: object)
+        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
+                                                                        source: source,
+                                                                        cache: cache,
+                                                                        updateTrigger: trigger)
 
         let changeExpectation = XCTestExpectation()
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             changeExpectation.fulfill()
             return
         }
@@ -154,24 +154,24 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
             return
         }
 
-        XCTAssertEqual(fetchedProject, project)
+        XCTAssertEqual(fetchedProject, object)
     }
 
     func testManualSynchronization() {
-        let project = createRandomProject()
+        let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onNone
-        let source = createSingleValueSourceMock(base: self, returns: project)
-        let dataProvider = SingleValueProvider<ProjectData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
-                                                                           source: source,
-                                                                           cache: cache,
-                                                                           updateTrigger: trigger)
+        let source = createSingleValueSourceMock(base: self, returns: object)
+        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
+                                                                        source: source,
+                                                                        cache: cache,
+                                                                        updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        var allChanges: [[DataProviderChange<ProjectData>]] = []
+        var allChanges: [[DataProviderChange<FeedData>]] = []
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
             return
@@ -209,7 +209,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
         switch change {
         case .insert(let newItem):
-            XCTAssertEqual(newItem, project)
+            XCTAssertEqual(newItem, object)
         default:
             XCTFail()
         }
@@ -217,14 +217,14 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testDeleteOnSynchronization() {
         // given
-        let project = createRandomProject()
+        let object = createRandomFeed()
 
-        guard let payload = try? JSONEncoder().encode(project) else {
+        guard let payload = try? JSONEncoder().encode(object) else {
             XCTFail()
             return
         }
 
-        let cacheValueObject = SingleValueProviderObject(identifier: project.identifier, payload: payload)
+        let cacheValueObject = SingleValueProviderObject(identifier: object.identifier, payload: payload)
 
         let saveExpectation = XCTestExpectation()
 
@@ -235,8 +235,8 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source: AnySingleValueProviderSource<ProjectData?> = createSingleValueSourceMock(base: self, returns: nil)
-        let dataProvider = SingleValueProvider<ProjectData?, CDSingleValue>(targetIdentifier: project.identifier,
+        let source: AnySingleValueProviderSource<FeedData?> = createSingleValueSourceMock(base: self, returns: nil)
+        let dataProvider = SingleValueProvider<FeedData?, CDSingleValue>(targetIdentifier: object.identifier,
                                                                            source: source,
                                                                            cache: cache,
                                                                            updateTrigger: trigger)
@@ -244,9 +244,9 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        var allChanges: [[DataProviderChange<ProjectData?>]] = []
+        var allChanges: [[DataProviderChange<FeedData?>]] = []
 
-        let changesBlock: ([DataProviderChange<ProjectData?>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData?>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
         }
@@ -275,7 +275,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
         switch allChanges[0][0] {
         case .insert(let receivedProject):
-            XCTAssertEqual(receivedProject, project)
+            XCTAssertEqual(receivedProject, object)
         default:
             XCTFail()
         }
@@ -292,14 +292,14 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testDataProviderSuccessWithAlwaysNotifyOption() {
         // given
-        let project = createRandomProject()
+        let object = createRandomFeed()
 
-        guard let payload = try? JSONEncoder().encode(project) else {
+        guard let payload = try? JSONEncoder().encode(object) else {
             XCTFail()
             return
         }
 
-        let cacheValueObject = SingleValueProviderObject(identifier: project.identifier, payload: payload)
+        let cacheValueObject = SingleValueProviderObject(identifier: object.identifier, payload: payload)
 
         let saveExpectation = XCTestExpectation()
 
@@ -310,18 +310,18 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source = createSingleValueSourceMock(base: self, returns: project)
-        let dataProvider = SingleValueProvider<ProjectData, CDSingleValue>(targetIdentifier: project.identifier,
-                                                                           source: source,
-                                                                           cache: cache,
-                                                                           updateTrigger: trigger)
+        let source = createSingleValueSourceMock(base: self, returns: object)
+        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: object.identifier,
+                                                                        source: source,
+                                                                        cache: cache,
+                                                                        updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        var allChanges: [[DataProviderChange<ProjectData>]] = []
+        var allChanges: [[DataProviderChange<FeedData>]] = []
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
             return
@@ -358,7 +358,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
         switch change {
         case .insert(let newItem):
-            XCTAssertEqual(newItem, project)
+            XCTAssertEqual(newItem, object)
         default:
             XCTFail()
         }
@@ -368,14 +368,14 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testDataProviderFailWithAlwaysNotifyOption() {
         // given
-        let project = createRandomProject()
+        let object = createRandomFeed()
 
-        guard let payload = try? JSONEncoder().encode(project) else {
+        guard let payload = try? JSONEncoder().encode(object) else {
             XCTFail()
             return
         }
 
-        let cacheValueObject = SingleValueProviderObject(identifier: project.identifier, payload: payload)
+        let cacheValueObject = SingleValueProviderObject(identifier: object.identifier, payload: payload)
 
         let saveExpectation = XCTestExpectation()
 
@@ -386,19 +386,19 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source: AnySingleValueProviderSource<ProjectData> = createSingleValueSourceMock(base: self, returns: NetworkBaseError.unexpectedResponseObject)
-        let dataProvider = SingleValueProvider<ProjectData, CDSingleValue>(targetIdentifier: project.identifier,
-                                                                           source: source,
-                                                                           cache: cache,
-                                                                           updateTrigger: trigger)
+        let source: AnySingleValueProviderSource<FeedData> = createSingleValueSourceMock(base: self, returns: NetworkBaseError.unexpectedResponseObject)
+        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: object.identifier,
+                                                                        source: source,
+                                                                        cache: cache,
+                                                                        updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        var allChanges: [[DataProviderChange<ProjectData>]] = []
+        var allChanges: [[DataProviderChange<FeedData>]] = []
         var receivedError: Error?
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
         }
@@ -436,7 +436,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
         switch change {
         case .insert(let newItem):
-            XCTAssertEqual(newItem, project)
+            XCTAssertEqual(newItem, object)
         default:
             XCTFail()
         }

@@ -1,5 +1,5 @@
 import Foundation
-@testable import SoraPassport
+import RobinHood
 import CoreData
 
 func createDefaultCoreDataCache<T, U>() -> CoreDataCache<T, U>

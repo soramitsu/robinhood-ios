@@ -1,13 +1,16 @@
 import XCTest
-@testable import RobinHood
+import RobinHood
 import FireMock
 
 class NetworkOperationTests: NetworkBaseTests {
 
     func testSingleDummyOperationSuccess() {
+        // given
         FireMock.register(mock: DummyNetworkMock(),
                           forURL: Constants.dummyNetworkURL,
                           httpMethod: .get)
+
+        let operationQueue = OperationQueue()
 
         let expectedValue = 10
 
@@ -20,8 +23,10 @@ class NetworkOperationTests: NetworkBaseTests {
             expectation.fulfill()
         }
 
-        OperationManager.shared.enqueue(operations: [operation], in: .normal)
+        // when
+        operationQueue.addOperation(operation)
 
+        // then
         wait(for: [expectation], timeout: Constants.networkRequestTimeout)
 
         if let operationResult = operation.result, case .success(let value) = operationResult {
@@ -32,9 +37,12 @@ class NetworkOperationTests: NetworkBaseTests {
     }
 
     func testSingleDummyOperationCancel() {
+        // given
         FireMock.register(mock: DummyNetworkMock(delay: 60.0),
                           forURL: Constants.dummyNetworkURL,
                           httpMethod: .get)
+
+        let operationQueue = OperationQueue()
 
         let expectedValue = 10
 
@@ -47,16 +55,21 @@ class NetworkOperationTests: NetworkBaseTests {
             expectation.fulfill()
         }
 
-        OperationManager.shared.enqueue(operations: [operation], in: .normal)
+        // when
+        operationQueue.addOperation(operation)
 
         operation.cancel()
 
+        // then
         wait(for: [expectation], timeout: Constants.networkRequestTimeout)
 
         XCTAssertNil(operation.result)
     }
 
     func testRandomOperations() {
+        // given
+        let operationQueue = OperationQueue()
+
         let operationCount = 20
 
         let expectedValue = "Hello World!"
@@ -64,6 +77,7 @@ class NetworkOperationTests: NetworkBaseTests {
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = operationCount
 
+        // when
         for index in 0..<operationCount {
             let url = Constants.dummyNetworkURL.appendingPathComponent(String(index))
             FireMock.register(mock: DummyNetworkMock(delay: 0.05 * TimeInterval(index) + 1.0),
@@ -82,9 +96,10 @@ class NetworkOperationTests: NetworkBaseTests {
                 expectation.fulfill()
             }
 
-            OperationManager.shared.enqueue(operations: [operation], in: .normal)
+            operationQueue.addOperation(operation)
         }
 
+        // then
         wait(for: [expectation], timeout: Constants.networkRequestTimeout * TimeInterval(operationCount))
     }
 }

@@ -16,16 +16,16 @@ class DataProviderTests: DataProviderBaseTests {
         // given
         let objects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onInitialization
-        let source = createDataSourceMock(base: self, returns: projects)
-        let dataProvider = DataProvider<ProjectData, CDProject>(source: source,
-                                                                cache: cache,
-                                                                updateTrigger: trigger)
+        let source = createDataSourceMock(base: self, returns: objects)
+        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
+                                                          cache: cache,
+                                                          updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
 
-        var optionalChanges: [DataProviderChange<ProjectData>]?
+        var optionalChanges: [DataProviderChange<FeedData>]?
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             optionalChanges = changes
             expectation.fulfill()
             return
@@ -50,12 +50,12 @@ class DataProviderTests: DataProviderBaseTests {
             return
         }
 
-        XCTAssertEqual(changes.count, projects.count)
+        XCTAssertEqual(changes.count, objects.count)
 
         for change in changes {
             switch change {
             case .insert(let newItem):
-                XCTAssertTrue(projects.contains(newItem))
+                XCTAssertTrue(objects.contains(newItem))
             default:
                 XCTFail()
             }
@@ -64,19 +64,19 @@ class DataProviderTests: DataProviderBaseTests {
 
     func testSynchronizationOnObserverAdd() {
         // given
-        let projects = (0..<10).map { _ in createRandomProject() }
+        let projects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onAddObserver
         let source = createDataSourceMock(base: self, returns: projects)
-        let dataProvider = DataProvider<ProjectData, CDProject>(source: source,
-                                                                cache: cache,
-                                                                updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
+                                                          cache: cache,
+                                                          updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        var allChanges: [[DataProviderChange<ProjectData>]] = []
+        var allChanges: [[DataProviderChange<FeedData>]] = []
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
             return
@@ -117,16 +117,16 @@ class DataProviderTests: DataProviderBaseTests {
 
     func testFetchByIdFromCache() {
         // given
-        let projects = (0..<10).map { _ in createRandomProject() }
+        let projects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createDataSourceMock(base: self, returns: projects)
-        let dataProvider = DataProvider<ProjectData, CDProject>(source: source,
-                                                                cache: cache,
-                                                                updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
+                                                          cache: cache,
+                                                          updateTrigger: trigger)
 
         let changeExpectation = XCTestExpectation()
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             changeExpectation.fulfill()
             return
         }
@@ -158,10 +158,10 @@ class DataProviderTests: DataProviderBaseTests {
     func testFetchAllFromCache() {
         // given
         let trigger = DataProviderEventTrigger.onInitialization
-        let source = createDataSourceMock(base: self, returns: [ProjectData]())
-        let dataProvider = DataProvider<ProjectData, CDProject>(source: source,
-                                                                cache: cache,
-                                                                updateTrigger: trigger)
+        let source = createDataSourceMock(base: self, returns: [FeedData]())
+        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
+                                                          cache: cache,
+                                                          updateTrigger: trigger)
 
         // when
         let optionalBeforeResult = fetch(page: 0, from: dataProvider)
@@ -177,7 +177,7 @@ class DataProviderTests: DataProviderBaseTests {
         // when
         let saveExpectation = XCTestExpectation()
 
-        let projects = (0..<10).map { _ in createRandomProject() }
+        let projects = (0..<10).map { _ in createRandomFeed() }
         cache.save(updating:projects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
@@ -200,19 +200,19 @@ class DataProviderTests: DataProviderBaseTests {
     }
 
     func testManualSynchronization() {
-        let projects = (0..<10).map { _ in createRandomProject() }
+        let objects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onNone
-        let source = createDataSourceMock(base: self, returns: projects)
-        let dataProvider = DataProvider<ProjectData, CDProject>(source: source,
-                                                                cache: cache,
-                                                                updateTrigger: trigger)
+        let source = createDataSourceMock(base: self, returns: objects)
+        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
+                                                          cache: cache,
+                                                          updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        var allChanges: [[DataProviderChange<ProjectData>]] = []
+        var allChanges: [[DataProviderChange<FeedData>]] = []
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
             return
@@ -241,12 +241,12 @@ class DataProviderTests: DataProviderBaseTests {
 
         XCTAssertTrue(allChanges[0].isEmpty)
 
-        XCTAssertEqual(allChanges[1].count, projects.count)
+        XCTAssertEqual(allChanges[1].count, objects.count)
 
         for change in allChanges[1] {
             switch change {
             case .insert(let newItem):
-                XCTAssertTrue(projects.contains(newItem))
+                XCTAssertTrue(objects.contains(newItem))
             default:
                 XCTFail()
             }
@@ -257,35 +257,35 @@ class DataProviderTests: DataProviderBaseTests {
         // given
         let saveExpectation = XCTestExpectation()
 
-        var projects = (0..<10).map { _ in createRandomProject() }
-        cache.save(updating:projects, deleting: [], runCompletionIn: .main) { _ in
+        var objects = (0..<10).map { _ in createRandomFeed() }
+        cache.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
 
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
-        let removedIdentifier = projects.last!.identifier
-        projects.removeLast()
+        let removedIdentifier = objects.last!.identifier
+        objects.removeLast()
 
-        projects[0].name = UUID().uuidString
-        let updatedProject = projects[0]
+        objects[0].name = UUID().uuidString
+        let updatedObject = objects[0]
 
-        let insertedProject = createRandomProject()
-        projects.append(insertedProject)
+        let insertedObject = createRandomFeed()
+        objects.append(insertedObject)
 
         // when
         let trigger = DataProviderEventTrigger.onAddObserver
-        let source = createDataSourceMock(base: self, returns: projects)
-        let dataProvider = DataProvider<ProjectData, CDProject>(source: source,
-                                                                cache: cache,
-                                                                updateTrigger: trigger)
+        let source = createDataSourceMock(base: self, returns: objects)
+        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
+                                                          cache: cache,
+                                                          updateTrigger: trigger)
 
-        var allChanges: [[DataProviderChange<ProjectData>]] = []
+        var allChanges: [[DataProviderChange<FeedData>]] = []
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
             return
@@ -311,10 +311,10 @@ class DataProviderTests: DataProviderBaseTests {
         for change in allChanges[1] {
             switch change {
             case .insert(let newItem):
-                XCTAssertEqual(insertedProject, newItem)
+                XCTAssertEqual(insertedObject, newItem)
                 insertCount += 1
             case .update(let item):
-                XCTAssertEqual(updatedProject, item)
+                XCTAssertEqual(updatedObject, item)
                 updateCount += 1
             case .delete(let identifier):
                 XCTAssertEqual(removedIdentifier, identifier)
@@ -331,25 +331,25 @@ class DataProviderTests: DataProviderBaseTests {
         // given
         let saveExpectation = XCTestExpectation()
 
-        let projects = (0..<10).map { _ in createRandomProject() }
-        cache.save(updating:projects, deleting: [], runCompletionIn: .main) { _ in
+        let objects = (0..<10).map { _ in createRandomFeed() }
+        cache.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
 
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source = createDataSourceMock(base: self, returns: projects)
-        let dataProvider = DataProvider<ProjectData, CDProject>(source: source,
+        let source = createDataSourceMock(base: self, returns: objects)
+        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
                                                                 cache: cache,
                                                                 updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        var allChanges: [[DataProviderChange<ProjectData>]] = []
+        var allChanges: [[DataProviderChange<FeedData>]] = []
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
             return
@@ -374,12 +374,12 @@ class DataProviderTests: DataProviderBaseTests {
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
         // then
-        XCTAssertEqual(allChanges[0].count, projects.count)
+        XCTAssertEqual(allChanges[0].count, objects.count)
 
         for change in allChanges[0] {
             switch change {
             case .insert(let newItem):
-                XCTAssertTrue(projects.contains(newItem))
+                XCTAssertTrue(objects.contains(newItem))
             default:
                 XCTFail()
             }
@@ -393,27 +393,27 @@ class DataProviderTests: DataProviderBaseTests {
 
         let saveExpectation = XCTestExpectation()
 
-        let projects = (0..<10).map { _ in createRandomProject() }
-        cache.save(updating:projects, deleting: [], runCompletionIn: .main) { _ in
+        let objects = (0..<10).map { _ in createRandomFeed() }
+        cache.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
 
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source: AnyDataProviderSource<ProjectData> = createDataSourceMock(base: self,
-                                                                              returns: NetworkBaseError.unexpectedResponseObject)
-        let dataProvider = DataProvider<ProjectData, CDProject>(source: source,
-                                                                cache: cache,
-                                                                updateTrigger: trigger)
+        let source: AnyDataProviderSource<FeedData> = createDataSourceMock(base: self,
+                                                                           returns: NetworkBaseError.unexpectedResponseObject)
+        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
+                                                          cache: cache,
+                                                          updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        var allChanges: [[DataProviderChange<ProjectData>]] = []
+        var allChanges: [[DataProviderChange<FeedData>]] = []
         var receivedError: Error?
 
-        let changesBlock: ([DataProviderChange<ProjectData>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
             return
@@ -448,7 +448,7 @@ class DataProviderTests: DataProviderBaseTests {
             return
         }
 
-        guard allChanges[0].count == projects.count else {
+        guard allChanges[0].count == objects.count else {
             XCTFail()
             return
         }
@@ -456,7 +456,7 @@ class DataProviderTests: DataProviderBaseTests {
         for change in allChanges[0] {
             switch change {
             case .insert(let newItem):
-                XCTAssertTrue(projects.contains(newItem))
+                XCTAssertTrue(objects.contains(newItem))
             default:
                 XCTFail()
             }
