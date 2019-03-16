@@ -1,0 +1,17 @@
+import Foundation
+
+func createRandomFeed() -> FeedData {
+    let likesCount = Int32.random(in: 0..<100)
+    let favorite = [false, true].randomElement()!
+    let favoriteCount = UInt((0...100).randomElement()!)
+    let status: FeedDataStatus = [.open, .hidden].randomElement()!
+
+    return FeedData(identifier: UUID().uuidString,
+                    favorite: favorite,
+                    favoriteCount: favoriteCount,
+                    name: UUID().uuidString,
+                    description: UUID().uuidString,
+                    imageLink: URL(string: "https://google.com"),
+                    status: status,
+                    likesCount: likesCount)
+}

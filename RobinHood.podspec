@@ -15,5 +15,9 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '9.0'
 
   s.source_files = 'RobinHood/Classes/**/*'
+
+  s.test_spec do |ts|
+    ts.source_files = 'Tests/**/*.{h,m}'
+  end
   
 end

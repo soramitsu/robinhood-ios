@@ -1,8 +1,8 @@
 {
   "name": "RobinHood",
   "version": "0.1.0",
-  "summary": "A short description of RobinHood.",
-  "description": "TODO: Add long description of the pod here.",
+  "summary": "Observable data provider implementation with cache support.",
+  "description": "Library is aimed to solve a problem to display cached data when original one is fetched from data source. Currently there are two type of data providers. DataProvider implementation is aimed to manage identifiable list of entities while SingleValueProvider deals with single objects. Both types of data providers uses Core Data to store cached objects. Clients can subsribe for changes in data provider to update an interface as soon as fresh data is fetched from setup source.",
   "homepage": "https://github.com/ERussel/RobinHood",
   "license": {
     "type": "MIT",
@@ -16,7 +16,14 @@
     "tag": "0.1.0"
   },
   "platforms": {
-    "ios": "8.0"
+    "ios": "9.0"
   },
-  "source_files": "RobinHood/Classes/**/*"
+  "source_files": "RobinHood/Classes/**/*",
+  "testspecs": [
+    {
+      "name": "Tests",
+      "test_type": "unit",
+      "source_files": "Tests/**/*.{h,m}"
+    }
+  ]
 }

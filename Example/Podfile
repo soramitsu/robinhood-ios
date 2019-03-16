@@ -2,10 +2,11 @@ use_frameworks!
 
 target 'RobinHood_Example' do
   pod 'RobinHood', :path => '../'
+  pod 'SwiftLint'
 
   target 'RobinHood_Tests' do
     inherit! :search_paths
 
-    
+    pod 'FireMock'
   end
 end

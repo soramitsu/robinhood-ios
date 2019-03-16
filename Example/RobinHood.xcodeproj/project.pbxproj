@@ -7,13 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3213A31522385A28001BE041 /* CDSingleValue+CoreDataDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31122385A28001BE041 /* CDSingleValue+CoreDataDecodable.swift */; };
+		3213A31622385A28001BE041 /* CDProject+CoreDataDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31222385A28001BE041 /* CDProject+CoreDataDecodable.swift */; };
+		3213A31722385A28001BE041 /* Entities.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31322385A28001BE041 /* Entities.xcdatamodeld */; };
+		3213A31A22385EB6001BE041 /* CoreDataCacheHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31822385EB5001BE041 /* CoreDataCacheHelpers.swift */; };
+		3213A31B22385EB6001BE041 /* DatabaseHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31922385EB5001BE041 /* DatabaseHelpers.swift */; };
+		3213A31D223865D7001BE041 /* CoreDataConfiguration+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31C223865D7001BE041 /* CoreDataConfiguration+Common.swift */; };
+		32384BF02236F3D000346C90 /* SingleValueProviderBaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BDF2236F3D000346C90 /* SingleValueProviderBaseTests.swift */; };
+		32384BF12236F3D000346C90 /* ListDifferenceCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE02236F3D000346C90 /* ListDifferenceCalculatorTests.swift */; };
+		32384BF22236F3D000346C90 /* DataProviderInterfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE12236F3D000346C90 /* DataProviderInterfaceTests.swift */; };
+		32384BF32236F3D000346C90 /* DataProviderBaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE22236F3D000346C90 /* DataProviderBaseTests.swift */; };
+		32384BF52236F3D000346C90 /* SingleValueProviderInterfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE42236F3D000346C90 /* SingleValueProviderInterfaceTests.swift */; };
+		32384BF62236F3D000346C90 /* CoreDataServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE62236F3D000346C90 /* CoreDataServiceTests.swift */; };
+		32384BF82236F3D000346C90 /* CoreDataCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE92236F3D000346C90 /* CoreDataCacheTests.swift */; };
+		32384BF92236F3D000346C90 /* CoreDataCacheDomainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BEA2236F3D000346C90 /* CoreDataCacheDomainTests.swift */; };
+		32384BFA2236F3D000346C90 /* DummyNetworkMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BEC2236F3D000346C90 /* DummyNetworkMock.swift */; };
+		32384BFB2236F3D000346C90 /* NetworkOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BED2236F3D000346C90 /* NetworkOperationTests.swift */; };
+		32384BFD2236F3D000346C90 /* NetworkOperationTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BEF2236F3D000346C90 /* NetworkOperationTestHelper.swift */; };
+		32384C022236F7F200346C90 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384C002236F7DE00346C90 /* Constants.swift */; };
+		32384C092236FC1600346C90 /* FeedDataGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384C082236FC1600346C90 /* FeedDataGenerator.swift */; };
+		32384C0A2236FC2B00346C90 /* FeedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384C052236F8AF00346C90 /* FeedData.swift */; };
+		32384C0C2236FC7900346C90 /* FeedData+Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384C0B2236FC7900346C90 /* FeedData+Provider.swift */; };
 		5A2792ED4B52387DB91E0B8B /* Pods_RobinHood_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A70FE4D548E691CDA77404 /* Pods_RobinHood_Example.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
-		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		8C0E5A83A2D6EF35E91102D5 /* Pods_RobinHood_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC38D3F4098DAF6CD20A60DC /* Pods_RobinHood_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +49,27 @@
 
 /* Begin PBXFileReference section */
 		04A70FE4D548E691CDA77404 /* Pods_RobinHood_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RobinHood_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3213A31122385A28001BE041 /* CDSingleValue+CoreDataDecodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDSingleValue+CoreDataDecodable.swift"; sourceTree = "<group>"; };
+		3213A31222385A28001BE041 /* CDProject+CoreDataDecodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDProject+CoreDataDecodable.swift"; sourceTree = "<group>"; };
+		3213A31422385A28001BE041 /* Entities.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Entities.xcdatamodel; sourceTree = "<group>"; };
+		3213A31822385EB5001BE041 /* CoreDataCacheHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataCacheHelpers.swift; sourceTree = "<group>"; };
+		3213A31922385EB5001BE041 /* DatabaseHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseHelpers.swift; sourceTree = "<group>"; };
+		3213A31C223865D7001BE041 /* CoreDataConfiguration+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataConfiguration+Common.swift"; sourceTree = "<group>"; };
+		32384BDF2236F3D000346C90 /* SingleValueProviderBaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleValueProviderBaseTests.swift; sourceTree = "<group>"; };
+		32384BE02236F3D000346C90 /* ListDifferenceCalculatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListDifferenceCalculatorTests.swift; sourceTree = "<group>"; };
+		32384BE12236F3D000346C90 /* DataProviderInterfaceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProviderInterfaceTests.swift; sourceTree = "<group>"; };
+		32384BE22236F3D000346C90 /* DataProviderBaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProviderBaseTests.swift; sourceTree = "<group>"; };
+		32384BE42236F3D000346C90 /* SingleValueProviderInterfaceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleValueProviderInterfaceTests.swift; sourceTree = "<group>"; };
+		32384BE62236F3D000346C90 /* CoreDataServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataServiceTests.swift; sourceTree = "<group>"; };
+		32384BE92236F3D000346C90 /* CoreDataCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataCacheTests.swift; sourceTree = "<group>"; };
+		32384BEA2236F3D000346C90 /* CoreDataCacheDomainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataCacheDomainTests.swift; sourceTree = "<group>"; };
+		32384BEC2236F3D000346C90 /* DummyNetworkMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyNetworkMock.swift; sourceTree = "<group>"; };
+		32384BED2236F3D000346C90 /* NetworkOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkOperationTests.swift; sourceTree = "<group>"; };
+		32384BEF2236F3D000346C90 /* NetworkOperationTestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkOperationTestHelper.swift; sourceTree = "<group>"; };
+		32384C002236F7DE00346C90 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		32384C052236F8AF00346C90 /* FeedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedData.swift; sourceTree = "<group>"; };
+		32384C082236FC1600346C90 /* FeedDataGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedDataGenerator.swift; sourceTree = "<group>"; };
+		32384C0B2236FC7900346C90 /* FeedData+Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FeedData+Provider.swift"; sourceTree = "<group>"; };
 		4B2340B3D0B30A71DFD49207 /* RobinHood.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = RobinHood.podspec; path = ../RobinHood.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		607FACD01AFB9204008FA782 /* RobinHood_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RobinHood_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -39,7 +80,6 @@
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* RobinHood_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RobinHood_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		93ABF305D0D497A47793E0DC /* Pods-RobinHood_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RobinHood_Tests.release.xcconfig"; path = "Target Support Files/Pods-RobinHood_Tests/Pods-RobinHood_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		A8231B45763F01E6592A4E4B /* Pods-RobinHood_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RobinHood_Example.debug.xcconfig"; path = "Target Support Files/Pods-RobinHood_Example/Pods-RobinHood_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		AC38D3F4098DAF6CD20A60DC /* Pods_RobinHood_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RobinHood_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -69,6 +109,99 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3213A30F22385926001BE041 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				3213A31022385A28001BE041 /* Model */,
+				3213A31C223865D7001BE041 /* CoreDataConfiguration+Common.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		3213A31022385A28001BE041 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3213A31122385A28001BE041 /* CDSingleValue+CoreDataDecodable.swift */,
+				3213A31222385A28001BE041 /* CDProject+CoreDataDecodable.swift */,
+				3213A31322385A28001BE041 /* Entities.xcdatamodeld */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		32384BDE2236F3D000346C90 /* DataProvider */ = {
+			isa = PBXGroup;
+			children = (
+				32384BDF2236F3D000346C90 /* SingleValueProviderBaseTests.swift */,
+				32384BE02236F3D000346C90 /* ListDifferenceCalculatorTests.swift */,
+				32384BE12236F3D000346C90 /* DataProviderInterfaceTests.swift */,
+				32384BE22236F3D000346C90 /* DataProviderBaseTests.swift */,
+				32384BE42236F3D000346C90 /* SingleValueProviderInterfaceTests.swift */,
+			);
+			name = DataProvider;
+			path = ../../Tests/DataProvider;
+			sourceTree = "<group>";
+		};
+		32384BE52236F3D000346C90 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				32384BE92236F3D000346C90 /* CoreDataCacheTests.swift */,
+				32384BEA2236F3D000346C90 /* CoreDataCacheDomainTests.swift */,
+				32384BE62236F3D000346C90 /* CoreDataServiceTests.swift */,
+			);
+			name = CoreData;
+			path = ../../Tests/CoreData;
+			sourceTree = "<group>";
+		};
+		32384BEB2236F3D000346C90 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				32384BEC2236F3D000346C90 /* DummyNetworkMock.swift */,
+				32384BED2236F3D000346C90 /* NetworkOperationTests.swift */,
+				32384BEF2236F3D000346C90 /* NetworkOperationTestHelper.swift */,
+			);
+			name = Network;
+			path = ../../Tests/Network;
+			sourceTree = "<group>";
+		};
+		32384BFF2236F73A00346C90 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				3213A31822385EB5001BE041 /* CoreDataCacheHelpers.swift */,
+				3213A31922385EB5001BE041 /* DatabaseHelpers.swift */,
+				3213A30F22385926001BE041 /* CoreData */,
+				32384C072236F93100346C90 /* Mocks */,
+				32384C042236F89D00346C90 /* DataGenerators */,
+				32384C032236F89700346C90 /* Data */,
+				32384C002236F7DE00346C90 /* Constants.swift */,
+			);
+			name = Helpers;
+			path = ../../Tests/Helpers;
+			sourceTree = "<group>";
+		};
+		32384C032236F89700346C90 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				32384C052236F8AF00346C90 /* FeedData.swift */,
+				32384C0B2236FC7900346C90 /* FeedData+Provider.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		32384C042236F89D00346C90 /* DataGenerators */ = {
+			isa = PBXGroup;
+			children = (
+				32384C082236FC1600346C90 /* FeedDataGenerator.swift */,
+			);
+			path = DataGenerators;
+			sourceTree = "<group>";
+		};
+		32384C072236F93100346C90 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
@@ -115,7 +248,10 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				607FACEB1AFB9204008FA782 /* Tests.swift */,
+				32384BFF2236F73A00346C90 /* Helpers */,
+				32384BE52236F3D000346C90 /* CoreData */,
+				32384BDE2236F3D000346C90 /* DataProvider */,
+				32384BEB2236F3D000346C90 /* Network */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -167,6 +303,7 @@
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "RobinHood_Example" */;
 			buildPhases = (
 				A29E92180C215EDBA05CA323 /* [CP] Check Pods Manifest.lock */,
+				3213A30E22384620001BE041 /* ShellScript */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
@@ -189,6 +326,7 @@
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
+				35882E333483E0C680306FAC /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -207,16 +345,16 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = CocoaPods;
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1010;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1010;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
 				};
@@ -261,6 +399,45 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		3213A30E22384620001BE041 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"../.swiftlint.yml\"\n";
+		};
+		35882E333483E0C680306FAC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RobinHood_Tests/Pods-RobinHood_Tests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FireMock/FireMock.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FireMock.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RobinHood_Tests/Pods-RobinHood_Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		4D1305DC2C834C1F3430258D /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -343,7 +520,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
+				32384C092236FC1600346C90 /* FeedDataGenerator.swift in Sources */,
+				32384BF62236F3D000346C90 /* CoreDataServiceTests.swift in Sources */,
+				3213A31722385A28001BE041 /* Entities.xcdatamodeld in Sources */,
+				32384C0C2236FC7900346C90 /* FeedData+Provider.swift in Sources */,
+				3213A31B22385EB6001BE041 /* DatabaseHelpers.swift in Sources */,
+				32384BF52236F3D000346C90 /* SingleValueProviderInterfaceTests.swift in Sources */,
+				32384BF92236F3D000346C90 /* CoreDataCacheDomainTests.swift in Sources */,
+				3213A31D223865D7001BE041 /* CoreDataConfiguration+Common.swift in Sources */,
+				32384BFA2236F3D000346C90 /* DummyNetworkMock.swift in Sources */,
+				32384BF12236F3D000346C90 /* ListDifferenceCalculatorTests.swift in Sources */,
+				3213A31522385A28001BE041 /* CDSingleValue+CoreDataDecodable.swift in Sources */,
+				32384BF32236F3D000346C90 /* DataProviderBaseTests.swift in Sources */,
+				32384BF22236F3D000346C90 /* DataProviderInterfaceTests.swift in Sources */,
+				32384BFB2236F3D000346C90 /* NetworkOperationTests.swift in Sources */,
+				32384BFD2236F3D000346C90 /* NetworkOperationTestHelper.swift in Sources */,
+				3213A31622385A28001BE041 /* CDProject+CoreDataDecodable.swift in Sources */,
+				3213A31A22385EB6001BE041 /* CoreDataCacheHelpers.swift in Sources */,
+				32384BF82236F3D000346C90 /* CoreDataCacheTests.swift in Sources */,
+				32384BF02236F3D000346C90 /* SingleValueProviderBaseTests.swift in Sources */,
+				32384C022236F7F200346C90 /* Constants.swift in Sources */,
+				32384C0A2236FC2B00346C90 /* FeedData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,12 +586,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -442,12 +641,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -486,8 +687,7 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -501,8 +701,7 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -510,10 +709,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C9866FC4CBE9E237E1DFC9CC /* Pods-RobinHood_Tests.debug.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -522,8 +718,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RobinHood_Example.app/RobinHood_Example";
 			};
 			name = Debug;
@@ -532,16 +727,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 93ABF305D0D497A47793E0DC /* Pods-RobinHood_Tests.release.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RobinHood_Example.app/RobinHood_Example";
 			};
 			name = Release;
@@ -577,6 +768,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		3213A31322385A28001BE041 /* Entities.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				3213A31422385A28001BE041 /* Entities.xcdatamodel */,
+			);
+			currentVersion = 3213A31422385A28001BE041 /* Entities.xcdatamodel */;
+			path = Entities.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 607FACC81AFB9204008FA782 /* Project object */;
 }
