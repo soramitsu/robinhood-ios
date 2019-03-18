@@ -15,7 +15,7 @@ struct DummyNetworkMock: FireMockProtocol {
     }
 
     init(delay: TimeInterval, statusCode: Int) {
-        self.init(delay: delay, statusCode: statusCode, responseFilename: "emptyResponse.json")
+        self.init(delay: delay, statusCode: statusCode, responseFilename: "emptyResponse")
     }
 
     init(delay: TimeInterval, statusCode: Int, responseFilename: String) {
@@ -27,5 +27,9 @@ struct DummyNetworkMock: FireMockProtocol {
 
     func mockFile() -> String {
         return responseFilename
+    }
+
+    var bundle: Bundle {
+        return Bundle(for: LoadableBundleClass.self)
     }
 }

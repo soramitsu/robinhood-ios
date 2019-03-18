@@ -5,7 +5,8 @@ extension CoreDataServiceConfiguration {
     public static func createDefaultConfigutation() -> CoreDataServiceConfiguration {
         let modelName = "Entities"
 
-        let modelURL = Bundle.main.url(forResource: modelName, withExtension: "momd")
+        let bundle = Bundle(for: LoadableBundleClass.self)
+        let modelURL = bundle.url(forResource: modelName, withExtension: "momd")
         let databaseName = "\(modelName).sqlite"
 
         let baseURL = FileManager.default.urls(for: .documentDirectory,
