@@ -15,6 +15,51 @@ public final class CoreDataCache<T: Identifiable, U: NSManagedObject> {
         self.domain = domain
     }
 
+    private func save(models: [Model], in context: NSManagedObjectContext) throws {
+        try models.forEach { (model) in
+            let entityName = String(describing: U.self)
+            let fetchRequest = NSFetchRequest<U>(entityName: entityName)
+            let predicate = NSPredicate(format: "(%K == %@) AND (%K == %@)",
+                                        dataMapper.entityIdentifierFieldName,
+                                        model.identifier,
+                                        dataMapper.entityDomainFieldName,
+                                        domain)
+            fetchRequest.predicate = predicate
+
+            var optionalEntitity = try context.fetch(fetchRequest).first
+
+            if optionalEntitity == nil {
+                optionalEntitity = NSEntityDescription.insertNewObject(forEntityName: entityName,
+                                                                       into: context) as? U
+                optionalEntitity?.setValue(domain, forKey: dataMapper.entityDomainFieldName)
+            }
+
+            guard let entity = optionalEntitity else {
+                throw CoreDataCacheError.unexpectedSaveResult
+            }
+
+            try dataMapper.populate(entity: entity, from: model)
+        }
+    }
+
+    private func delete(modelIds: [String], in context: NSManagedObjectContext) throws {
+        try modelIds.forEach { (modelId) in
+            let entityName = String(describing: U.self)
+            let fetchRequest = NSFetchRequest<U>(entityName: entityName)
+            let predicate = NSPredicate(format: "(%K == %@) AND (%K == %@)",
+                                        dataMapper.entityIdentifierFieldName,
+                                        modelId,
+                                        dataMapper.entityDomainFieldName,
+                                        domain)
+
+            fetchRequest.predicate = predicate
+
+            if let entity = try context.fetch(fetchRequest).first {
+                context.delete(entity)
+            }
+        }
+    }
+
     public func fetch(by modelId: String,
                       runCompletionIn queue: DispatchQueue,
                       executing block: @escaping (Model?, Error?) -> Void) {
@@ -107,46 +152,9 @@ public final class CoreDataCache<T: Identifiable, U: NSManagedObject> {
 
             if let context = optionalContext {
                 do {
-                    try updatedModels.forEach { (model) in
-                        let entityName = String(describing: U.self)
-                        let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-                        let predicate = NSPredicate(format: "(%K == %@) AND (%K == %@)",
-                                                    self.dataMapper.entityIdentifierFieldName,
-                                                    model.identifier,
-                                                    self.dataMapper.entityDomainFieldName,
-                                                    self.domain)
-                        fetchRequest.predicate = predicate
+                    try self.save(models: updatedModels, in: context)
 
-                        var optionalEntitity = try context.fetch(fetchRequest).first
-
-                        if optionalEntitity == nil {
-                            optionalEntitity = NSEntityDescription.insertNewObject(forEntityName: entityName,
-                                                                                   into: context) as? U
-                            optionalEntitity?.setValue(self.domain, forKey: self.dataMapper.entityDomainFieldName)
-                        }
-
-                        guard let entity = optionalEntitity else {
-                            throw CoreDataCacheError.unexpectedSaveResult
-                        }
-
-                        try self.dataMapper.populate(entity: entity, from: model)
-                    }
-
-                    try deletedIds.forEach { (modelId) in
-                        let entityName = String(describing: U.self)
-                        let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-                        let predicate = NSPredicate(format: "(%K == %@) AND (%K == %@)",
-                                                    self.dataMapper.entityIdentifierFieldName,
-                                                    modelId,
-                                                    self.dataMapper.entityDomainFieldName,
-                                                    self.domain)
-
-                        fetchRequest.predicate = predicate
-
-                        if let entity = try context.fetch(fetchRequest).first {
-                            context.delete(entity)
-                        }
-                    }
+                    try self.delete(modelIds: deletedIds, in: context)
 
                     try context.save()
 

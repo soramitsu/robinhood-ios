@@ -8,9 +8,9 @@ public protocol NetworkIndicatorManagerProtocol {
 public final class NetworkIndicatorManager {
     static let shared = NetworkIndicatorManager()
 
-    private let managerQueue = DispatchQueue(label: UUID().uuidString)
+    let managerQueue = DispatchQueue(label: UUID().uuidString)
 
-    private var numberOfOperations = 0
+    var numberOfOperations = 0
 
     private init() {}
 }

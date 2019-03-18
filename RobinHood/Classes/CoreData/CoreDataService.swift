@@ -22,11 +22,11 @@ public class CoreDataService {
 
     public var configuration: CoreDataServiceConfigurationProtocol!
 
-    public private(set) var context: NSManagedObjectContext!
-    public private(set) var setupState = SetupState.initial
-    public private(set) var pendingInvocations = [CoreDataContextInvocationBlock]()
+    var context: NSManagedObjectContext!
+    var setupState: SetupState = .initial
+    var pendingInvocations = [CoreDataContextInvocationBlock]()
 
-    private func databaseURL(with fileManager: FileManager) -> URL? {
+    func databaseURL(with fileManager: FileManager) -> URL? {
         guard let dabaseDirectory = configuration.databaseDirectory else {
             return nil
         }
@@ -45,12 +45,13 @@ public class CoreDataService {
     }
 }
 
+// MARK: Internal Invocations logic
 extension CoreDataService {
-    private func queueInvocation(block: @escaping CoreDataContextInvocationBlock) {
+    func queueInvocation(block: @escaping CoreDataContextInvocationBlock) {
         pendingInvocations.append(block)
     }
 
-    private func flushInvocations(with error: Error?) {
+    func flushInvocations(with error: Error?) {
         let copiedInvocations = pendingInvocations
         pendingInvocations.removeAll()
 
@@ -63,16 +64,17 @@ extension CoreDataService {
         }
     }
 
-    private func invoke(block: @escaping CoreDataContextInvocationBlock, in context: NSManagedObjectContext) {
+    func invoke(block: @escaping CoreDataContextInvocationBlock, in context: NSManagedObjectContext) {
         context.perform {
             block(context, nil)
         }
     }
 }
 
+// MARK: Internal Setup Logic
 extension CoreDataService {
-    private func setup() {
-        self.setupState = .inprogress
+    func setup() {
+        setupState = .inprogress
 
         setup { (error) in
             if error == nil {
@@ -85,7 +87,7 @@ extension CoreDataService {
         }
     }
 
-    private func setup(withCompletion block: @escaping (Error?) -> Void) {
+    func setup(withCompletion block: @escaping (Error?) -> Void) {
         guard let modelURL = configuration.modelURL else {
             block(CoreDataServiceError.modelURLInvalid)
             return
