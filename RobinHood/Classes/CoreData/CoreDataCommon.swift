@@ -1,10 +1,16 @@
 import Foundation
 import CoreData
 
+public enum IncompatibleModelHandlingStrategy {
+    case ignore
+    case removeStore
+}
+
 public protocol CoreDataServiceConfigurationProtocol {
     var modelURL: URL! { get }
     var databaseDirectory: URL! { get }
     var databaseName: String { get }
+    var incompatibleModelStrategy: IncompatibleModelHandlingStrategy { get }
 }
 
 public typealias CoreDataContextInvocationBlock = (NSManagedObjectContext?, Error?) -> Void

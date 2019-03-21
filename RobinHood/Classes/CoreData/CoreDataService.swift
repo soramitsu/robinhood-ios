@@ -7,6 +7,7 @@ public enum CoreDataServiceError: Error {
     case modelInitializationFailed
     case unexpectedCloseDuringSetup
     case unexpectedDropWhenOpen
+    case incompatibleModelRemoveFailed
 }
 
 public class CoreDataService {
@@ -93,7 +94,8 @@ extension CoreDataService {
             return
         }
 
-        guard let databaseURL = databaseURL(with: FileManager.default) else {
+        let fileManager = FileManager.default
+        guard let databaseURL = databaseURL(with: fileManager) else {
             block(CoreDataServiceError.databaseURLInvalid)
             return
         }
@@ -107,6 +109,17 @@ extension CoreDataService {
 
         context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.persistentStoreCoordinator = coordinator
+
+        if configuration.incompatibleModelStrategy != .ignore &&
+            !checkCompatibility(of: model, with: databaseURL, using: fileManager) {
+
+            do {
+                try fileManager.removeItem(at: databaseURL)
+            } catch {
+                block(CoreDataServiceError.incompatibleModelRemoveFailed)
+                return
+            }
+        }
 
         let queue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
         queue.async {
@@ -128,6 +141,26 @@ extension CoreDataService {
             }
         }
 
+    }
+}
+
+// MARK: Model Compatability
+extension CoreDataService {
+    func checkCompatibility(of model: NSManagedObjectModel,
+                            with databaseURL: URL,
+                            using fileManager: FileManager) -> Bool {
+        guard fileManager.fileExists(atPath: databaseURL.path) else {
+            return true
+        }
+
+        do {
+            let storeMetadata = try NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType,
+                                                                                            at: databaseURL,
+                                                                                            options: nil)
+            return model.isConfiguration(withName: nil, compatibleWithStoreMetadata: storeMetadata)
+        } catch {
+            return false
+        }
     }
 }
 
@@ -198,14 +231,18 @@ extension CoreDataService: CoreDataServiceProtocol {
             throw CoreDataServiceError.unexpectedDropWhenOpen
         }
 
+        try removeDatabaseFile(using: FileManager.default)
+    }
+
+    func removeDatabaseFile(using fileManager: FileManager) throws {
         guard let databaseDirectory = configuration.databaseDirectory else {
             throw CoreDataServiceError.databaseURLInvalid
         }
 
         var isDirectory: ObjCBool = false
-        if FileManager.default.fileExists(atPath: databaseDirectory.path,
-                                          isDirectory: &isDirectory), isDirectory.boolValue {
-            try FileManager.default.removeItem(at: databaseDirectory)
+        if fileManager.fileExists(atPath: databaseDirectory.path,
+                                  isDirectory: &isDirectory), isDirectory.boolValue {
+            try fileManager.removeItem(at: databaseDirectory)
         }
     }
 }

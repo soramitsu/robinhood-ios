@@ -33,6 +33,8 @@
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
+		84014FA52243A68C00C35EFD /* IEntities.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84014FA32243A68C00C35EFD /* IEntities.xcdatamodeld */; };
+		84014FA72243A73A00C35EFD /* CoreDataCompatibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84014FA62243A73A00C35EFD /* CoreDataCompatibilityTests.swift */; };
 		84427D7A223EDAAC00AA721B /* Entities.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84530A5E223D9DF800AD7598 /* Entities.xcdatamodeld */; };
 		84427D82223F6DE700AA721B /* LoadableBundleClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84427D80223F6DBA00AA721B /* LoadableBundleClass.swift */; };
 		84427D83223F727600AA721B /* emptyResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 84427D7E223F6D8500AA721B /* emptyResponse.json */; };
@@ -84,6 +86,8 @@
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* RobinHood_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RobinHood_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		84014FA42243A68C00C35EFD /* Entities.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Entities.xcdatamodel; sourceTree = "<group>"; };
+		84014FA62243A73A00C35EFD /* CoreDataCompatibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataCompatibilityTests.swift; sourceTree = "<group>"; };
 		84427D7E223F6D8500AA721B /* emptyResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = emptyResponse.json; sourceTree = "<group>"; };
 		84427D80223F6DBA00AA721B /* LoadableBundleClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadableBundleClass.swift; sourceTree = "<group>"; };
 		84530A55223D94D000AD7598 /* DataProviderGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProviderGenerator.swift; sourceTree = "<group>"; };
@@ -131,6 +135,7 @@
 		3213A31022385A28001BE041 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				84014FA32243A68C00C35EFD /* IEntities.xcdatamodeld */,
 				84530A5E223D9DF800AD7598 /* Entities.xcdatamodeld */,
 				3213A31122385A28001BE041 /* CDSingleValue+CoreDataDecodable.swift */,
 				3213A31222385A28001BE041 /* CDProject+CoreDataDecodable.swift */,
@@ -157,6 +162,7 @@
 				32384BE92236F3D000346C90 /* CoreDataCacheTests.swift */,
 				32384BEA2236F3D000346C90 /* CoreDataCacheDomainTests.swift */,
 				32384BE62236F3D000346C90 /* CoreDataServiceTests.swift */,
+				84014FA62243A73A00C35EFD /* CoreDataCompatibilityTests.swift */,
 			);
 			name = CoreData;
 			path = ../../Tests/CoreData;
@@ -546,11 +552,13 @@
 				32384BF92236F3D000346C90 /* CoreDataCacheDomainTests.swift in Sources */,
 				84530A5B223D96E700AD7598 /* NetworkBaseTests.swift in Sources */,
 				3213A31D223865D7001BE041 /* CoreDataConfiguration+Common.swift in Sources */,
+				84014FA52243A68C00C35EFD /* IEntities.xcdatamodeld in Sources */,
 				32384BFA2236F3D000346C90 /* DummyNetworkMock.swift in Sources */,
 				32384BF12236F3D000346C90 /* ListDifferenceCalculatorTests.swift in Sources */,
 				3213A31522385A28001BE041 /* CDSingleValue+CoreDataDecodable.swift in Sources */,
 				32384BF32236F3D000346C90 /* DataProviderBaseTests.swift in Sources */,
 				32384BF22236F3D000346C90 /* DataProviderInterfaceTests.swift in Sources */,
+				84014FA72243A73A00C35EFD /* CoreDataCompatibilityTests.swift in Sources */,
 				32384BFB2236F3D000346C90 /* NetworkOperationTests.swift in Sources */,
 				32384BFD2236F3D000346C90 /* NetworkOperationTestHelper.swift in Sources */,
 				3213A31622385A28001BE041 /* CDProject+CoreDataDecodable.swift in Sources */,
@@ -790,6 +798,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
+		84014FA32243A68C00C35EFD /* IEntities.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				84014FA42243A68C00C35EFD /* Entities.xcdatamodel */,
+			);
+			currentVersion = 84014FA42243A68C00C35EFD /* Entities.xcdatamodel */;
+			path = IEntities.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
 		84530A5E223D9DF800AD7598 /* Entities.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18D109" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CDIFeed" representedClassName="CDIFeed" syncable="YES" codeGenerationType="class">
+        <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="domain" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="favorite" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="identifier" attributeType="String" minValueString="0" syncable="YES"/>
+        <attribute name="imageLink" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="likesCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" minValueString="0" syncable="YES"/>
+        <attribute name="status" attributeType="String" minValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="CDISingleValue" representedClassName="CDISingleValue" syncable="YES" codeGenerationType="class">
+        <attribute name="data" attributeType="Binary" syncable="YES"/>
+        <attribute name="domain" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="identifier" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="CDIFeed" positionX="-63" positionY="-18" width="128" height="165"/>
+        <element name="CDISingleValue" positionX="-63" positionY="54" width="128" height="90"/>
+    </elements>
+</model>
