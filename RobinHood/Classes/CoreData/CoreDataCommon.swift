@@ -11,6 +11,7 @@ public protocol CoreDataServiceConfigurationProtocol {
     var databaseDirectory: URL! { get }
     var databaseName: String { get }
     var incompatibleModelStrategy: IncompatibleModelHandlingStrategy { get }
+    var excludeFromiCloudBackup: Bool { get }
 }
 
 public typealias CoreDataContextInvocationBlock = (NSManagedObjectContext?, Error?) -> Void

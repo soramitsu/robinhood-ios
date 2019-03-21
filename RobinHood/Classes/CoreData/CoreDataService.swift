@@ -28,7 +28,7 @@ public class CoreDataService {
     var pendingInvocations = [CoreDataContextInvocationBlock]()
 
     func databaseURL(with fileManager: FileManager) -> URL? {
-        guard let dabaseDirectory = configuration.databaseDirectory else {
+        guard var dabaseDirectory = configuration.databaseDirectory else {
             return nil
         }
 
@@ -39,6 +39,11 @@ public class CoreDataService {
 
         do {
             try fileManager.createDirectory(at: dabaseDirectory, withIntermediateDirectories: true)
+
+            var resources = URLResourceValues()
+            resources.isExcludedFromBackup = configuration.excludeFromiCloudBackup
+            try dabaseDirectory.setResourceValues(resources)
+
             return dabaseDirectory.appendingPathComponent(configuration.databaseName)
         } catch {
             return nil

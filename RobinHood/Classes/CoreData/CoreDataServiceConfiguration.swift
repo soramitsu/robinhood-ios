@@ -5,6 +5,7 @@ public struct CoreDataServiceConfiguration: CoreDataServiceConfigurationProtocol
     public var databaseDirectory: URL!
     public var databaseName: String
     public var incompatibleModelStrategy: IncompatibleModelHandlingStrategy = .ignore
+    public var excludeFromiCloudBackup: Bool = true
 
     public init(modelURL: URL!, databaseDirectory: URL!, databaseName: String) {
         self.modelURL = modelURL
