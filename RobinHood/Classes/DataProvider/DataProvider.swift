@@ -20,11 +20,11 @@ public final class DataProvider<T: Identifiable & Equatable, U: NSManagedObject>
     var lastSyncOperation: Operation?
     var cacheUpdateOperation: Operation?
 
-    init(source: AnyDataProviderSource<T>,
-         cache: CoreDataCache<T, U>,
-         updateTrigger: DataProviderTriggerProtocol = DataProviderEventTrigger.onAll,
-         executionQueue: OperationQueue? = nil,
-         serialCacheQueue: DispatchQueue? = nil) {
+    public init(source: AnyDataProviderSource<T>,
+                cache: CoreDataCache<T, U>,
+                updateTrigger: DataProviderTriggerProtocol = DataProviderEventTrigger.onAll,
+                executionQueue: OperationQueue? = nil,
+                serialCacheQueue: DispatchQueue? = nil) {
         self.source = source
         self.cache = cache
 

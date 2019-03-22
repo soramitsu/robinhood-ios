@@ -7,11 +7,11 @@ public final class CacheObserver<T> {
     public private(set) var failureBlock: (Error) -> Void
     public private(set) var options: DataProviderObserverOptions
 
-    init(observer: AnyObject,
-         queue: DispatchQueue,
-         updateBlock: @escaping ([DataProviderChange<T>]) -> Void,
-         failureBlock: @escaping (Error) -> Void,
-         options: DataProviderObserverOptions) {
+    public init(observer: AnyObject,
+                queue: DispatchQueue,
+                updateBlock: @escaping ([DataProviderChange<T>]) -> Void,
+                failureBlock: @escaping (Error) -> Void,
+                options: DataProviderObserverOptions) {
 
         self.observer = observer
         self.options = options

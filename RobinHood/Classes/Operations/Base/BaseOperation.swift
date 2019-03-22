@@ -12,17 +12,17 @@ public enum BaseOperationError: Error {
     case unexpectedDependentResult
 }
 
-public class BaseOperation<ResultType>: Operation {
-    public var result: OperationResult<ResultType>?
+open class BaseOperation<ResultType>: Operation {
+    open var result: OperationResult<ResultType>?
 
-    public var configurationBlock: OperationConfigBlock?
+    open var configurationBlock: OperationConfigBlock?
 
-    override public func main() {
+    override open func main() {
         configurationBlock?()
         configurationBlock = nil
     }
 
-    override public func cancel() {
+    override open func cancel() {
         configurationBlock = nil
         super.cancel()
     }

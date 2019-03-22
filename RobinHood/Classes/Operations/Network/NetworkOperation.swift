@@ -1,14 +1,14 @@
 import Foundation
 
 public final class NetworkOperation<ResultType>: BaseOperation<ResultType> {
-    lazy var networkSession: URLSession = URLSession.shared
+    public lazy var networkSession: URLSession = URLSession.shared
 
-    lazy var networkIndicatorManager: NetworkIndicatorManagerProtocol = NetworkIndicatorManager.shared
+    public lazy var networkIndicatorManager: NetworkIndicatorManagerProtocol = NetworkIndicatorManager.shared
 
-    var requestModifier: NetworkRequestModifierProtocol?
+    public var requestModifier: NetworkRequestModifierProtocol?
 
-    var requestFactory: NetworkRequestFactoryProtocol
-    var resultFactory: AnyNetworkResultFactory<ResultType>
+    public var requestFactory: NetworkRequestFactoryProtocol
+    public var resultFactory: AnyNetworkResultFactory<ResultType>
 
     private var networkTask: URLSessionDataTask?
 

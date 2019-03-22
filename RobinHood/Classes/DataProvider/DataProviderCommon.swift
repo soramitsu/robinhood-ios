@@ -22,7 +22,11 @@ public enum DataProviderChange<T> {
 }
 
 public struct DataProviderObserverOptions {
-    public var alwaysNotifyOnRefresh: Bool = false
+    public var alwaysNotifyOnRefresh: Bool
+
+    public init(alwaysNotifyOnRefresh: Bool = false) {
+        self.alwaysNotifyOnRefresh = alwaysNotifyOnRefresh
+    }
 }
 
 public protocol DataProviderProtocol {
