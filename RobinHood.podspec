@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'RobinHood'
-  s.version          = '0.2.3'
+  s.version          = '0.3.1'
   s.summary          = 'Observable data provider implementation with cache support.'
 
   s.description      = <<-DESC
