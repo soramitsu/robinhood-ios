@@ -3,28 +3,28 @@ import RobinHood
 import CoreData
 
 class CoreDataCompatibilityTests: XCTestCase {
+    let defaultCoreDataService: CoreDataServiceProtocol = {
+        let configuration = CoreDataServiceConfiguration.createDefaultConfigutation()
+        return CoreDataService(configuration: configuration)
+    }()
 
     override func setUp() {
-        CoreDataService.shared.configuration = CoreDataServiceConfiguration.createDefaultConfigutation()
-        try! clearDatabase(using: CoreDataService.shared)
+        try! clear(databaseService: defaultCoreDataService)
     }
 
     override func tearDown() {
-        CoreDataService.shared.configuration = CoreDataServiceConfiguration.createDefaultConfigutation()
-        try! clearDatabase(using: CoreDataService.shared)
+        try! clear(databaseService: defaultCoreDataService)
     }
 
     func testWhenCompatibleAndIgnored() {
         // given
-        initializePersistentDatabase()
-
-        let coreDataService = CoreDataService.shared
+        initializePersistent(coreDataService: defaultCoreDataService)
 
         let databaseReopenExpectation = XCTestExpectation()
 
         // when
 
-        coreDataService.performAsync { (context, error) in
+        defaultCoreDataService.performAsync { (context, error) in
             XCTAssertNotNil(context)
             XCTAssertNil(error)
 
@@ -39,18 +39,18 @@ class CoreDataCompatibilityTests: XCTestCase {
     func testWhenIncompatibleAndIgnored() {
         // given
 
-        initializePersistentDatabase()
+        initializePersistent(coreDataService: defaultCoreDataService)
 
-        let coreDataService = CoreDataService.shared
-        coreDataService.configuration = CoreDataServiceConfiguration.createDefaultConfigutation(with: Constants.incompatibleCoreDataModelName,
+        let incompatibleConfiguration = CoreDataServiceConfiguration.createDefaultConfigutation(with: Constants.incompatibleCoreDataModelName,
                                                                                                 databaseName: Constants.defaultCoreDataModelName,
                                                                                                 incompatibleModelStrategy: .ignore)
+        let incompatibleDataService = CoreDataService(configuration: incompatibleConfiguration)
 
         let databaseReopenExpectation = XCTestExpectation()
 
         // when
 
-        coreDataService.performAsync { (context, error) in
+        incompatibleDataService.performAsync { (context, error) in
             XCTAssertNil(context)
             XCTAssertNotNil(error)
 
@@ -65,18 +65,18 @@ class CoreDataCompatibilityTests: XCTestCase {
     func testWhenIncompatibleAndRemove() {
         // given
 
-        initializePersistentDatabase()
+        initializePersistent(coreDataService: defaultCoreDataService)
 
-        let coreDataService = CoreDataService.shared
-        coreDataService.configuration = CoreDataServiceConfiguration.createDefaultConfigutation(with: Constants.incompatibleCoreDataModelName,
+        let incompatibleConfiguration = CoreDataServiceConfiguration.createDefaultConfigutation(with: Constants.incompatibleCoreDataModelName,
                                                                                                 databaseName: Constants.defaultCoreDataModelName,
                                                                                                 incompatibleModelStrategy: .removeStore)
+        let incompatibleCoreDataService = CoreDataService(configuration: incompatibleConfiguration)
 
         let databaseReopenExpectation = XCTestExpectation()
 
         // when
 
-        coreDataService.performAsync { (context, error) in
+        incompatibleCoreDataService.performAsync { (context, error) in
             XCTAssertNotNil(context)
             XCTAssertNil(error)
 
@@ -89,12 +89,8 @@ class CoreDataCompatibilityTests: XCTestCase {
     }
 
     // MARK: Private
-    private func initializePersistentDatabase() {
+    private func initializePersistent(coreDataService: CoreDataServiceProtocol) {
         // given
-        let coreDataService = CoreDataService.shared
-
-        let compatibleConfiguration = CoreDataServiceConfiguration.createDefaultConfigutation()
-        coreDataService.configuration = compatibleConfiguration
 
         let databaseCreationExpectation = XCTestExpectation()
 

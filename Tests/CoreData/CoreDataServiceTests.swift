@@ -2,15 +2,17 @@ import XCTest
 @testable import RobinHood
 
 class CoreDataServiceTests: XCTestCase {
+    let databaseService: CoreDataService = {
+        let configuration = CoreDataServiceConfiguration.createDefaultConfigutation()
+        return CoreDataService(configuration: configuration)
+    }()
 
     override func setUp() {
         super.setUp()
-
-        CoreDataService.shared.configuration = CoreDataServiceConfiguration.createDefaultConfigutation()
     }
 
     override func tearDown() {
-        try! CoreDataService.shared.close()
+        try! databaseService.close()
 
         super.tearDown()
     }
@@ -23,30 +25,30 @@ class CoreDataServiceTests: XCTestCase {
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = invocationsCount
 
-        guard case .initial = CoreDataService.shared.setupState else {
+        guard case .initial = databaseService.setupState else {
             XCTFail()
             return
         }
 
         (0..<invocationsCount).forEach { _ in
-            CoreDataService.shared.performAsync { (context, error) in
+            databaseService.performAsync { (context, error) in
                 XCTAssertNotNil(context)
                 XCTAssertNil(error)
                 expectation.fulfill()
             }
         }
 
-        guard case .inprogress = CoreDataService.shared.setupState else {
+        guard case .inprogress = databaseService.setupState else {
             XCTFail()
             return
         }
 
         // then
-        XCTAssertEqual(CoreDataService.shared.pendingInvocations.count, invocationsCount)
+        XCTAssertEqual(databaseService.pendingInvocations.count, invocationsCount)
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        guard case .completed = CoreDataService.shared.setupState else {
+        guard case .completed = databaseService.setupState else {
             XCTFail()
             return
         }
@@ -59,14 +61,14 @@ class CoreDataServiceTests: XCTestCase {
 
         // when
         DispatchQueue.global(qos: .background).async {
-            CoreDataService.shared.performAsync { (context, error) in
+            self.databaseService.performAsync { (context, error) in
                 XCTAssertNotNil(context)
                 XCTAssertNil(error)
                 expectation.fulfill()
             }
         }
 
-        CoreDataService.shared.performAsync { (context, error) in
+        databaseService.performAsync { (context, error) in
             XCTAssertNotNil(context)
             XCTAssertNil(error)
             expectation.fulfill()
@@ -75,7 +77,7 @@ class CoreDataServiceTests: XCTestCase {
         // then
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        guard case .completed = CoreDataService.shared.setupState else {
+        guard case .completed = databaseService.setupState else {
             XCTFail()
             return
         }
@@ -87,7 +89,7 @@ class CoreDataServiceTests: XCTestCase {
 
         var expectation = XCTestExpectation()
 
-        CoreDataService.shared.performAsync { (context, error) in
+        databaseService.performAsync { (context, error) in
             XCTAssertNotNil(context)
             XCTAssertNil(error)
             expectation.fulfill()
@@ -101,7 +103,7 @@ class CoreDataServiceTests: XCTestCase {
         expectation.expectedFulfillmentCount = invocationsCount
 
         (0..<invocationsCount).forEach { _ in
-            CoreDataService.shared.performAsync { (context, error) in
+            databaseService.performAsync { (context, error) in
                 XCTAssertNotNil(context)
                 XCTAssertNil(error)
                 expectation.fulfill()
@@ -109,7 +111,7 @@ class CoreDataServiceTests: XCTestCase {
         }
 
         // then
-        XCTAssertEqual(CoreDataService.shared.pendingInvocations.count, 0)
+        XCTAssertEqual(databaseService.pendingInvocations.count, 0)
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
     }
@@ -118,7 +120,7 @@ class CoreDataServiceTests: XCTestCase {
         // given
         let expectation = XCTestExpectation()
 
-        CoreDataService.shared.performAsync { (context, error) in
+        databaseService.performAsync { (context, error) in
             XCTAssertNotNil(context)
             XCTAssertNil(error)
             expectation.fulfill()
@@ -126,15 +128,15 @@ class CoreDataServiceTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        XCTAssertNotNil(CoreDataService.shared.context)
+        XCTAssertNotNil(databaseService.context)
 
         // when
-        XCTAssertNoThrow(try CoreDataService.shared.close())
+        XCTAssertNoThrow(try databaseService.close())
 
         // then
-        XCTAssertNil(CoreDataService.shared.context)
+        XCTAssertNil(databaseService.context)
 
-        guard case .initial = CoreDataService.shared.setupState else {
+        guard case .initial = databaseService.setupState else {
             XCTFail()
             return
         }
@@ -143,18 +145,18 @@ class CoreDataServiceTests: XCTestCase {
     func testCloseOnSetup() {
         let expectation = XCTestExpectation()
 
-        CoreDataService.shared.performAsync { (context, error) in
+        databaseService.performAsync { (context, error) in
             XCTAssertNotNil(context)
             XCTAssertNil(error)
             expectation.fulfill()
         }
 
-        guard case .inprogress = CoreDataService.shared.setupState else {
+        guard case .inprogress = databaseService.setupState else {
             XCTFail()
             return
         }
 
-        XCTAssertThrowsError(try CoreDataService.shared.close())
+        XCTAssertThrowsError(try databaseService.close())
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
     }
@@ -163,7 +165,7 @@ class CoreDataServiceTests: XCTestCase {
         // given
         let expectation = XCTestExpectation()
 
-        CoreDataService.shared.performAsync { (context, error) in
+        databaseService.performAsync { (context, error) in
             XCTAssertNotNil(context)
             XCTAssertNil(error)
 
@@ -172,13 +174,13 @@ class CoreDataServiceTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        let path = CoreDataService.shared.configuration.databaseDirectory.path
+        let path = databaseService.configuration.databaseDirectory.path
 
         // when
         XCTAssertTrue(FileManager.default.fileExists(atPath: path))
 
-        XCTAssertNoThrow(try CoreDataService.shared.close())
-        XCTAssertNoThrow(try CoreDataService.shared.drop())
+        XCTAssertNoThrow(try databaseService.close())
+        XCTAssertNoThrow(try databaseService.drop())
 
         // then
         XCTAssertFalse(FileManager.default.fileExists(atPath: path))
@@ -188,7 +190,7 @@ class CoreDataServiceTests: XCTestCase {
         // given
         let expectation = XCTestExpectation()
 
-        CoreDataService.shared.performAsync { (context, error) in
+        databaseService.performAsync { (context, error) in
             XCTAssertNotNil(context)
             XCTAssertNil(error)
 
@@ -197,6 +199,6 @@ class CoreDataServiceTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        XCTAssertThrowsError(try CoreDataService.shared.drop())
+        XCTAssertThrowsError(try databaseService.drop())
     }
 }

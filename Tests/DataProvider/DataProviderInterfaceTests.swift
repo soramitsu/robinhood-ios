@@ -2,14 +2,14 @@ import XCTest
 @testable import RobinHood
 
 class DataProviderTests: DataProviderBaseTests {
-    let cache: CoreDataCache<FeedData, CDFeed> = createDefaultCoreDataCache()
+    let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
 
     override func setUp() {
-        try! clearDatabase(using: cache.databaseService)
+        try! CoreDataCacheFacade.shared.clearDatabase()
     }
 
     override func tearDown() {
-        try! clearDatabase(using: cache.databaseService)
+        try! CoreDataCacheFacade.shared.clearDatabase()
     }
 
     func testSynchronizationOnInit() {

@@ -2,34 +2,20 @@ import XCTest
 @testable import RobinHood
 
 class CoreDataCacheDomainTests: XCTestCase {
-    var defaultDomainCache: CoreDataCache<FeedData, CDFeed> = {
-        let coreDataService = CoreDataService.shared
-        coreDataService.configuration = CoreDataServiceConfiguration.createDefaultConfigutation()
-        let mapper = AnyCoreDataMapper(CodableCoreDataMapper<FeedData, CDFeed>())
+    var defaultDomainCache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared
+        .createCoreDataCache(domain: "defaults")
 
-        return CoreDataCache(databaseService: coreDataService,
-                             mapper: mapper,
-                             domain: "default")
-    }()
-
-    var favoriteDomainCache: CoreDataCache<FeedData, CDFeed> = {
-        let coreDataService = CoreDataService.shared
-        coreDataService.configuration = CoreDataServiceConfiguration.createDefaultConfigutation()
-        let mapper = AnyCoreDataMapper(CodableCoreDataMapper<FeedData, CDFeed>())
-
-        return CoreDataCache(databaseService: coreDataService,
-                             mapper: mapper,
-                             domain: "favorite")
-    }()
+    var favoriteDomainCache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared
+        .createCoreDataCache(domain: "favorite")
 
     var operationQueue = OperationQueue()
 
     override func setUp() {
-        try! clearDatabase(using: CoreDataService.shared)
+        try! CoreDataCacheFacade.shared.clearDatabase()
     }
 
     override func tearDown() {
-        try! clearDatabase(using: CoreDataService.shared)
+        try! CoreDataCacheFacade.shared.clearDatabase()
     }
 
     func testSaveAndFetch() {

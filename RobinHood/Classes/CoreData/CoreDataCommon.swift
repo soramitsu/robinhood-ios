@@ -17,7 +17,7 @@ public protocol CoreDataServiceConfigurationProtocol {
 public typealias CoreDataContextInvocationBlock = (NSManagedObjectContext?, Error?) -> Void
 
 public protocol CoreDataServiceProtocol {
-    var configuration: CoreDataServiceConfigurationProtocol! { get set }
+    var configuration: CoreDataServiceConfigurationProtocol { get }
 
     func performAsync(block: @escaping CoreDataContextInvocationBlock)
     func close() throws

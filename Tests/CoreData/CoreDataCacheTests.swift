@@ -2,23 +2,16 @@ import XCTest
 @testable import RobinHood
 
 class CoreDataCacheTests: XCTestCase {
-    var cache: CoreDataCache<FeedData, CDFeed> = {
-        let coreDataService = CoreDataService.shared
-        coreDataService.configuration = CoreDataServiceConfiguration.createDefaultConfigutation()
-        let mapper = AnyCoreDataMapper(CodableCoreDataMapper<FeedData, CDFeed>())
-
-        return CoreDataCache(databaseService: coreDataService,
-                             mapper: mapper)
-    }()
+    let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
 
     var operationQueue = OperationQueue()
 
     override func setUp() {
-        try! clearDatabase(using: cache.databaseService)
+        try! CoreDataCacheFacade.shared.clearDatabase()
     }
 
     override func tearDown() {
-        try! clearDatabase(using: cache.databaseService)
+        try! CoreDataCacheFacade.shared.clearDatabase()
     }
 
     func testSaveFetchAll() {

@@ -2,14 +2,14 @@ import XCTest
 @testable import RobinHood
 
 class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
-    let cache: CoreDataCache<SingleValueProviderObject, CDSingleValue> = createDefaultCoreDataCache()
+    let cache: CoreDataCache<SingleValueProviderObject, CDSingleValue> = CoreDataCacheFacade.shared.createCoreDataCache()
 
     override func setUp() {
-        try! clearDatabase(using: cache.databaseService)
+        try! CoreDataCacheFacade.shared.clearDatabase()
     }
 
     override func tearDown() {
-        try! clearDatabase(using: cache.databaseService)
+        try! CoreDataCacheFacade.shared.clearDatabase()
     }
 
     func testSynchronizationOnInit() {

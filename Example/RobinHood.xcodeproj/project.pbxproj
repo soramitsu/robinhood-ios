@@ -10,7 +10,6 @@
 		3213A31522385A28001BE041 /* CDSingleValue+CoreDataDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31122385A28001BE041 /* CDSingleValue+CoreDataDecodable.swift */; };
 		3213A31622385A28001BE041 /* CDProject+CoreDataDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31222385A28001BE041 /* CDProject+CoreDataDecodable.swift */; };
 		3213A31A22385EB6001BE041 /* CoreDataCacheHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31822385EB5001BE041 /* CoreDataCacheHelpers.swift */; };
-		3213A31B22385EB6001BE041 /* DatabaseHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31922385EB5001BE041 /* DatabaseHelpers.swift */; };
 		3213A31D223865D7001BE041 /* CoreDataConfiguration+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213A31C223865D7001BE041 /* CoreDataConfiguration+Common.swift */; };
 		32384BF02236F3D000346C90 /* SingleValueProviderBaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BDF2236F3D000346C90 /* SingleValueProviderBaseTests.swift */; };
 		32384BF12236F3D000346C90 /* ListDifferenceCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE02236F3D000346C90 /* ListDifferenceCalculatorTests.swift */; };
@@ -61,7 +60,6 @@
 		3213A31122385A28001BE041 /* CDSingleValue+CoreDataDecodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDSingleValue+CoreDataDecodable.swift"; sourceTree = "<group>"; };
 		3213A31222385A28001BE041 /* CDProject+CoreDataDecodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDProject+CoreDataDecodable.swift"; sourceTree = "<group>"; };
 		3213A31822385EB5001BE041 /* CoreDataCacheHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataCacheHelpers.swift; sourceTree = "<group>"; };
-		3213A31922385EB5001BE041 /* DatabaseHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseHelpers.swift; sourceTree = "<group>"; };
 		3213A31C223865D7001BE041 /* CoreDataConfiguration+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataConfiguration+Common.swift"; sourceTree = "<group>"; };
 		32384BDF2236F3D000346C90 /* SingleValueProviderBaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleValueProviderBaseTests.swift; sourceTree = "<group>"; };
 		32384BE02236F3D000346C90 /* ListDifferenceCalculatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListDifferenceCalculatorTests.swift; sourceTree = "<group>"; };
@@ -188,7 +186,6 @@
 			children = (
 				84530A59223D96E700AD7598 /* Network */,
 				3213A31822385EB5001BE041 /* CoreDataCacheHelpers.swift */,
-				3213A31922385EB5001BE041 /* DatabaseHelpers.swift */,
 				3213A30F22385926001BE041 /* CoreData */,
 				32384C042236F89D00346C90 /* DataGenerators */,
 				32384C032236F89700346C90 /* Data */,
@@ -554,7 +551,6 @@
 				84427D7A223EDAAC00AA721B /* Entities.xcdatamodeld in Sources */,
 				32384C0C2236FC7900346C90 /* FeedData+Provider.swift in Sources */,
 				84476234224CFED5009ADC0E /* EndpointBuilderTests.swift in Sources */,
-				3213A31B22385EB6001BE041 /* DatabaseHelpers.swift in Sources */,
 				32384BF52236F3D000346C90 /* SingleValueProviderInterfaceTests.swift in Sources */,
 				84427D82223F6DE700AA721B /* LoadableBundleClass.swift in Sources */,
 				32384BF92236F3D000346C90 /* CoreDataCacheDomainTests.swift in Sources */,

@@ -2,16 +2,6 @@ import Foundation
 import RobinHood
 import CoreData
 
-func createDefaultCoreDataCache<T, U>() -> CoreDataCache<T, U>
-    where T: Identifiable & Codable, U: NSManagedObject & CoreDataCodable {
-        let coreDataService = CoreDataService.shared
-        coreDataService.configuration = CoreDataServiceConfiguration.createDefaultConfigutation()
-        let mapper = AnyCoreDataMapper(CodableCoreDataMapper<T, U>())
-
-        return CoreDataCache(databaseService: coreDataService,
-                             mapper: mapper)
-}
-
 func createDataSourceMock<T>(base: Any, returns items: [T]) -> AnyDataProviderSource<T> {
     let fetchPageBlock: (UInt) -> BaseOperation<[T]> = { _ in
         let pageOperation = BaseOperation<[T]>()

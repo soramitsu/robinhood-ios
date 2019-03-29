@@ -17,11 +17,11 @@ public class CoreDataService {
         case completed
     }
 
-    public static let shared = CoreDataService()
+    public let configuration: CoreDataServiceConfigurationProtocol
 
-    private init() {}
-
-    public var configuration: CoreDataServiceConfigurationProtocol!
+    public init(configuration: CoreDataServiceConfigurationProtocol) {
+        self.configuration = configuration
+    }
 
     var context: NSManagedObjectContext!
     var setupState: SetupState = .initial
