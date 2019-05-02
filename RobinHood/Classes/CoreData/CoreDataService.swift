@@ -2,7 +2,6 @@ import Foundation
 import CoreData
 
 public enum CoreDataServiceError: Error {
-    case modelURLInvalid
     case databaseURLInvalid
     case modelInitializationFailed
     case unexpectedCloseDuringSetup
@@ -28,23 +27,25 @@ public class CoreDataService {
     var pendingInvocations = [CoreDataContextInvocationBlock]()
 
     func databaseURL(with fileManager: FileManager) -> URL? {
-        guard var dabaseDirectory = configuration.databaseDirectory else {
+        guard case .persistent(let settings) = configuration.storageType else {
             return nil
         }
 
+        var dabaseDirectory = settings.databaseDirectory
+
         var isDirectory: ObjCBool = false
         if fileManager.fileExists(atPath: dabaseDirectory.path, isDirectory: &isDirectory), isDirectory.boolValue {
-            return dabaseDirectory.appendingPathComponent(configuration.databaseName)
+            return dabaseDirectory.appendingPathComponent(settings.databaseName)
         }
 
         do {
             try fileManager.createDirectory(at: dabaseDirectory, withIntermediateDirectories: true)
 
             var resources = URLResourceValues()
-            resources.isExcludedFromBackup = configuration.excludeFromiCloudBackup
+            resources.isExcludedFromBackup = settings.excludeFromiCloudBackup
             try dabaseDirectory.setResourceValues(resources)
 
-            return dabaseDirectory.appendingPathComponent(configuration.databaseName)
+            return dabaseDirectory.appendingPathComponent(settings.databaseName)
         } catch {
             return nil
         }
@@ -94,20 +95,36 @@ extension CoreDataService {
     }
 
     func setup(withCompletion block: @escaping (Error?) -> Void) {
-        guard let modelURL = configuration.modelURL else {
-            block(CoreDataServiceError.modelURLInvalid)
-            return
-        }
-
         let fileManager = FileManager.default
-        guard let databaseURL = databaseURL(with: fileManager) else {
-            block(CoreDataServiceError.databaseURLInvalid)
-            return
-        }
+        let optionalDatabaseURL = self.databaseURL(with: fileManager)
+        let storageType: String
 
-        guard let model = NSManagedObjectModel(contentsOf: modelURL) else {
+        guard let model = NSManagedObjectModel(contentsOf: configuration.modelURL) else {
             block(CoreDataServiceError.modelInitializationFailed)
             return
+        }
+
+        switch configuration.storageType {
+        case .persistent(let settings):
+            guard let databaseURL = optionalDatabaseURL  else {
+                block(CoreDataServiceError.databaseURLInvalid)
+                return
+            }
+
+            if settings.incompatibleModelStrategy != .ignore &&
+                !checkCompatibility(of: model, with: databaseURL, using: fileManager) {
+
+                do {
+                    try fileManager.removeItem(at: databaseURL)
+                } catch {
+                    block(CoreDataServiceError.incompatibleModelRemoveFailed)
+                    return
+                }
+            }
+
+            storageType = NSSQLiteStoreType
+        case .inMemory:
+            storageType = NSInMemoryStoreType
         }
 
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
@@ -115,24 +132,13 @@ extension CoreDataService {
         context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.persistentStoreCoordinator = coordinator
 
-        if configuration.incompatibleModelStrategy != .ignore &&
-            !checkCompatibility(of: model, with: databaseURL, using: fileManager) {
-
-            do {
-                try fileManager.removeItem(at: databaseURL)
-            } catch {
-                block(CoreDataServiceError.incompatibleModelRemoveFailed)
-                return
-            }
-        }
-
         let queue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
         queue.async {
             do {
                 try coordinator.addPersistentStore(
-                    ofType: NSSQLiteStoreType,
+                    ofType: storageType,
                     configurationName: nil,
-                    at: databaseURL,
+                    at: optionalDatabaseURL,
                     options: nil
                 )
 
@@ -236,18 +242,18 @@ extension CoreDataService: CoreDataServiceProtocol {
             throw CoreDataServiceError.unexpectedDropWhenOpen
         }
 
-        try removeDatabaseFile(using: FileManager.default)
-    }
-
-    func removeDatabaseFile(using fileManager: FileManager) throws {
-        guard let databaseDirectory = configuration.databaseDirectory else {
-            throw CoreDataServiceError.databaseURLInvalid
+        guard case .persistent(let settings) = configuration.storageType else {
+            return
         }
 
+        try removeDatabaseFile(using: FileManager.default, settings: settings)
+    }
+
+    private func removeDatabaseFile(using fileManager: FileManager, settings: CoreDataPersistentSettings) throws {
         var isDirectory: ObjCBool = false
-        if fileManager.fileExists(atPath: databaseDirectory.path,
+        if fileManager.fileExists(atPath: settings.databaseDirectory.path,
                                   isDirectory: &isDirectory), isDirectory.boolValue {
-            try fileManager.removeItem(at: databaseDirectory)
+            try fileManager.removeItem(at: settings.databaseDirectory)
         }
     }
 }

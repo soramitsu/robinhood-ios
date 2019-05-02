@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'RobinHood'
-  s.version          = '0.3.2'
+  s.version          = '0.4.0'
   s.summary          = 'Observable data provider implementation with cache support.'
 
   s.description      = <<-DESC
@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '9.0'
 
   s.source_files = 'RobinHood/Classes/**/*'
-  s.swift_version = '4.2'
+  s.swift_version = '5.0'
 
   s.test_spec do |ts|
     ts.source_files = 'Tests/**/*.swift'

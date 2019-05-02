@@ -17,6 +17,10 @@ class CoreDataCompatibilityTests: XCTestCase {
     }
 
     func testWhenCompatibleAndIgnored() {
+        guard case .persistent = defaultCoreDataService.configuration.storageType else {
+            return
+        }
+
         // given
         initializePersistent(coreDataService: defaultCoreDataService)
 
@@ -37,6 +41,10 @@ class CoreDataCompatibilityTests: XCTestCase {
     }
 
     func testWhenIncompatibleAndIgnored() {
+        guard case .persistent = defaultCoreDataService.configuration.storageType else {
+            return
+        }
+
         // given
 
         initializePersistent(coreDataService: defaultCoreDataService)
@@ -63,6 +71,10 @@ class CoreDataCompatibilityTests: XCTestCase {
     }
 
     func testWhenIncompatibleAndRemove() {
+        guard case .persistent = defaultCoreDataService.configuration.storageType else {
+            return
+        }
+
         // given
 
         initializePersistent(coreDataService: defaultCoreDataService)

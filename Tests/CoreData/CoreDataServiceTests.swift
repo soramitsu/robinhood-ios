@@ -162,6 +162,10 @@ class CoreDataServiceTests: XCTestCase {
     }
 
     func testSuccessfullDrop() {
+        guard case .persistent(let settings) = databaseService.configuration.storageType else {
+            return
+        }
+
         // given
         let expectation = XCTestExpectation()
 
@@ -174,7 +178,7 @@ class CoreDataServiceTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        let path = databaseService.configuration.databaseDirectory.path
+        let path = settings.databaseDirectory.path
 
         // when
         XCTAssertTrue(FileManager.default.fileExists(atPath: path))

@@ -18,10 +18,12 @@ extension CoreDataServiceConfiguration {
         let baseURL = FileManager.default.urls(for: .documentDirectory,
                                                in: .userDomainMask).first?.appendingPathComponent("CoreData")
 
-        var configuration = CoreDataServiceConfiguration(modelURL: modelURL,
-                                                         databaseDirectory: baseURL,
-                                                         databaseName: databaseName)
-        configuration.incompatibleModelStrategy = incompatibleModelStrategy
+        let persistentSettings = CoreDataPersistentSettings(databaseDirectory: baseURL!,
+                                                            databaseName: databaseName,
+                                                            incompatibleModelStrategy: incompatibleModelStrategy)
+
+        let configuration = CoreDataServiceConfiguration(modelURL: modelURL!,
+                                                         storageType: .persistent(settings: persistentSettings))
 
         return configuration
     }

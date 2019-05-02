@@ -50,10 +50,10 @@ public protocol DataProviderProtocol {
 }
 
 public extension DataProviderProtocol {
-    public func addCacheObserver(_ observer: AnyObject,
-                                 deliverOn queue: DispatchQueue,
-                                 executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
-                                 failing failureBlock: @escaping (Error) -> Void) {
+    func addCacheObserver(_ observer: AnyObject,
+                          deliverOn queue: DispatchQueue,
+                          executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
+                          failing failureBlock: @escaping (Error) -> Void) {
         addCacheObserver(observer,
                          deliverOn: queue,
                          executing: updateBlock,
@@ -81,10 +81,10 @@ public protocol SingleValueProviderProtocol {
 }
 
 public extension SingleValueProviderProtocol {
-    public func addCacheObserver(_ observer: AnyObject,
-                                 deliverOn queue: DispatchQueue,
-                                 executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
-                                 failing failureBlock: @escaping (Error) -> Void) {
+    func addCacheObserver(_ observer: AnyObject,
+                          deliverOn queue: DispatchQueue,
+                          executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
+                          failing failureBlock: @escaping (Error) -> Void) {
         addCacheObserver(observer,
                          deliverOn: queue,
                          executing: updateBlock,

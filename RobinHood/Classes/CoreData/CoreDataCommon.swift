@@ -6,12 +6,31 @@ public enum IncompatibleModelHandlingStrategy {
     case removeStore
 }
 
+public struct CoreDataPersistentSettings {
+    public var databaseDirectory: URL
+    public var databaseName: String
+    public var incompatibleModelStrategy: IncompatibleModelHandlingStrategy
+    public var excludeFromiCloudBackup: Bool
+
+    public init(databaseDirectory: URL,
+                databaseName: String,
+                incompatibleModelStrategy: IncompatibleModelHandlingStrategy = .ignore,
+                excludeFromiCloudBackup: Bool = true) {
+        self.databaseDirectory = databaseDirectory
+        self.databaseName = databaseName
+        self.incompatibleModelStrategy = incompatibleModelStrategy
+        self.excludeFromiCloudBackup = excludeFromiCloudBackup
+    }
+}
+
+public enum CoreDataServiceStorageType {
+    case persistent(settings: CoreDataPersistentSettings)
+    case inMemory
+}
+
 public protocol CoreDataServiceConfigurationProtocol {
-    var modelURL: URL! { get }
-    var databaseDirectory: URL! { get }
-    var databaseName: String { get }
-    var incompatibleModelStrategy: IncompatibleModelHandlingStrategy { get }
-    var excludeFromiCloudBackup: Bool { get }
+    var modelURL: URL { get }
+    var storageType: CoreDataServiceStorageType { get }
 }
 
 public typealias CoreDataContextInvocationBlock = (NSManagedObjectContext?, Error?) -> Void
