@@ -15,69 +15,72 @@
 			dependencies = (
 			);
 			name = SwiftLint;
-			productName = SwiftLint;
 		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
 		02EAC204800D36D65ACB5E0DED125045 /* Pods-RobinHood_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 817CD5272A8FB99D32C607A4902EDAFF /* Pods-RobinHood_Tests-dummy.m */; };
+		05FE63F03D789A73369A71813F0DF849 /* CoreDataServiceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ACFA5B4D4B46513383F846332A8DB4 /* CoreDataServiceConfiguration.swift */; };
 		09A67389372651DFC4301BADD97C6102 /* FireMockTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9609C63ACFF6A74A18704DA6EFEF151 /* FireMockTableViewCell.swift */; };
 		0BB7B94D9DBCAB28DD469FCF52948517 /* FireMockTableViewHeaderCell.xib in Sources */ = {isa = PBXBuildFile; fileRef = 44D7D35B4B2913FBF6CC6BA4BFACD74F /* FireMockTableViewHeaderCell.xib */; };
+		0D33BE47994D15361FC3D01F35F766D5 /* NetworkConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CF5602D0270F6E23B9FCC2E4194442 /* NetworkConstants.swift */; };
 		129C7980D8E5315E2EFC8F433CE2A6E1 /* FireMockDebug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB92545177006A84DC6F65389C175D4 /* FireMockDebug.swift */; };
-		140985529F3DA2545B8F20DB3707F96C /* SectionedListDifference.swift in Sources */ = {isa = PBXBuildFile; fileRef = F870410E4479A32A080CF9B98FEA6465 /* SectionedListDifference.swift */; };
+		159F5A91311DF64B49E2A6B534492DAC /* SectionedListDifference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5CDDAB8CB008F02CBC1A00C1F3F73 /* SectionedListDifference.swift */; };
+		1714D4682423AF621A728167EEA1D832 /* AnyDataProviderSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD22B2F9FC4E81FD88B25E80CD9AB1E0 /* AnyDataProviderSource.swift */; };
 		17D5C9D88FDB441D4FCC1E72CCBF8A2F /* FireMock-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 124936F7F14DA07D04CC1EAAAB49F8CB /* FireMock-dummy.m */; };
-		1D2D4007FCF00D4F613CD09A611C6830 /* CoreDataMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF932F47F0E679B40D95DAF2FB8D4D8A /* CoreDataMapper.swift */; };
+		1B03A3DD71E32A4A1E3A0EDD4856252D /* NetworkRequestModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DF6DD44D9C8EB8F08A15ED8C0C6D73 /* NetworkRequestModifier.swift */; };
+		1CE3D21E6378A822414F268D669E1E58 /* EndpointBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A597B1AD5B160F70DD19BAAC1A3761 /* EndpointBuilder.swift */; };
 		1F2C59426B0B4BB88DCA9821E0B94C99 /* FireMockSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA43990603F6E2382F1CEF3BF740E6F /* FireMockSelectionTableViewCell.swift */; };
 		2074389CA08EE53D724DAB4C68177830 /* Pods-RobinHood_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 387717B4D2457691CF460EF37B96A83E /* Pods-RobinHood_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		24DBFD52F69ADC37EA6A67C8A6CEDD7A /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0FA93DB245E7AF324AD468F80B94CB /* DataProvider.swift */; };
+		2CA55128CBCDDD5E063F0332D06DD901 /* ListDifferenceCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98CDDA24DE6C3F53B14855642DD9A05 /* ListDifferenceCalculator.swift */; };
 		30E57BDF42DCA8BE6BF46D0FEFA4D2BA /* FireMockSelectionTableViewController.xib in Sources */ = {isa = PBXBuildFile; fileRef = B1FB45F2CDC82F6920C3FE82077BC937 /* FireMockSelectionTableViewController.xib */; };
-		3540F96E2147BB364B76E93B0CC17C81 /* DataProviderCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E6424A5B7BBF60AB27D1436640A81E /* DataProviderCommon.swift */; };
+		356381FA26D0C5A13786809981040A8C /* DataProvider+Trigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8DEDBBBAD06367FC83CB247C05219C7 /* DataProvider+Trigger.swift */; };
 		35D1A9D46CAD0B77810053FEC477707A /* FireMockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D98B0AC82A8381AE0A081748BB31889 /* FireMockManager.swift */; };
 		3C230BFC59748D1551FA28546D51CB2D /* FireMockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC9C5B53CBE7EBE3C88C5DDF5CD00E9 /* FireMockViewController.swift */; };
+		3D9CFED8B727D4F44DCE59A357612B31 /* ClosureOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F215D2B84BFF50658021B423BA6BF64 /* ClosureOperation.swift */; };
 		43936F238634EA6031CB396AEB0B1BB7 /* FireMockGenericDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D696C04EA144627B7B5D956CB962E7B /* FireMockGenericDataSource.swift */; };
-		48D5134E894A5948DE1BB04511774492 /* NetworkOperationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC06EAC0DB90873B91D57042B60F61F7 /* NetworkOperationHelper.swift */; };
-		4A351E2A650B3F891C87F2B8B13927C9 /* CoreDataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555B215A061202D735698B7E48D2D236 /* CoreDataCache.swift */; };
 		4C131D921BB4AE603EEB6C8D7DDF462C /* FireMockSelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5440C6FBCE5C76C42DB320ED22054466 /* FireMockSelectionTableViewController.swift */; };
-		4CA80DBE7D1E17A5BE666E0D1F23B852 /* ListDifferenceCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE8A32E4499C5422C7F088776A10B97 /* ListDifferenceCalculator.swift */; };
-		4DD26FAFD02CBCCAF9E47009887CA37F /* SingleValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618AFE4A192DE54F71B03148552F3BF2 /* SingleValueProvider.swift */; };
-		53F5C1488363072CE1AEB3C81B5C7ED7 /* CacheObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6EC773B50C2CCBCF07442355D6A1EDA /* CacheObserver.swift */; };
-		54736F81869329FE03426D9279CB7D13 /* CoreDataServiceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002F89049CCD798FC99FEED1B4882059 /* CoreDataServiceConfiguration.swift */; };
+		4D57E61AD4FAA210D668074F8B8A0798 /* DataProvider+Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519DAF492B7661244666C9B2E8A133ED /* DataProvider+Protocol.swift */; };
+		4F80E50F948CF9DAFA0F4E0F768EFCBC /* NetworkResultFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF97A03676FC47ADEFBD57F54B7933C /* NetworkResultFactory.swift */; };
 		5719D999C2A9A83EDD9C8704AF8C8A85 /* FireMock.h in Headers */ = {isa = PBXBuildFile; fileRef = 261A556E1DFC91D398421BD95AD52835 /* FireMock.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		57C7F998F270A14AD838349F4028F2FD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C9E4D755FB612079FBB6F914321892 /* Utils.swift */; };
 		5B4F9523530DA77DCC6FBBC289A68C7B /* FireMockViewController.xib in Sources */ = {isa = PBXBuildFile; fileRef = A65FECD46129A5FC281011092630C16C /* FireMockViewController.xib */; };
-		5BAC0B6D60BA6AAEFB724F511DD37512 /* DataProviderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBE09C78D53B3B3BAC994AAC626CAFA /* DataProviderTrigger.swift */; };
 		5C0C87D535AB717DAE937AE4ABE63DEE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */; };
-		6045B7C471D7E3D971E43361C7780A03 /* RobinHood-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F7DE3B79189065637DF4388CBF5F2FC /* RobinHood-dummy.m */; };
-		658433B9C1CD60BDBB1F0A202048A5B2 /* NetworkResultFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F5FC3B3208AB585D7E58A7D6841787 /* NetworkResultFactory.swift */; };
-		693D01D9E5708BE0650D60451B0758EE /* BaseOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62993413BF9C75E1B21CD06BF03228ED /* BaseOperation.swift */; };
+		6F770497772EAD349DF9EF92A817E593 /* SingleValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBB8A68BBF853EA976582E797EADBC1 /* SingleValueProvider.swift */; };
 		709A3D4DB77179318346A4BCBCDBEC03 /* FireMock.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B994AA83CFBE0167FA5C3FA2A10909E8 /* FireMock.xcassets */; };
-		750BCC6F1EA2AB3ED2B7F37E7C7DF4C0 /* DataProvider+Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D0EC0B307079C8BF7BD138EB81F199 /* DataProvider+Protocol.swift */; };
+		71F680EE709836182192571CD9C451C1 /* SingleValueProvider+Trigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA2E614600F1B9BD514968D0B360AC0 /* SingleValueProvider+Trigger.swift */; };
+		7C7E7F56A9D2E8E1AFE311502B5D58F3 /* RobinHood-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 93A7F04FAAB8B8E6137C48E69147B252 /* RobinHood-dummy.m */; };
 		7DBB5ACA5B2F272FE3A05A751CF9A5FA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */; };
-		84476232224CFEC2009ADC0E /* EndpointBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84476231224CFEC2009ADC0E /* EndpointBuilder.swift */; };
+		8093660B74460353C4DAE0A18038AB42 /* CoreDataCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5FB93384BEB8B88338915D593A75A4 /* CoreDataCommon.swift */; };
+		8186A9CD9578A454F4D92CAA7E6E38AD /* CacheObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE6826F8562AEA675CC5B246409C71DC /* CacheObserver.swift */; };
+		88603CB66EE03A44D4EC4FCD2245397A /* NetworkOperationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737AFAF5364897A6EEC48BFE112A1030 /* NetworkOperationHelper.swift */; };
 		8C8675496B7CD17D867AD531DF48F19A /* Pods-RobinHood_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = FD363AB3CED81165B09B1B4DB353FF3C /* Pods-RobinHood_Example-dummy.m */; };
 		8D0A2CDC4EAD47FADBADD5C6E417EEAA /* Pods-RobinHood_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = CE13FC31EB2F7C3E15CE372A14DA480B /* Pods-RobinHood_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		94894CC11B381AF1D31A3FDA0BBBA560 /* SingleValueProvider+Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB7B81F2DAAF6467D26B3514F349353 /* SingleValueProvider+Protocol.swift */; };
-		957C23555E998C1A89D5E4535F32FD5B /* DataProvider+Trigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3692430AAE7C255571E552D987205CB3 /* DataProvider+Trigger.swift */; };
+		9A91EF012027441A79B2858EEBCBCDAD /* CoreDataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100559AE7CF9636F566695119D83D69 /* CoreDataCache.swift */; };
 		9C279FED91B6FC433912EAC69079E662 /* FireMockTableViewCell.xib in Sources */ = {isa = PBXBuildFile; fileRef = 89D86F518E25D8A558D4B8075EC2EA38 /* FireMockTableViewCell.xib */; };
-		AB4B4D4A3B3259092FCCB2A76884DF73 /* NetworkRequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81132791A9686C3CC2A7D36122649685 /* NetworkRequestFactory.swift */; };
-		B3B2CA7E9EC4C5FC4E57970C102A704C /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5744C72D5DD3FD50538AD1194E9D44 /* CoreDataService.swift */; };
-		B495002AB3CB087B8DB43C7AA97A9155 /* SingleValueProvider+Trigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36039F31AB422279AB88475C896EEF4 /* SingleValueProvider+Trigger.swift */; };
+		9F1C1A0383D32178C3E89257FEFAD398 /* AnySingleValueProviderSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A72990D0A672CBEBD2B0A98642FE30 /* AnySingleValueProviderSource.swift */; };
+		AD5EC24222F33D15D743BC0EB1AFC8B2 /* AnyDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F3BA93016B3BE0A9547B1EE4615AA9 /* AnyDataProvider.swift */; };
+		AF2A310871982D7BC63796D8901B73AF /* NetworkDataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE3FF739C480BE78263191FDE2739 /* NetworkDataError.swift */; };
+		B31A44D49E89147068E0B82628C50CD0 /* DataProviderPrimitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743F210402424FB9527FE8D9EF73C452 /* DataProviderPrimitives.swift */; };
 		B9B39A9E535EF8696F9A584EDD71009C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */; };
 		BA1FCFDC8EEBF6B0576430DD369C616C /* FireMockTableViewHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2AE6312FB7FB27D17126EB45C90A5B /* FireMockTableViewHeaderCell.swift */; };
-		BBC603C5B39FF8477AEE6CC6E79DF16E /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D339A510B47170B8EF730BA2EA28031D /* DataProvider.swift */; };
-		BCBAA4B4D78021B6F1A33E0CF7979FD7 /* NetworkDataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C6D5E06743D5F2D4CA7CAD95D76037 /* NetworkDataError.swift */; };
 		C207F1F7AC1FE07E297A0A9E3CA9F1C5 /* FireMock-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 768CFD6768801D8FC7EB12A4EE86DB8D /* FireMock-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CACB03AF0EB2B2FC8E19C18C6D69703C /* NetworkRequestModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63AD81767C8F4A152A75A1FAFC4916B /* NetworkRequestModifier.swift */; };
-		CF7E813D37997571D830E5F77F56DCBC /* NetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9ED620DDE0B8A6321812478B97A4A7 /* NetworkOperation.swift */; };
-		D92F200F89BE20CF9FEEA9ABB17D5DCA /* NetworkConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9C47A48A84D21C242E590675EFA373 /* NetworkConstants.swift */; };
-		D959FF9C14894BA600FE5A68F7B56062 /* ClosureOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E56FACF5593F126143924561ABFF8A /* ClosureOperation.swift */; };
-		E68184C847F2B52EF8A1B74E6C57BC2A /* CoreDataCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009405C59BCBF90D088736237B48AC8 /* CoreDataCommon.swift */; };
+		CDDC527E3F0392D5BC2521D26F757D12 /* CoreDataMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EB0F2CD152387F4387A1ADFAAF0238 /* CoreDataMapper.swift */; };
+		D4A4858E4686417C13C2450737FE3652 /* NetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAC6FA014B58FED9BC45899439E734B /* NetworkOperation.swift */; };
+		D9CE32C45CFEB5EDF89864826E3E0250 /* BaseOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA8F23A4B3E4DFC0D0F71E4829483E6 /* BaseOperation.swift */; };
+		DADD282311806D6018E373C1AA1C07D0 /* NetworkIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F7825F9E11E4D60452611BBD7C0B42E /* NetworkIndicatorManager.swift */; };
+		E01BBB98CBD7D45B4B9F4C705D6F8C11 /* DataProviderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4A90DFD09B9A99CA58463F4D4DEE9D /* DataProviderProtocols.swift */; };
+		E23FF88DD18F588EDFFF7F9AFE77109B /* NetworkRequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD632DBCD54F11435BF5DB2D8A9E42ED /* NetworkRequestFactory.swift */; };
 		E79B725E6BEE82CF695D47FEB2A69E98 /* URLSessionConfigurationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF59F1DDEDA55FB24B8695BA0B5F02B8 /* URLSessionConfigurationExtension.swift */; };
 		EAEFDB490F8DE403730A31AA9A915558 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */; };
 		ED206677A098A8D3B400BBB697C9A907 /* FireMockProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A914EE55E56CCB8B518255947A235E98 /* FireMockProtocol.swift */; };
-		ED2D89400AAE708944DDF921CD2F8F73 /* RobinHood-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = ECD123894A646CA87107D3C569B09666 /* RobinHood-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ED2D89400AAE708944DDF921CD2F8F73 /* RobinHood-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23D865B8AB004A24FADCA4B555A9C4 /* RobinHood-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ED5646DE2267D7EC8A2AB8DA147D33C9 /* SingleValueProvider+Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68EDE709A24A22A8538972A984AF0F41 /* SingleValueProvider+Protocol.swift */; };
 		ED8F41AF487E6175A2FBB8AC70E5FE73 /* FireMockDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F6002F39DF7E3E655B1411277E69C9 /* FireMockDataSource.swift */; };
-		F37A863F08C7A58C77B5EB20E4AFA117 /* NetworkIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D695F96190E6D8F0B32C0F04452BCFF8 /* NetworkIndicatorManager.swift */; };
+		F4759B1AC5F357F5F83B1B2EC70D5E85 /* DataProviderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CF44D2E66DAD7F9F7074B73BBA2F0C /* DataProviderTrigger.swift */; };
 		F92BE6519939BDD9780D92E7C041A2BA /* FireMockSelectionTableViewCell.xib in Sources */ = {isa = PBXBuildFile; fileRef = 075E0F00D39DA4B238E199EC1B682350 /* FireMockSelectionTableViewCell.xib */; };
+		FBF115C118A5B9461D482A052A602AEE /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5951AE5006528D7E4D8D1336E2F15B7C /* CoreDataService.swift */; };
 		FE23164D405C1D1624AF7AD5E0D835B5 /* FireURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB510CA196A87D6E864B241AC920E693 /* FireURLProtocol.swift */; };
 /* End PBXBuildFile section */
 
@@ -113,93 +116,97 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		002F89049CCD798FC99FEED1B4882059 /* CoreDataServiceConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataServiceConfiguration.swift; sourceTree = "<group>"; };
 		075E0F00D39DA4B238E199EC1B682350 /* FireMockSelectionTableViewCell.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = FireMockSelectionTableViewCell.xib; path = FireMock/FireMockSelectionTableViewCell.xib; sourceTree = "<group>"; };
 		09C9E4D755FB612079FBB6F914321892 /* Utils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = FireMock/Utils.swift; sourceTree = "<group>"; };
-		0C5744C72D5DD3FD50538AD1194E9D44 /* CoreDataService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
-		0E95331D619F7B38DCFE7CD442568945 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		0F7DE3B79189065637DF4388CBF5F2FC /* RobinHood-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RobinHood-dummy.m"; sourceTree = "<group>"; };
+		0BA8F23A4B3E4DFC0D0F71E4829483E6 /* BaseOperation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BaseOperation.swift; sourceTree = "<group>"; };
+		0BBB8A68BBF853EA976582E797EADBC1 /* SingleValueProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SingleValueProvider.swift; sourceTree = "<group>"; };
 		113A5115867D9A22767E3BF1E5B126B7 /* Pods-RobinHood_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-RobinHood_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
+		1181703ECE600923940217AF5128F5E6 /* RobinHood.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = RobinHood.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		124936F7F14DA07D04CC1EAAAB49F8CB /* FireMock-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FireMock-dummy.m"; sourceTree = "<group>"; };
-		1543C48FF0A2EF19AB4CDC0F8E019C58 /* FireMock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FireMock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1543C48FF0A2EF19AB4CDC0F8E019C58 /* FireMock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = FireMock.framework; path = FireMock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		170D6400644954916690A2338C60F9A3 /* Pods-RobinHood_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-RobinHood_Example-frameworks.sh"; sourceTree = "<group>"; };
-		176A3CC5F6FBB2D6B1EFE935491372AE /* RobinHood-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "RobinHood-Info.plist"; sourceTree = "<group>"; };
-		1A9C47A48A84D21C242E590675EFA373 /* NetworkConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkConstants.swift; sourceTree = "<group>"; };
-		1FB7B81F2DAAF6467D26B3514F349353 /* SingleValueProvider+Protocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "SingleValueProvider+Protocol.swift"; sourceTree = "<group>"; };
+		1F215D2B84BFF50658021B423BA6BF64 /* ClosureOperation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClosureOperation.swift; sourceTree = "<group>"; };
 		261A556E1DFC91D398421BD95AD52835 /* FireMock.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FireMock.h; path = FireMock/FireMock.h; sourceTree = "<group>"; };
+		28A72990D0A672CBEBD2B0A98642FE30 /* AnySingleValueProviderSource.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnySingleValueProviderSource.swift; sourceTree = "<group>"; };
+		28FCE3FF739C480BE78263191FDE2739 /* NetworkDataError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkDataError.swift; sourceTree = "<group>"; };
 		2AC6F67DA60EE4508AAA67C68528FBB9 /* Pods-RobinHood_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-RobinHood_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		2B622E32C2A2155AE64CCEA66E07B085 /* Pods_RobinHood_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RobinHood_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B622E32C2A2155AE64CCEA66E07B085 /* Pods_RobinHood_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_RobinHood_Example.framework; path = "Pods-RobinHood_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2DB5CDDAB8CB008F02CBC1A00C1F3F73 /* SectionedListDifference.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SectionedListDifference.swift; sourceTree = "<group>"; };
 		321BE5E91C17EB2144342393A44DD87E /* Pods-RobinHood_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-RobinHood_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
-		3692430AAE7C255571E552D987205CB3 /* DataProvider+Trigger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "DataProvider+Trigger.swift"; sourceTree = "<group>"; };
-		37E56FACF5593F126143924561ABFF8A /* ClosureOperation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClosureOperation.swift; sourceTree = "<group>"; };
 		387717B4D2457691CF460EF37B96A83E /* Pods-RobinHood_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-RobinHood_Tests-umbrella.h"; sourceTree = "<group>"; };
 		3AA43990603F6E2382F1CEF3BF740E6F /* FireMockSelectionTableViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockSelectionTableViewCell.swift; path = FireMock/FireMockSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		3AB92545177006A84DC6F65389C175D4 /* FireMockDebug.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockDebug.swift; path = FireMock/FireMockDebug.swift; sourceTree = "<group>"; };
 		3AF6A568A0D1103BE27FA8025E9D87EF /* Pods-RobinHood_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-RobinHood_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		3CCD733A49B89C72F6059D3DB62C9948 /* RobinHood-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RobinHood-prefix.pch"; sourceTree = "<group>"; };
+		40A597B1AD5B160F70DD19BAAC1A3761 /* EndpointBuilder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EndpointBuilder.swift; sourceTree = "<group>"; };
 		44D7D35B4B2913FBF6CC6BA4BFACD74F /* FireMockTableViewHeaderCell.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = FireMockTableViewHeaderCell.xib; path = FireMock/FireMockTableViewHeaderCell.xib; sourceTree = "<group>"; };
+		45ACFA5B4D4B46513383F846332A8DB4 /* CoreDataServiceConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataServiceConfiguration.swift; sourceTree = "<group>"; };
 		494288DC775CDD8EA1B139E919D575FD /* Pods-RobinHood_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-RobinHood_Example-acknowledgements.plist"; sourceTree = "<group>"; };
+		4A000CAB249980AE03A2995C99E42EE1 /* RobinHood.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = RobinHood.modulemap; sourceTree = "<group>"; };
+		4C4A90DFD09B9A99CA58463F4D4DEE9D /* DataProviderProtocols.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataProviderProtocols.swift; sourceTree = "<group>"; };
 		4D696C04EA144627B7B5D956CB962E7B /* FireMockGenericDataSource.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockGenericDataSource.swift; path = FireMock/FireMockGenericDataSource.swift; sourceTree = "<group>"; };
+		500BB8BE8D968516A5A4E76295A46565 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		519DAF492B7661244666C9B2E8A133ED /* DataProvider+Protocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "DataProvider+Protocol.swift"; sourceTree = "<group>"; };
+		51DDD30021AEA6CF391A6CACABE4B0B6 /* RobinHood-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "RobinHood-Info.plist"; sourceTree = "<group>"; };
 		527364D778337667A10364B495EF2EB3 /* FireMock-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FireMock-prefix.pch"; sourceTree = "<group>"; };
 		5440C6FBCE5C76C42DB320ED22054466 /* FireMockSelectionTableViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockSelectionTableViewController.swift; path = FireMock/FireMockSelectionTableViewController.swift; sourceTree = "<group>"; };
-		555B215A061202D735698B7E48D2D236 /* CoreDataCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataCache.swift; sourceTree = "<group>"; };
 		561D005DB5F4960388B1D9771A77BAD0 /* Pods-RobinHood_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-RobinHood_Tests-frameworks.sh"; sourceTree = "<group>"; };
 		56B81183EFC3CB2C1702DCCE486B0E29 /* Pods-RobinHood_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-RobinHood_Tests.modulemap"; sourceTree = "<group>"; };
-		5BBE09C78D53B3B3BAC994AAC626CAFA /* DataProviderTrigger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataProviderTrigger.swift; sourceTree = "<group>"; };
+		5951AE5006528D7E4D8D1336E2F15B7C /* CoreDataService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
 		5D98B0AC82A8381AE0A081748BB31889 /* FireMockManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockManager.swift; path = FireMock/FireMockManager.swift; sourceTree = "<group>"; };
-		618AFE4A192DE54F71B03148552F3BF2 /* SingleValueProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SingleValueProvider.swift; sourceTree = "<group>"; };
-		62993413BF9C75E1B21CD06BF03228ED /* BaseOperation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BaseOperation.swift; sourceTree = "<group>"; };
+		60CF44D2E66DAD7F9F7074B73BBA2F0C /* DataProviderTrigger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataProviderTrigger.swift; sourceTree = "<group>"; };
 		62CD1596075964C529AFC379AB29E556 /* FireMock.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = FireMock.modulemap; sourceTree = "<group>"; };
+		62DF6DD44D9C8EB8F08A15ED8C0C6D73 /* NetworkRequestModifier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkRequestModifier.swift; sourceTree = "<group>"; };
 		66D6F7352511FD49126373C4132122F9 /* SwiftLint.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SwiftLint.xcconfig; sourceTree = "<group>"; };
+		68EDE709A24A22A8538972A984AF0F41 /* SingleValueProvider+Protocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "SingleValueProvider+Protocol.swift"; sourceTree = "<group>"; };
 		68F6002F39DF7E3E655B1411277E69C9 /* FireMockDataSource.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockDataSource.swift; path = FireMock/FireMockDataSource.swift; sourceTree = "<group>"; };
 		6D0EFE13410EFE13DC44AF04D131E9FD /* Pods-RobinHood_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-RobinHood_Example-Info.plist"; sourceTree = "<group>"; };
+		6FAC6FA014B58FED9BC45899439E734B /* NetworkOperation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkOperation.swift; sourceTree = "<group>"; };
+		737AFAF5364897A6EEC48BFE112A1030 /* NetworkOperationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkOperationHelper.swift; sourceTree = "<group>"; };
+		743F210402424FB9527FE8D9EF73C452 /* DataProviderPrimitives.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataProviderPrimitives.swift; sourceTree = "<group>"; };
 		760868A8BA9F0C72293E82C29E6CAFC7 /* Pods-RobinHood_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-RobinHood_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		768CFD6768801D8FC7EB12A4EE86DB8D /* FireMock-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FireMock-umbrella.h"; sourceTree = "<group>"; };
-		79C6D5E06743D5F2D4CA7CAD95D76037 /* NetworkDataError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkDataError.swift; sourceTree = "<group>"; };
-		81132791A9686C3CC2A7D36122649685 /* NetworkRequestFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkRequestFactory.swift; sourceTree = "<group>"; };
+		77CF5602D0270F6E23B9FCC2E4194442 /* NetworkConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkConstants.swift; sourceTree = "<group>"; };
+		7BA2E614600F1B9BD514968D0B360AC0 /* SingleValueProvider+Trigger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "SingleValueProvider+Trigger.swift"; sourceTree = "<group>"; };
+		7D23D865B8AB004A24FADCA4B555A9C4 /* RobinHood-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RobinHood-umbrella.h"; sourceTree = "<group>"; };
 		817CD5272A8FB99D32C607A4902EDAFF /* Pods-RobinHood_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-RobinHood_Tests-dummy.m"; sourceTree = "<group>"; };
 		82038C634F20C910CEFF07241ABEE461 /* FireMock-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "FireMock-Info.plist"; sourceTree = "<group>"; };
 		83ABF3B93F9C50029BA1811D5FF67CD5 /* FireMock.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FireMock.xcconfig; sourceTree = "<group>"; };
-		84476231224CFEC2009ADC0E /* EndpointBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EndpointBuilder.swift; sourceTree = "<group>"; };
-		8488490D69023B9884F47802B614D1A3 /* RobinHood.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = RobinHood.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		85F3BA93016B3BE0A9547B1EE4615AA9 /* AnyDataProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnyDataProvider.swift; sourceTree = "<group>"; };
 		89D86F518E25D8A558D4B8075EC2EA38 /* FireMockTableViewCell.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = FireMockTableViewCell.xib; path = FireMock/FireMockTableViewCell.xib; sourceTree = "<group>"; };
-		8B8B0873093BF21F973C5CB321C10D2A /* RobinHood.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RobinHood.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8C9ED620DDE0B8A6321812478B97A4A7 /* NetworkOperation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkOperation.swift; sourceTree = "<group>"; };
-		9009405C59BCBF90D088736237B48AC8 /* CoreDataCommon.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataCommon.swift; sourceTree = "<group>"; };
-		95227FEE319ED1D75D51A01136798D1C /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		9D44F2A2B6E1D80923E6B8FFC13FB66D /* RobinHood-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RobinHood-prefix.pch"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		A2FEE4209E950E626481AF4668ECEA60 /* Pods_RobinHood_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RobinHood_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B8B0873093BF21F973C5CB321C10D2A /* RobinHood.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = RobinHood.framework; path = RobinHood.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		93A7F04FAAB8B8E6137C48E69147B252 /* RobinHood-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RobinHood-dummy.m"; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9F7825F9E11E4D60452611BBD7C0B42E /* NetworkIndicatorManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkIndicatorManager.swift; sourceTree = "<group>"; };
+		A100559AE7CF9636F566695119D83D69 /* CoreDataCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataCache.swift; sourceTree = "<group>"; };
+		A2FEE4209E950E626481AF4668ECEA60 /* Pods_RobinHood_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_RobinHood_Tests.framework; path = "Pods-RobinHood_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A65FECD46129A5FC281011092630C16C /* FireMockViewController.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = FireMockViewController.xib; path = FireMock/FireMockViewController.xib; sourceTree = "<group>"; };
-		A6EC773B50C2CCBCF07442355D6A1EDA /* CacheObserver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CacheObserver.swift; sourceTree = "<group>"; };
+		A8DEDBBBAD06367FC83CB247C05219C7 /* DataProvider+Trigger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "DataProvider+Trigger.swift"; sourceTree = "<group>"; };
 		A914EE55E56CCB8B518255947A235E98 /* FireMockProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockProtocol.swift; path = FireMock/FireMockProtocol.swift; sourceTree = "<group>"; };
 		AB510CA196A87D6E864B241AC920E693 /* FireURLProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireURLProtocol.swift; path = FireMock/FireURLProtocol.swift; sourceTree = "<group>"; };
 		AF59F1DDEDA55FB24B8695BA0B5F02B8 /* URLSessionConfigurationExtension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionConfigurationExtension.swift; path = FireMock/URLSessionConfigurationExtension.swift; sourceTree = "<group>"; };
 		B1FB45F2CDC82F6920C3FE82077BC937 /* FireMockSelectionTableViewController.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = FireMockSelectionTableViewController.xib; path = FireMock/FireMockSelectionTableViewController.xib; sourceTree = "<group>"; };
-		B36039F31AB422279AB88475C896EEF4 /* SingleValueProvider+Trigger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "SingleValueProvider+Trigger.swift"; sourceTree = "<group>"; };
-		B6E6424A5B7BBF60AB27D1436640A81E /* DataProviderCommon.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataProviderCommon.swift; sourceTree = "<group>"; };
+		B6A825E093725BD109529666076651E8 /* RobinHood.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RobinHood.xcconfig; sourceTree = "<group>"; };
 		B994AA83CFBE0167FA5C3FA2A10909E8 /* FireMock.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = FireMock.xcassets; sourceTree = "<group>"; };
-		C7F7C8675F8EAA256A0652D74BC9AF09 /* RobinHood.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RobinHood.xcconfig; sourceTree = "<group>"; };
+		C0EB0F2CD152387F4387A1ADFAAF0238 /* CoreDataMapper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataMapper.swift; sourceTree = "<group>"; };
 		C8E550CE1C186C318268956413EBF201 /* Pods-RobinHood_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-RobinHood_Tests-Info.plist"; sourceTree = "<group>"; };
 		CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		CC06EAC0DB90873B91D57042B60F61F7 /* NetworkOperationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkOperationHelper.swift; sourceTree = "<group>"; };
+		CD22B2F9FC4E81FD88B25E80CD9AB1E0 /* AnyDataProviderSource.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnyDataProviderSource.swift; sourceTree = "<group>"; };
 		CE13FC31EB2F7C3E15CE372A14DA480B /* Pods-RobinHood_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-RobinHood_Example-umbrella.h"; sourceTree = "<group>"; };
 		CEC9C5B53CBE7EBE3C88C5DDF5CD00E9 /* FireMockViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockViewController.swift; path = FireMock/FireMockViewController.swift; sourceTree = "<group>"; };
-		CFE8A32E4499C5422C7F088776A10B97 /* ListDifferenceCalculator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ListDifferenceCalculator.swift; sourceTree = "<group>"; };
 		D11A86E7FD480CC38B9ADA7C1AC5AA94 /* Pods-RobinHood_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-RobinHood_Example.release.xcconfig"; sourceTree = "<group>"; };
-		D339A510B47170B8EF730BA2EA28031D /* DataProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
-		D695F96190E6D8F0B32C0F04452BCFF8 /* NetworkIndicatorManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkIndicatorManager.swift; sourceTree = "<group>"; };
-		DF932F47F0E679B40D95DAF2FB8D4D8A /* CoreDataMapper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataMapper.swift; sourceTree = "<group>"; };
-		E63AD81767C8F4A152A75A1FAFC4916B /* NetworkRequestModifier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkRequestModifier.swift; sourceTree = "<group>"; };
+		D98CDDA24DE6C3F53B14855642DD9A05 /* ListDifferenceCalculator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ListDifferenceCalculator.swift; sourceTree = "<group>"; };
+		DA0FA93DB245E7AF324AD468F80B94CB /* DataProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
+		E52F2371BA88681C1BBA8A276B5E49FB /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		E9609C63ACFF6A74A18704DA6EFEF151 /* FireMockTableViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockTableViewCell.swift; path = FireMock/FireMockTableViewCell.swift; sourceTree = "<group>"; };
-		ECD123894A646CA87107D3C569B09666 /* RobinHood-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RobinHood-umbrella.h"; sourceTree = "<group>"; };
 		F1E5D87E5F5B43F1080A59C6F3B674D8 /* Pods-RobinHood_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-RobinHood_Example.modulemap"; sourceTree = "<group>"; };
 		F47AB8F1D873D73BB0115E6D93FD1160 /* Pods-RobinHood_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-RobinHood_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		F5D0EC0B307079C8BF7BD138EB81F199 /* DataProvider+Protocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "DataProvider+Protocol.swift"; sourceTree = "<group>"; };
-		F666BA1ACB32118F902E3D0ECA078455 /* RobinHood.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = RobinHood.modulemap; sourceTree = "<group>"; };
-		F6F5FC3B3208AB585D7E58A7D6841787 /* NetworkResultFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkResultFactory.swift; sourceTree = "<group>"; };
-		F870410E4479A32A080CF9B98FEA6465 /* SectionedListDifference.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SectionedListDifference.swift; sourceTree = "<group>"; };
 		FD363AB3CED81165B09B1B4DB353FF3C /* Pods-RobinHood_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-RobinHood_Example-dummy.m"; sourceTree = "<group>"; };
+		FD632DBCD54F11435BF5DB2D8A9E42ED /* NetworkRequestFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkRequestFactory.swift; sourceTree = "<group>"; };
+		FE6826F8562AEA675CC5B246409C71DC /* CacheObserver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CacheObserver.swift; sourceTree = "<group>"; };
+		FEF97A03676FC47ADEFBD57F54B7933C /* NetworkResultFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkResultFactory.swift; sourceTree = "<group>"; };
 		FF2AE6312FB7FB27D17126EB45C90A5B /* FireMockTableViewHeaderCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FireMockTableViewHeaderCell.swift; path = FireMock/FireMockTableViewHeaderCell.swift; sourceTree = "<group>"; };
+		FF5FB93384BEB8B88338915D593A75A4 /* CoreDataCommon.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreDataCommon.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -238,15 +245,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		009A58A18C4546BA553FCF8D9B05CE6A /* CoreData */ = {
+		029F0C39E8D65663AF8A589CDA2ECE1F /* ListDataProvider */ = {
 			isa = PBXGroup;
 			children = (
-				9009405C59BCBF90D088736237B48AC8 /* CoreDataCommon.swift */,
-				0C5744C72D5DD3FD50538AD1194E9D44 /* CoreDataService.swift */,
-				002F89049CCD798FC99FEED1B4882059 /* CoreDataServiceConfiguration.swift */,
+				85F3BA93016B3BE0A9547B1EE4615AA9 /* AnyDataProvider.swift */,
+				CD22B2F9FC4E81FD88B25E80CD9AB1E0 /* AnyDataProviderSource.swift */,
+				DA0FA93DB245E7AF324AD468F80B94CB /* DataProvider.swift */,
+				519DAF492B7661244666C9B2E8A133ED /* DataProvider+Protocol.swift */,
+				A8DEDBBBAD06367FC83CB247C05219C7 /* DataProvider+Trigger.swift */,
 			);
-			name = CoreData;
-			path = RobinHood/Classes/CoreData;
+			name = ListDataProvider;
+			path = ListDataProvider;
 			sourceTree = "<group>";
 		};
 		066C845AF1F9BF0B31F94578415FC6DD /* Pods */ = {
@@ -258,74 +267,65 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		0BF4D967E4EBC015CE1787CA4F8FB70B /* Network */ = {
+		072A7A499906DF0E86AC6FAA4B037CD0 /* Base */ = {
 			isa = PBXGroup;
 			children = (
-				1A9C47A48A84D21C242E590675EFA373 /* NetworkConstants.swift */,
-				79C6D5E06743D5F2D4CA7CAD95D76037 /* NetworkDataError.swift */,
-				D695F96190E6D8F0B32C0F04452BCFF8 /* NetworkIndicatorManager.swift */,
-				8C9ED620DDE0B8A6321812478B97A4A7 /* NetworkOperation.swift */,
-				CC06EAC0DB90873B91D57042B60F61F7 /* NetworkOperationHelper.swift */,
-				81132791A9686C3CC2A7D36122649685 /* NetworkRequestFactory.swift */,
-				E63AD81767C8F4A152A75A1FAFC4916B /* NetworkRequestModifier.swift */,
-				F6F5FC3B3208AB585D7E58A7D6841787 /* NetworkResultFactory.swift */,
+				0BA8F23A4B3E4DFC0D0F71E4829483E6 /* BaseOperation.swift */,
+				1F215D2B84BFF50658021B423BA6BF64 /* ClosureOperation.swift */,
 			);
-			path = Network;
+			name = Base;
+			path = Base;
 			sourceTree = "<group>";
 		};
-		21ADFB6F4EE488D2B1C3B09F7430FEEA /* Operations */ = {
+		16AE60268DBB1E85BDD34A07C59C2451 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				D1E8CD899B54153031382ED64D42B473 /* Base */,
-				0BF4D967E4EBC015CE1787CA4F8FB70B /* Network */,
+				743F210402424FB9527FE8D9EF73C452 /* DataProviderPrimitives.swift */,
+				4C4A90DFD09B9A99CA58463F4D4DEE9D /* DataProviderProtocols.swift */,
 			);
-			name = Operations;
-			path = RobinHood/Classes/Operations;
+			name = Common;
+			path = Common;
 			sourceTree = "<group>";
 		};
-		26F909DA5069B79C110778A435121EBA /* DataProvider */ = {
+		1F192358CB5CC07EDA2B2B52297C5B90 /* SingleValueProvider */ = {
 			isa = PBXGroup;
 			children = (
-				A6EC773B50C2CCBCF07442355D6A1EDA /* CacheObserver.swift */,
-				555B215A061202D735698B7E48D2D236 /* CoreDataCache.swift */,
-				DF932F47F0E679B40D95DAF2FB8D4D8A /* CoreDataMapper.swift */,
-				D339A510B47170B8EF730BA2EA28031D /* DataProvider.swift */,
-				F5D0EC0B307079C8BF7BD138EB81F199 /* DataProvider+Protocol.swift */,
-				3692430AAE7C255571E552D987205CB3 /* DataProvider+Trigger.swift */,
-				B6E6424A5B7BBF60AB27D1436640A81E /* DataProviderCommon.swift */,
-				CFE8A32E4499C5422C7F088776A10B97 /* ListDifferenceCalculator.swift */,
-				F870410E4479A32A080CF9B98FEA6465 /* SectionedListDifference.swift */,
-				618AFE4A192DE54F71B03148552F3BF2 /* SingleValueProvider.swift */,
-				1FB7B81F2DAAF6467D26B3514F349353 /* SingleValueProvider+Protocol.swift */,
-				B36039F31AB422279AB88475C896EEF4 /* SingleValueProvider+Trigger.swift */,
-				EECA6D3C426158F5F88B0C497E91CB31 /* Triggers */,
+				28A72990D0A672CBEBD2B0A98642FE30 /* AnySingleValueProviderSource.swift */,
+				0BBB8A68BBF853EA976582E797EADBC1 /* SingleValueProvider.swift */,
+				68EDE709A24A22A8538972A984AF0F41 /* SingleValueProvider+Protocol.swift */,
+				7BA2E614600F1B9BD514968D0B360AC0 /* SingleValueProvider+Trigger.swift */,
 			);
-			name = DataProvider;
-			path = RobinHood/Classes/DataProvider;
+			name = SingleValueProvider;
+			path = SingleValueProvider;
 			sourceTree = "<group>";
 		};
-		42D173F46D83A842451046814995FA20 /* RobinHood */ = {
+		4AAC7F81CCD0FD27F13A93E06290AFEB /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				84476230224CFEC2009ADC0E /* Helpers */,
-				009A58A18C4546BA553FCF8D9B05CE6A /* CoreData */,
-				26F909DA5069B79C110778A435121EBA /* DataProvider */,
-				21ADFB6F4EE488D2B1C3B09F7430FEEA /* Operations */,
-				54D48B6B6DF24BF07C05D851001E3105 /* Pod */,
-				73885BDB4BAE3D5F9CC022B94F92BE1A /* Support Files */,
+				40A597B1AD5B160F70DD19BAAC1A3761 /* EndpointBuilder.swift */,
 			);
-			name = RobinHood;
-			path = ../..;
+			name = Helpers;
+			path = RobinHood/Classes/Helpers;
 			sourceTree = "<group>";
 		};
-		54D48B6B6DF24BF07C05D851001E3105 /* Pod */ = {
+		5E612F7141464B142BE5C622CC33D93C /* Pod */ = {
 			isa = PBXGroup;
 			children = (
-				0E95331D619F7B38DCFE7CD442568945 /* LICENSE */,
-				95227FEE319ED1D75D51A01136798D1C /* README.md */,
-				8488490D69023B9884F47802B614D1A3 /* RobinHood.podspec */,
+				500BB8BE8D968516A5A4E76295A46565 /* LICENSE */,
+				E52F2371BA88681C1BBA8A276B5E49FB /* README.md */,
+				1181703ECE600923940217AF5128F5E6 /* RobinHood.podspec */,
 			);
 			name = Pod;
+			sourceTree = "<group>";
+		};
+		6AE1DA4C4CA7DE7C3F91878535253143 /* Difference */ = {
+			isa = PBXGroup;
+			children = (
+				D98CDDA24DE6C3F53B14855642DD9A05 /* ListDifferenceCalculator.swift */,
+				2DB5CDDAB8CB008F02CBC1A00C1F3F73 /* SectionedListDifference.swift */,
+			);
+			name = Difference;
+			path = Difference;
 			sourceTree = "<group>";
 		};
 		6BA9B3B765253AC0E92A1A3038ABD955 /* Resources */ = {
@@ -351,20 +351,6 @@
 			);
 			name = "Pods-RobinHood_Example";
 			path = "Target Support Files/Pods-RobinHood_Example";
-			sourceTree = "<group>";
-		};
-		73885BDB4BAE3D5F9CC022B94F92BE1A /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				F666BA1ACB32118F902E3D0ECA078455 /* RobinHood.modulemap */,
-				C7F7C8675F8EAA256A0652D74BC9AF09 /* RobinHood.xcconfig */,
-				0F7DE3B79189065637DF4388CBF5F2FC /* RobinHood-dummy.m */,
-				176A3CC5F6FBB2D6B1EFE935491372AE /* RobinHood-Info.plist */,
-				9D44F2A2B6E1D80923E6B8FFC13FB66D /* RobinHood-prefix.pch */,
-				ECD123894A646CA87107D3C569B09666 /* RobinHood-umbrella.h */,
-			);
-			name = "Support Files";
-			path = "Example/Pods/Target Support Files/RobinHood";
 			sourceTree = "<group>";
 		};
 		7B4DA2B8F0174FE986E99585DF9A3F87 /* Pods-RobinHood_Tests */ = {
@@ -393,29 +379,29 @@
 			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
-		84476230224CFEC2009ADC0E /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				84476231224CFEC2009ADC0E /* EndpointBuilder.swift */,
-			);
-			name = Helpers;
-			path = RobinHood/Classes/Helpers;
-			sourceTree = "<group>";
-		};
 		8D4CD97AE053D465793802BE879DB52E /* SwiftLint */ = {
 			isa = PBXGroup;
 			children = (
 				BF8B899A3E49BCE48061CA593D4CFEE2 /* Support Files */,
 			);
+			name = SwiftLint;
 			path = SwiftLint;
 			sourceTree = "<group>";
 		};
-		90C346D00079F3C1558AEB96D5A5E72F /* Development Pods */ = {
+		8E74E332FA3690067082E34B5F87FC72 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				42D173F46D83A842451046814995FA20 /* RobinHood */,
+				77CF5602D0270F6E23B9FCC2E4194442 /* NetworkConstants.swift */,
+				28FCE3FF739C480BE78263191FDE2739 /* NetworkDataError.swift */,
+				9F7825F9E11E4D60452611BBD7C0B42E /* NetworkIndicatorManager.swift */,
+				6FAC6FA014B58FED9BC45899439E734B /* NetworkOperation.swift */,
+				737AFAF5364897A6EEC48BFE112A1030 /* NetworkOperationHelper.swift */,
+				FD632DBCD54F11435BF5DB2D8A9E42ED /* NetworkRequestFactory.swift */,
+				62DF6DD44D9C8EB8F08A15ED8C0C6D73 /* NetworkRequestModifier.swift */,
+				FEF97A03676FC47ADEFBD57F54B7933C /* NetworkResultFactory.swift */,
 			);
-			name = "Development Pods";
+			name = Network;
+			path = Network;
 			sourceTree = "<group>";
 		};
 		9B055D0CFEA43187E72B03DED11F5662 /* iOS */ = {
@@ -424,6 +410,31 @@
 				CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */,
 			);
 			name = iOS;
+			sourceTree = "<group>";
+		};
+		A7EF3513BD7CFE5D51C4AC901609E375 /* DataProvider */ = {
+			isa = PBXGroup;
+			children = (
+				B63DA3CA36147868D186975373CA1A57 /* Cache */,
+				16AE60268DBB1E85BDD34A07C59C2451 /* Common */,
+				6AE1DA4C4CA7DE7C3F91878535253143 /* Difference */,
+				029F0C39E8D65663AF8A589CDA2ECE1F /* ListDataProvider */,
+				1F192358CB5CC07EDA2B2B52297C5B90 /* SingleValueProvider */,
+				C14AA606DAEB81B31BE1B9EEFBEC4F3E /* Triggers */,
+			);
+			name = DataProvider;
+			path = RobinHood/Classes/DataProvider;
+			sourceTree = "<group>";
+		};
+		B63DA3CA36147868D186975373CA1A57 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				FE6826F8562AEA675CC5B246409C71DC /* CacheObserver.swift */,
+				A100559AE7CF9636F566695119D83D69 /* CoreDataCache.swift */,
+				C0EB0F2CD152387F4387A1ADFAAF0238 /* CoreDataMapper.swift */,
+			);
+			name = Cache;
+			path = Cache;
 			sourceTree = "<group>";
 		};
 		B684D88D3AA16740E9D476E7FFD500A2 /* Products */ = {
@@ -462,7 +473,37 @@
 				6BA9B3B765253AC0E92A1A3038ABD955 /* Resources */,
 				F9021B8D37BBD148D51C8EF98B2C00A0 /* Support Files */,
 			);
+			name = FireMock;
 			path = FireMock;
+			sourceTree = "<group>";
+		};
+		B7F61327040942C1F72F9033188C4296 /* Development Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E83064612F14350658DF6765421A226F /* RobinHood */,
+			);
+			name = "Development Pods";
+			sourceTree = "<group>";
+		};
+		B8C0FA62BF7A4F3D4B15B1B36E4089A0 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				FF5FB93384BEB8B88338915D593A75A4 /* CoreDataCommon.swift */,
+				5951AE5006528D7E4D8D1336E2F15B7C /* CoreDataService.swift */,
+				45ACFA5B4D4B46513383F846332A8DB4 /* CoreDataServiceConfiguration.swift */,
+			);
+			name = CoreData;
+			path = RobinHood/Classes/CoreData;
+			sourceTree = "<group>";
+		};
+		BB1EBAD1079B0C8353BC216B99544A4F /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				072A7A499906DF0E86AC6FAA4B037CD0 /* Base */,
+				8E74E332FA3690067082E34B5F87FC72 /* Network */,
+			);
+			name = Operations;
+			path = RobinHood/Classes/Operations;
 			sourceTree = "<group>";
 		};
 		BF8B899A3E49BCE48061CA593D4CFEE2 /* Support Files */ = {
@@ -474,25 +515,39 @@
 			path = "../Target Support Files/SwiftLint";
 			sourceTree = "<group>";
 		};
+		C14AA606DAEB81B31BE1B9EEFBEC4F3E /* Triggers */ = {
+			isa = PBXGroup;
+			children = (
+				60CF44D2E66DAD7F9F7074B73BBA2F0C /* DataProviderTrigger.swift */,
+			);
+			name = Triggers;
+			path = Triggers;
+			sourceTree = "<group>";
+		};
+		C90E98432B9D7C2EBE12A87880B885BC /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				4A000CAB249980AE03A2995C99E42EE1 /* RobinHood.modulemap */,
+				B6A825E093725BD109529666076651E8 /* RobinHood.xcconfig */,
+				93A7F04FAAB8B8E6137C48E69147B252 /* RobinHood-dummy.m */,
+				51DDD30021AEA6CF391A6CACABE4B0B6 /* RobinHood-Info.plist */,
+				3CCD733A49B89C72F6059D3DB62C9948 /* RobinHood-prefix.pch */,
+				7D23D865B8AB004A24FADCA4B555A9C4 /* RobinHood-umbrella.h */,
+			);
+			name = "Support Files";
+			path = "Example/Pods/Target Support Files/RobinHood";
+			sourceTree = "<group>";
+		};
 		CF1408CF629C7361332E53B88F7BD30C = {
 			isa = PBXGroup;
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
-				90C346D00079F3C1558AEB96D5A5E72F /* Development Pods */,
+				B7F61327040942C1F72F9033188C4296 /* Development Pods */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
 				066C845AF1F9BF0B31F94578415FC6DD /* Pods */,
 				B684D88D3AA16740E9D476E7FFD500A2 /* Products */,
 				838115C405B5DED1C30D7423132494CF /* Targets Support Files */,
 			);
-			sourceTree = "<group>";
-		};
-		D1E8CD899B54153031382ED64D42B473 /* Base */ = {
-			isa = PBXGroup;
-			children = (
-				62993413BF9C75E1B21CD06BF03228ED /* BaseOperation.swift */,
-				37E56FACF5593F126143924561ABFF8A /* ClosureOperation.swift */,
-			);
-			path = Base;
 			sourceTree = "<group>";
 		};
 		D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */ = {
@@ -503,12 +558,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		EECA6D3C426158F5F88B0C497E91CB31 /* Triggers */ = {
+		E83064612F14350658DF6765421A226F /* RobinHood */ = {
 			isa = PBXGroup;
 			children = (
-				5BBE09C78D53B3B3BAC994AAC626CAFA /* DataProviderTrigger.swift */,
+				B8C0FA62BF7A4F3D4B15B1B36E4089A0 /* CoreData */,
+				A7EF3513BD7CFE5D51C4AC901609E375 /* DataProvider */,
+				4AAC7F81CCD0FD27F13A93E06290AFEB /* Helpers */,
+				BB1EBAD1079B0C8353BC216B99544A4F /* Operations */,
+				5E612F7141464B142BE5C622CC33D93C /* Pod */,
+				C90E98432B9D7C2EBE12A87880B885BC /* Support Files */,
 			);
-			path = Triggers;
+			name = RobinHood;
+			path = ../..;
 			sourceTree = "<group>";
 		};
 		F9021B8D37BBD148D51C8EF98B2C00A0 /* Support Files */ = {
@@ -609,7 +670,7 @@
 			buildConfigurationList = 6FD282CA0240F26A6B06B79172067896 /* Build configuration list for PBXNativeTarget "RobinHood" */;
 			buildPhases = (
 				9676D3A7E0C86FA5F4829F9845243980 /* Headers */,
-				E0D1F6798FE406ABFA1ED4D003BABB15 /* Sources */,
+				D17445AB94341EB716D5CEE7F51E0B88 /* Sources */,
 				84D64B1AFA41B492447204D7E8D91192 /* Frameworks */,
 				F538C81FB00EAA72859817F62A177BA4 /* Resources */,
 			);
@@ -648,19 +709,13 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0930;
 				LastUpgradeCheck = 0930;
-				TargetAttributes = {
-					A2AA816A4AEFF6FDBEA67DA0EAA26BDE = {
-						LastSwiftMigration = 1020;
-					};
-				};
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = en;
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
 			productRefGroup = B684D88D3AA16740E9D476E7FFD500A2 /* Products */;
@@ -751,38 +806,42 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0D1F6798FE406ABFA1ED4D003BABB15 /* Sources */ = {
+		D17445AB94341EB716D5CEE7F51E0B88 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				693D01D9E5708BE0650D60451B0758EE /* BaseOperation.swift in Sources */,
-				53F5C1488363072CE1AEB3C81B5C7ED7 /* CacheObserver.swift in Sources */,
-				D959FF9C14894BA600FE5A68F7B56062 /* ClosureOperation.swift in Sources */,
-				4A351E2A650B3F891C87F2B8B13927C9 /* CoreDataCache.swift in Sources */,
-				E68184C847F2B52EF8A1B74E6C57BC2A /* CoreDataCommon.swift in Sources */,
-				1D2D4007FCF00D4F613CD09A611C6830 /* CoreDataMapper.swift in Sources */,
-				B3B2CA7E9EC4C5FC4E57970C102A704C /* CoreDataService.swift in Sources */,
-				54736F81869329FE03426D9279CB7D13 /* CoreDataServiceConfiguration.swift in Sources */,
-				84476232224CFEC2009ADC0E /* EndpointBuilder.swift in Sources */,
-				750BCC6F1EA2AB3ED2B7F37E7C7DF4C0 /* DataProvider+Protocol.swift in Sources */,
-				957C23555E998C1A89D5E4535F32FD5B /* DataProvider+Trigger.swift in Sources */,
-				BBC603C5B39FF8477AEE6CC6E79DF16E /* DataProvider.swift in Sources */,
-				3540F96E2147BB364B76E93B0CC17C81 /* DataProviderCommon.swift in Sources */,
-				5BAC0B6D60BA6AAEFB724F511DD37512 /* DataProviderTrigger.swift in Sources */,
-				4CA80DBE7D1E17A5BE666E0D1F23B852 /* ListDifferenceCalculator.swift in Sources */,
-				D92F200F89BE20CF9FEEA9ABB17D5DCA /* NetworkConstants.swift in Sources */,
-				BCBAA4B4D78021B6F1A33E0CF7979FD7 /* NetworkDataError.swift in Sources */,
-				F37A863F08C7A58C77B5EB20E4AFA117 /* NetworkIndicatorManager.swift in Sources */,
-				CF7E813D37997571D830E5F77F56DCBC /* NetworkOperation.swift in Sources */,
-				48D5134E894A5948DE1BB04511774492 /* NetworkOperationHelper.swift in Sources */,
-				AB4B4D4A3B3259092FCCB2A76884DF73 /* NetworkRequestFactory.swift in Sources */,
-				CACB03AF0EB2B2FC8E19C18C6D69703C /* NetworkRequestModifier.swift in Sources */,
-				658433B9C1CD60BDBB1F0A202048A5B2 /* NetworkResultFactory.swift in Sources */,
-				6045B7C471D7E3D971E43361C7780A03 /* RobinHood-dummy.m in Sources */,
-				140985529F3DA2545B8F20DB3707F96C /* SectionedListDifference.swift in Sources */,
-				94894CC11B381AF1D31A3FDA0BBBA560 /* SingleValueProvider+Protocol.swift in Sources */,
-				B495002AB3CB087B8DB43C7AA97A9155 /* SingleValueProvider+Trigger.swift in Sources */,
-				4DD26FAFD02CBCCAF9E47009887CA37F /* SingleValueProvider.swift in Sources */,
+				AD5EC24222F33D15D743BC0EB1AFC8B2 /* AnyDataProvider.swift in Sources */,
+				1714D4682423AF621A728167EEA1D832 /* AnyDataProviderSource.swift in Sources */,
+				9F1C1A0383D32178C3E89257FEFAD398 /* AnySingleValueProviderSource.swift in Sources */,
+				D9CE32C45CFEB5EDF89864826E3E0250 /* BaseOperation.swift in Sources */,
+				8186A9CD9578A454F4D92CAA7E6E38AD /* CacheObserver.swift in Sources */,
+				3D9CFED8B727D4F44DCE59A357612B31 /* ClosureOperation.swift in Sources */,
+				9A91EF012027441A79B2858EEBCBCDAD /* CoreDataCache.swift in Sources */,
+				8093660B74460353C4DAE0A18038AB42 /* CoreDataCommon.swift in Sources */,
+				CDDC527E3F0392D5BC2521D26F757D12 /* CoreDataMapper.swift in Sources */,
+				FBF115C118A5B9461D482A052A602AEE /* CoreDataService.swift in Sources */,
+				05FE63F03D789A73369A71813F0DF849 /* CoreDataServiceConfiguration.swift in Sources */,
+				4D57E61AD4FAA210D668074F8B8A0798 /* DataProvider+Protocol.swift in Sources */,
+				356381FA26D0C5A13786809981040A8C /* DataProvider+Trigger.swift in Sources */,
+				24DBFD52F69ADC37EA6A67C8A6CEDD7A /* DataProvider.swift in Sources */,
+				B31A44D49E89147068E0B82628C50CD0 /* DataProviderPrimitives.swift in Sources */,
+				E01BBB98CBD7D45B4B9F4C705D6F8C11 /* DataProviderProtocols.swift in Sources */,
+				F4759B1AC5F357F5F83B1B2EC70D5E85 /* DataProviderTrigger.swift in Sources */,
+				1CE3D21E6378A822414F268D669E1E58 /* EndpointBuilder.swift in Sources */,
+				2CA55128CBCDDD5E063F0332D06DD901 /* ListDifferenceCalculator.swift in Sources */,
+				0D33BE47994D15361FC3D01F35F766D5 /* NetworkConstants.swift in Sources */,
+				AF2A310871982D7BC63796D8901B73AF /* NetworkDataError.swift in Sources */,
+				DADD282311806D6018E373C1AA1C07D0 /* NetworkIndicatorManager.swift in Sources */,
+				D4A4858E4686417C13C2450737FE3652 /* NetworkOperation.swift in Sources */,
+				88603CB66EE03A44D4EC4FCD2245397A /* NetworkOperationHelper.swift in Sources */,
+				E23FF88DD18F588EDFFF7F9AFE77109B /* NetworkRequestFactory.swift in Sources */,
+				1B03A3DD71E32A4A1E3A0EDD4856252D /* NetworkRequestModifier.swift in Sources */,
+				4F80E50F948CF9DAFA0F4E0F768EFCBC /* NetworkResultFactory.swift in Sources */,
+				7C7E7F56A9D2E8E1AFE311502B5D58F3 /* RobinHood-dummy.m in Sources */,
+				159F5A91311DF64B49E2A6B534492DAC /* SectionedListDifference.swift in Sources */,
+				ED5646DE2267D7EC8A2AB8DA147D33C9 /* SingleValueProvider+Protocol.swift in Sources */,
+				71F680EE709836182192571CD9C451C1 /* SingleValueProvider+Trigger.swift in Sources */,
+				6F770497772EAD349DF9EF92A817E593 /* SingleValueProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -816,38 +875,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		2A725362922A3AC6141022A01396E012 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 83ABF3B93F9C50029BA1811D5FF67CD5 /* FireMock.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/FireMock/FireMock-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/FireMock/FireMock-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/FireMock/FireMock.modulemap";
-				PRODUCT_MODULE_NAME = FireMock;
-				PRODUCT_NAME = FireMock;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 		2D84C985D8CD04BE5EA02E58CD64A745 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D11A86E7FD480CC38B9ADA7C1AC5AA94 /* Pods-RobinHood_Example.release.xcconfig */;
@@ -882,22 +909,9 @@
 			};
 			name = Release;
 		};
-		8846DCBC83AD1D3A7912D8A97CF4FAA3 /* Debug */ = {
+		7677F53437A1D175A16847F1212F65F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 66D6F7352511FD49126373C4132122F9 /* SwiftLint.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		986642263B024FD23C4ADE152DA2E2AA /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = C7F7C8675F8EAA256A0652D74BC9AF09 /* RobinHood.xcconfig */;
+			baseConfigurationReference = B6A825E093725BD109529666076651E8 /* RobinHood.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -925,6 +939,51 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
+		};
+		8846DCBC83AD1D3A7912D8A97CF4FAA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 66D6F7352511FD49126373C4132122F9 /* SwiftLint.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9BBCDCF2D819A3A396AE2B3E6437ABE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B6A825E093725BD109529666076651E8 /* RobinHood.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/RobinHood/RobinHood-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/RobinHood/RobinHood-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/RobinHood/RobinHood.modulemap";
+				PRODUCT_MODULE_NAME = RobinHood;
+				PRODUCT_NAME = RobinHood;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
 		};
 		A9E359BD2540C505CA34F418941DB658 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1038,38 +1097,6 @@
 			};
 			name = Debug;
 		};
-		BC809EAD91F461AE13F97157D33994E3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = C7F7C8675F8EAA256A0652D74BC9AF09 /* RobinHood.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/RobinHood/RobinHood-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/RobinHood/RobinHood-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/RobinHood/RobinHood.modulemap";
-				PRODUCT_MODULE_NAME = RobinHood;
-				PRODUCT_NAME = RobinHood;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 		D5DE7C9F03F7471FEDCD59BA6A885D1C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2AC6F67DA60EE4508AAA67C68528FBB9 /* Pods-RobinHood_Tests.debug.xcconfig */;
@@ -1097,6 +1124,37 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		E43E848DEC146923F16C3A786DC75A7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 83ABF3B93F9C50029BA1811D5FF67CD5 /* FireMock.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/FireMock/FireMock-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/FireMock/FireMock-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/FireMock/FireMock.modulemap";
+				PRODUCT_MODULE_NAME = FireMock;
+				PRODUCT_NAME = FireMock;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1156,7 +1214,8 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.2;
 				SYMROOT = "${SRCROOT}/../build";
 			};
@@ -1195,7 +1254,7 @@
 			};
 			name = Debug;
 		};
-		FD6AF137B173BC7B49F6911C841B981B /* Debug */ = {
+		F93EFC5DFE51AE282002FC3FB9C4FCEA /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 83ABF3B93F9C50029BA1811D5FF67CD5 /* FireMock.xcconfig */;
 			buildSettings = {
@@ -1219,12 +1278,13 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -1232,8 +1292,8 @@
 		2CD4774E16EE25C5D96AF2A07134EBC3 /* Build configuration list for PBXNativeTarget "FireMock" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				FD6AF137B173BC7B49F6911C841B981B /* Debug */,
-				2A725362922A3AC6141022A01396E012 /* Release */,
+				E43E848DEC146923F16C3A786DC75A7F /* Debug */,
+				F93EFC5DFE51AE282002FC3FB9C4FCEA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1259,8 +1319,8 @@
 		6FD282CA0240F26A6B06B79172067896 /* Build configuration list for PBXNativeTarget "RobinHood" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				986642263B024FD23C4ADE152DA2E2AA /* Debug */,
-				BC809EAD91F461AE13F97157D33994E3 /* Release */,
+				7677F53437A1D175A16847F1212F65F4 /* Debug */,
+				9BBCDCF2D819A3A396AE2B3E6437ABE0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

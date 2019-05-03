@@ -1,9 +1,9 @@
 {
   "name": "RobinHood",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "summary": "Observable data provider implementation with cache support.",
   "description": "Library is aimed to solve a problem to display cached data when original one is fetched from data source. Currently there are two type of data providers. DataProvider implementation is aimed to manage identifiable list of entities while SingleValueProvider deals with single objects. Both types of data providers uses Core Data to store cached objects. Clients can subsribe for changes in data provider to update an interface as soon as fresh data is fetched from setup source.",
-  "homepage": "https://Emkil@bitbucket.org/Emkil/robinhood",
+  "homepage": "https://github.com/soramitsu",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
@@ -12,14 +12,14 @@
     "ERussel": "emkil.russel@gmail.com"
   },
   "source": {
-    "git": " https://Emkil@bitbucket.org/Emkil/robinhood.git",
-    "tag": "0.1.0"
+    "git": "https://github.com/soramitsu/robinhood-ios.git",
+    "tag": "0.4.0"
   },
   "platforms": {
     "ios": "9.0"
   },
   "source_files": "RobinHood/Classes/**/*",
-  "swift_version": "4.2",
+  "swift_version": "5.0",
   "testspecs": [
     {
       "name": "Tests",
@@ -29,7 +29,11 @@
         "FireMock": [
 
         ]
-      }
+      },
+      "resources": [
+        "Tests/**/*.xcdatamodeld",
+        "Tests/**/*.json"
+      ]
     }
   ]
 }
