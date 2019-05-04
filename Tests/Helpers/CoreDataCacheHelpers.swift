@@ -17,13 +17,14 @@ final class CoreDataCacheFacade {
         databaseService = CoreDataService(configuration: configuration)
     }
 
-    func createCoreDataCache<T, U>(domain: String = UUID().uuidString) -> CoreDataCache<T, U>
+    func createCoreDataCache<T, U>(domain: String = UUID().uuidString, sortDescriptor: NSSortDescriptor? = nil) -> CoreDataCache<T, U>
         where T: Identifiable & Codable, U: NSManagedObject & CoreDataCodable  {
 
             let mapper = AnyCoreDataMapper(CodableCoreDataMapper<T, U>())
             return CoreDataCache(databaseService: databaseService,
                                  mapper: mapper,
-                                 domain: domain)
+                                 domain: domain,
+                                 sortDescriptor: sortDescriptor)
     }
 
     func clearDatabase() throws {
