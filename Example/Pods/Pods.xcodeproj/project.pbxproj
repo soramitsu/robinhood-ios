@@ -58,6 +58,8 @@
 		843960A7227C6DF200BEDAF7 /* DataProviderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960A6227C6DF200BEDAF7 /* DataProviderProtocols.swift */; };
 		843960A9227C6E3B00BEDAF7 /* CacheProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960A8227C6E3B00BEDAF7 /* CacheProtocols.swift */; };
 		843960AB227C6E6D00BEDAF7 /* SingleValueProviderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960AA227C6E6D00BEDAF7 /* SingleValueProviderProtocols.swift */; };
+		843960AE227C878500BEDAF7 /* StreamableProviderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960AD227C878500BEDAF7 /* StreamableProviderProtocols.swift */; };
+		843960B0227DB3AB00BEDAF7 /* CoreDataCache+Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960AF227DB3AB00BEDAF7 /* CoreDataCache+Protocol.swift */; };
 		88603CB66EE03A44D4EC4FCD2245397A /* NetworkOperationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737AFAF5364897A6EEC48BFE112A1030 /* NetworkOperationHelper.swift */; };
 		8C8675496B7CD17D867AD531DF48F19A /* Pods-RobinHood_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = FD363AB3CED81165B09B1B4DB353FF3C /* Pods-RobinHood_Example-dummy.m */; };
 		8D0A2CDC4EAD47FADBADD5C6E417EEAA /* Pods-RobinHood_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = CE13FC31EB2F7C3E15CE372A14DA480B /* Pods-RobinHood_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -177,6 +179,8 @@
 		843960A6227C6DF200BEDAF7 /* DataProviderProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviderProtocols.swift; sourceTree = "<group>"; };
 		843960A8227C6E3B00BEDAF7 /* CacheProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheProtocols.swift; sourceTree = "<group>"; };
 		843960AA227C6E6D00BEDAF7 /* SingleValueProviderProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleValueProviderProtocols.swift; sourceTree = "<group>"; };
+		843960AD227C878500BEDAF7 /* StreamableProviderProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamableProviderProtocols.swift; sourceTree = "<group>"; };
+		843960AF227DB3AB00BEDAF7 /* CoreDataCache+Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataCache+Protocol.swift"; sourceTree = "<group>"; };
 		85F3BA93016B3BE0A9547B1EE4615AA9 /* AnyDataProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnyDataProvider.swift; sourceTree = "<group>"; };
 		89D86F518E25D8A558D4B8075EC2EA38 /* FireMockTableViewCell.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = FireMockTableViewCell.xib; path = FireMock/FireMockTableViewCell.xib; sourceTree = "<group>"; };
 		8B8B0873093BF21F973C5CB321C10D2A /* RobinHood.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RobinHood.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -250,7 +254,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		029F0C39E8D65663AF8A589CDA2ECE1F /* ListDataProvider */ = {
+		029F0C39E8D65663AF8A589CDA2ECE1F /* DataProvider */ = {
 			isa = PBXGroup;
 			children = (
 				85F3BA93016B3BE0A9547B1EE4615AA9 /* AnyDataProvider.swift */,
@@ -260,7 +264,7 @@
 				A8DEDBBBAD06367FC83CB247C05219C7 /* DataProvider+Trigger.swift */,
 				843960A6227C6DF200BEDAF7 /* DataProviderProtocols.swift */,
 			);
-			path = ListDataProvider;
+			path = DataProvider;
 			sourceTree = "<group>";
 		};
 		066C845AF1F9BF0B31F94578415FC6DD /* Pods */ = {
@@ -380,6 +384,14 @@
 			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
+		843960AC227C869F00BEDAF7 /* StreamableProvider */ = {
+			isa = PBXGroup;
+			children = (
+				843960AD227C878500BEDAF7 /* StreamableProviderProtocols.swift */,
+			);
+			path = StreamableProvider;
+			sourceTree = "<group>";
+		};
 		8D4CD97AE053D465793802BE879DB52E /* SwiftLint */ = {
 			isa = PBXGroup;
 			children = (
@@ -414,10 +426,11 @@
 		A7EF3513BD7CFE5D51C4AC901609E375 /* DataProvider */ = {
 			isa = PBXGroup;
 			children = (
+				843960AC227C869F00BEDAF7 /* StreamableProvider */,
 				B63DA3CA36147868D186975373CA1A57 /* Cache */,
 				16AE60268DBB1E85BDD34A07C59C2451 /* Common */,
 				6AE1DA4C4CA7DE7C3F91878535253143 /* Difference */,
-				029F0C39E8D65663AF8A589CDA2ECE1F /* ListDataProvider */,
+				029F0C39E8D65663AF8A589CDA2ECE1F /* DataProvider */,
 				1F192358CB5CC07EDA2B2B52297C5B90 /* SingleValueProvider */,
 				C14AA606DAEB81B31BE1B9EEFBEC4F3E /* Triggers */,
 			);
@@ -432,6 +445,7 @@
 				A100559AE7CF9636F566695119D83D69 /* CoreDataCache.swift */,
 				C0EB0F2CD152387F4387A1ADFAAF0238 /* CoreDataMapper.swift */,
 				843960A8227C6E3B00BEDAF7 /* CacheProtocols.swift */,
+				843960AF227DB3AB00BEDAF7 /* CoreDataCache+Protocol.swift */,
 			);
 			path = Cache;
 			sourceTree = "<group>";
@@ -819,6 +833,7 @@
 				CDDC527E3F0392D5BC2521D26F757D12 /* CoreDataMapper.swift in Sources */,
 				FBF115C118A5B9461D482A052A602AEE /* CoreDataService.swift in Sources */,
 				05FE63F03D789A73369A71813F0DF849 /* CoreDataServiceConfiguration.swift in Sources */,
+				843960AE227C878500BEDAF7 /* StreamableProviderProtocols.swift in Sources */,
 				4D57E61AD4FAA210D668074F8B8A0798 /* DataProvider+Protocol.swift in Sources */,
 				356381FA26D0C5A13786809981040A8C /* DataProvider+Trigger.swift in Sources */,
 				24DBFD52F69ADC37EA6A67C8A6CEDD7A /* DataProvider.swift in Sources */,
@@ -830,6 +845,7 @@
 				2CA55128CBCDDD5E063F0332D06DD901 /* ListDifferenceCalculator.swift in Sources */,
 				0D33BE47994D15361FC3D01F35F766D5 /* NetworkConstants.swift in Sources */,
 				AF2A310871982D7BC63796D8901B73AF /* NetworkDataError.swift in Sources */,
+				843960B0227DB3AB00BEDAF7 /* CoreDataCache+Protocol.swift in Sources */,
 				DADD282311806D6018E373C1AA1C07D0 /* NetworkIndicatorManager.swift in Sources */,
 				D4A4858E4686417C13C2450737FE3652 /* NetworkOperation.swift in Sources */,
 				88603CB66EE03A44D4EC4FCD2245397A /* NetworkOperationHelper.swift in Sources */,
