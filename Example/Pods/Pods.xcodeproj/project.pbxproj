@@ -60,6 +60,10 @@
 		843960AB227C6E6D00BEDAF7 /* SingleValueProviderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960AA227C6E6D00BEDAF7 /* SingleValueProviderProtocols.swift */; };
 		843960AE227C878500BEDAF7 /* StreamableProviderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960AD227C878500BEDAF7 /* StreamableProviderProtocols.swift */; };
 		843960B0227DB3AB00BEDAF7 /* CoreDataCache+Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960AF227DB3AB00BEDAF7 /* CoreDataCache+Protocol.swift */; };
+		843960B2227E075300BEDAF7 /* StreamableProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960B1227E075300BEDAF7 /* StreamableProvider.swift */; };
+		843960B4227E084600BEDAF7 /* AnyStreamableProviderSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960B3227E084600BEDAF7 /* AnyStreamableProviderSource.swift */; };
+		843960B8227F6D5100BEDAF7 /* StreamableSourceObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960B7227F6D5100BEDAF7 /* StreamableSourceObserver.swift */; };
+		843960BA227F701200BEDAF7 /* CoreDataContextObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843960B9227F701200BEDAF7 /* CoreDataContextObservable.swift */; };
 		88603CB66EE03A44D4EC4FCD2245397A /* NetworkOperationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737AFAF5364897A6EEC48BFE112A1030 /* NetworkOperationHelper.swift */; };
 		8C8675496B7CD17D867AD531DF48F19A /* Pods-RobinHood_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = FD363AB3CED81165B09B1B4DB353FF3C /* Pods-RobinHood_Example-dummy.m */; };
 		8D0A2CDC4EAD47FADBADD5C6E417EEAA /* Pods-RobinHood_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = CE13FC31EB2F7C3E15CE372A14DA480B /* Pods-RobinHood_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -181,6 +185,10 @@
 		843960AA227C6E6D00BEDAF7 /* SingleValueProviderProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleValueProviderProtocols.swift; sourceTree = "<group>"; };
 		843960AD227C878500BEDAF7 /* StreamableProviderProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamableProviderProtocols.swift; sourceTree = "<group>"; };
 		843960AF227DB3AB00BEDAF7 /* CoreDataCache+Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataCache+Protocol.swift"; sourceTree = "<group>"; };
+		843960B1227E075300BEDAF7 /* StreamableProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamableProvider.swift; sourceTree = "<group>"; };
+		843960B3227E084600BEDAF7 /* AnyStreamableProviderSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyStreamableProviderSource.swift; sourceTree = "<group>"; };
+		843960B7227F6D5100BEDAF7 /* StreamableSourceObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamableSourceObserver.swift; sourceTree = "<group>"; };
+		843960B9227F701200BEDAF7 /* CoreDataContextObservable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataContextObservable.swift; sourceTree = "<group>"; };
 		85F3BA93016B3BE0A9547B1EE4615AA9 /* AnyDataProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnyDataProvider.swift; sourceTree = "<group>"; };
 		89D86F518E25D8A558D4B8075EC2EA38 /* FireMockTableViewCell.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = FireMockTableViewCell.xib; path = FireMock/FireMockTableViewCell.xib; sourceTree = "<group>"; };
 		8B8B0873093BF21F973C5CB321C10D2A /* RobinHood.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RobinHood.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -388,6 +396,10 @@
 			isa = PBXGroup;
 			children = (
 				843960AD227C878500BEDAF7 /* StreamableProviderProtocols.swift */,
+				843960B1227E075300BEDAF7 /* StreamableProvider.swift */,
+				843960B3227E084600BEDAF7 /* AnyStreamableProviderSource.swift */,
+				843960B7227F6D5100BEDAF7 /* StreamableSourceObserver.swift */,
+				843960B9227F701200BEDAF7 /* CoreDataContextObservable.swift */,
 			);
 			path = StreamableProvider;
 			sourceTree = "<group>";
@@ -833,6 +845,7 @@
 				CDDC527E3F0392D5BC2521D26F757D12 /* CoreDataMapper.swift in Sources */,
 				FBF115C118A5B9461D482A052A602AEE /* CoreDataService.swift in Sources */,
 				05FE63F03D789A73369A71813F0DF849 /* CoreDataServiceConfiguration.swift in Sources */,
+				843960B2227E075300BEDAF7 /* StreamableProvider.swift in Sources */,
 				843960AE227C878500BEDAF7 /* StreamableProviderProtocols.swift in Sources */,
 				4D57E61AD4FAA210D668074F8B8A0798 /* DataProvider+Protocol.swift in Sources */,
 				356381FA26D0C5A13786809981040A8C /* DataProvider+Trigger.swift in Sources */,
@@ -844,9 +857,12 @@
 				1CE3D21E6378A822414F268D669E1E58 /* EndpointBuilder.swift in Sources */,
 				2CA55128CBCDDD5E063F0332D06DD901 /* ListDifferenceCalculator.swift in Sources */,
 				0D33BE47994D15361FC3D01F35F766D5 /* NetworkConstants.swift in Sources */,
+				843960BA227F701200BEDAF7 /* CoreDataContextObservable.swift in Sources */,
 				AF2A310871982D7BC63796D8901B73AF /* NetworkDataError.swift in Sources */,
+				843960B8227F6D5100BEDAF7 /* StreamableSourceObserver.swift in Sources */,
 				843960B0227DB3AB00BEDAF7 /* CoreDataCache+Protocol.swift in Sources */,
 				DADD282311806D6018E373C1AA1C07D0 /* NetworkIndicatorManager.swift in Sources */,
+				843960B4227E084600BEDAF7 /* AnyStreamableProviderSource.swift in Sources */,
 				D4A4858E4686417C13C2450737FE3652 /* NetworkOperation.swift in Sources */,
 				88603CB66EE03A44D4EC4FCD2245397A /* NetworkOperationHelper.swift in Sources */,
 				E23FF88DD18F588EDFFF7F9AFE77109B /* NetworkRequestFactory.swift in Sources */,
