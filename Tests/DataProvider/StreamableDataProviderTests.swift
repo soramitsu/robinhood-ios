@@ -86,6 +86,61 @@ class StreamableDataProviderTests: XCTestCase {
                                 fetchCount: initialObjects.count + newObjects.count)
     }
 
+    func testErrorDispatchWhenFetch() {
+        let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
+                                                                               returns: NetworkBaseError.unexpectedResponseObject)
+
+        let observable = CoreDataContextObservable(service: cache.databaseService,
+                                                   mapper: cache.dataMapper,
+                                                   predicate: { _ in return true })
+
+        observable.start { _ in }
+
+        let dataProvider = StreamableProvider(source: source,
+                                              cache: cache,
+                                              observable: observable,
+                                              operationQueue: operationQueue)
+
+        let failExpectation = XCTestExpectation()
+
+        let updateBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
+            XCTFail()
+        }
+
+        let failBlock: (Error) -> Void = { (error) in
+            defer {
+                failExpectation.fulfill()
+            }
+
+            guard let networkError = error as? NetworkBaseError, case .unexpectedResponseObject = networkError else {
+                XCTFail()
+                return
+            }
+        }
+
+        let fetchExpectation = XCTestExpectation()
+
+        dataProvider.addObserver(self,
+                                 deliverOn: .main, executing: updateBlock,
+                                 failing: failBlock,
+                                 options: DataProviderObserverOptions(alwaysNotifyOnRefresh: true))
+
+        _ = dataProvider.fetch(offset: 0, count: 10) { (optionalResult) in
+            defer {
+                fetchExpectation.fulfill()
+            }
+
+            guard let result = optionalResult, case .success(let items) = result else {
+                XCTFail()
+                return
+            }
+
+            XCTAssertTrue(items.isEmpty)
+        }
+
+        wait(for: [failExpectation, fetchExpectation], timeout: Constants.expectationDuration)
+    }
+
     // MARK: Private
 
     private func performSingleChangeTest(with source: AnyStreamableSource<FeedData>,
