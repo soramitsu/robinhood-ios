@@ -12,7 +12,7 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
     init(service: CoreDataServiceProtocol,
          mapper: AnyCoreDataMapper<T, U>,
          predicate: @escaping (U) -> Bool,
-         processingQueue: DispatchQueue?) {
+         processingQueue: DispatchQueue? = nil) {
         self.service = service
         self.mapper = mapper
         self.predicate = predicate
@@ -26,7 +26,7 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
         }
     }
 
-    public func start() {
+    public func start(completionBlock: @escaping (Error?) -> Void) {
         service.performAsync { (optionalContext, optionalError) in
             if let context = optionalContext {
                 NotificationCenter.default.addObserver(self,
@@ -34,23 +34,27 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
                                                        name: Notification.Name.NSManagedObjectContextDidSave,
                                                        object: context)
             }
+
+            completionBlock(optionalError)
         }
     }
 
-    public func stop() {
+    public func stop(completionBlock: @escaping (Error?) -> Void) {
         service.performAsync { (optionalContext, optionalError) in
             if let context = optionalContext {
                 NotificationCenter.default.removeObserver(self,
                                                           name: Notification.Name.NSManagedObjectContextDidSave,
                                                           object: context)
             }
+
+            completionBlock(optionalError)
         }
     }
 
     @objc private func didReceive(notification: Notification) {
         var changes: [DataProviderChange<T>] = []
 
-        if let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? [U] {
+        if let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? Set<U> {
             let matchingChanges: [DataProviderChange<T>] = updatedObjects
                 .filter(predicate)
                 .compactMap({ try? mapper.transform(entity: $0) })
@@ -59,7 +63,7 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
             changes.append(contentsOf: matchingChanges)
         }
 
-        if let deletedObjects = notification.userInfo?[NSDeletedObjectsKey] as? [U] {
+        if let deletedObjects = notification.userInfo?[NSDeletedObjectsKey] as? Set<U> {
             let matchingChanges: [DataProviderChange<T>] = deletedObjects
                 .filter(predicate)
                 .compactMap({ try? mapper.transform(entity: $0) })
@@ -68,7 +72,7 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
             changes.append(contentsOf: matchingChanges)
         }
 
-        if let insertedObjects = notification.userInfo?[NSInsertedObjectsKey] as? [U] {
+        if let insertedObjects = notification.userInfo?[NSInsertedObjectsKey] as? Set<U> {
             let matchingChanges: [DataProviderChange<T>] = insertedObjects
                 .filter(predicate)
                 .compactMap({ try? mapper.transform(entity: $0) })
@@ -82,8 +86,14 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
         }
 
         processingQueue.async {
-            self.observers.forEach { (observerWrapper) in
-                if observerWrapper.observer != nil {
+            for observerWrapper in self.observers {
+                guard observerWrapper.observer != nil else {
+                    continue
+                }
+
+                if self.processingQueue == observerWrapper.queue {
+                    observerWrapper.updateBlock(changes)
+                } else {
                     observerWrapper.queue.async {
                         observerWrapper.updateBlock(changes)
                     }

@@ -101,10 +101,10 @@ extension StreamableProvider: StreamableProviderProtocol {
     }
 
     public func addObserver(_ observer: AnyObject,
-                     deliverOn queue: DispatchQueue,
-                     executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
-                     failing failureBlock: @escaping (Error) -> Void,
-                     options: DataProviderObserverOptions) {
+                            deliverOn queue: DispatchQueue,
+                            executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
+                            failing failureBlock: @escaping (Error) -> Void,
+                            options: DataProviderObserverOptions) {
         processingQueue.async {
             let shouldObserveSource = self.observers.isEmpty
 
