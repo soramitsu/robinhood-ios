@@ -65,3 +65,32 @@ func createSingleValueSourceMock<T>(base: Any, returns error: Error) -> AnySingl
     return AnySingleValueProviderSource(base: base,
                                         fetch: fetch)
 }
+
+func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(base: Any, cache: CoreDataCache<T, U>, operationQueue: OperationQueue,
+                                                                     returns items: [T]) -> AnyStreamableSource<T> {
+    let source: AnyStreamableSource<T> = AnyStreamableSource(source: base) { (offset, count, queue, completionBlock) in
+        let dispatchQueue = queue ?? .main
+
+        let saveOperation = cache.saveOperation( { items }, { [] })
+
+        operationQueue.addOperation(saveOperation)
+
+        dispatchQueue.async {
+            completionBlock?(OperationResult.success(items.count))
+        }
+    }
+
+    return source
+}
+
+func createStreamableSourceMock<T: Identifiable>(base: Any, returns error: Error) -> AnyStreamableSource<T> {
+    let source: AnyStreamableSource<T> = AnyStreamableSource(source: base) { (offset, count, queue, completionBlock) in
+        let dispatchQueue = queue ?? .main
+
+        dispatchQueue.async {
+            completionBlock?(OperationResult.error(error))
+        }
+    }
+
+    return source
+}

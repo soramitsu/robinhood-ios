@@ -2,10 +2,6 @@ import XCTest
 @testable import RobinHood
 
 class CoreDataCacheTests: XCTestCase {
-    let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
-
-    var operationQueue = OperationQueue()
-
     override func setUp() {
         try! CoreDataCacheFacade.shared.clearDatabase()
     }
@@ -15,6 +11,9 @@ class CoreDataCacheTests: XCTestCase {
     }
 
     func testSaveFetchAll() {
+        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+        let operationQueue = OperationQueue()
+
         let sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
         let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
@@ -46,7 +45,54 @@ class CoreDataCacheTests: XCTestCase {
         }
     }
 
+    func testSaveFetchSorted() {
+        let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
+        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache(sortDescriptor: sortDescriptor)
+        let operationQueue = OperationQueue()
+
+        let sourceObjects = (0..<10).map { _ in createRandomFeed() }
+
+        let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
+
+        let fetchOperation = cache.fetchAllOperation()
+
+        fetchOperation.addDependency(saveOperation)
+
+        let expectation = XCTestExpectation()
+
+        fetchOperation.completionBlock = {
+            expectation.fulfill()
+        }
+
+        operationQueue.addOperations([saveOperation, fetchOperation], waitUntilFinished: false)
+
+        wait(for: [expectation], timeout: Constants.expectationDuration)
+
+        guard let result = fetchOperation.result,
+            case .success(let fetchedObjects) = result else {
+                XCTFail()
+                return
+        }
+
+        let sortedSourceObjects = sourceObjects.sorted { return $0.name > $1.name }
+
+        XCTAssertEqual(sortedSourceObjects, fetchedObjects)
+    }
+
+    func testSaveFetchSlice() {
+        performTestSaveFetch(offset: 0, count: 10, reversed: false, objectsCount: 10)
+        performTestSaveFetch(offset: 0, count: 10, reversed: true, objectsCount: 10)
+        performTestSaveFetch(offset: 0, count: 5, reversed: false, objectsCount: 10)
+        performTestSaveFetch(offset: 5, count: 5, reversed: false, objectsCount: 10)
+        performTestSaveFetch(offset: 5, count: 5, reversed: true, objectsCount: 10)
+        performTestSaveFetch(offset: 5, count: 10, reversed: true, objectsCount: 10)
+        performTestSaveFetch(offset: 0, count: 1, reversed: false, objectsCount: 0)
+    }
+
     func testSaveFetchById() {
+        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+        let operationQueue = OperationQueue()
+
         let sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
         let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
@@ -79,6 +125,9 @@ class CoreDataCacheTests: XCTestCase {
     }
 
     func testDeleteById() {
+        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+        let operationQueue = OperationQueue()
+
         var sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
         let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
@@ -128,6 +177,9 @@ class CoreDataCacheTests: XCTestCase {
     }
 
     func testUpdateAndDeleteAtOnce() {
+        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+        let operationQueue = OperationQueue()
+
         var sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
         let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
@@ -183,6 +235,9 @@ class CoreDataCacheTests: XCTestCase {
     }
 
     func testDeleteAll() {
+        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+        let operationQueue = OperationQueue()
+
         let sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
         let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
@@ -213,5 +268,49 @@ class CoreDataCacheTests: XCTestCase {
         }
 
         XCTAssertTrue(fetchedObjects.isEmpty)
+    }
+
+    // MARK: Private
+
+    private func performTestSaveFetch(offset: Int, count: Int, reversed: Bool, objectsCount: Int = 10) {
+        let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
+        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache(sortDescriptor: sortDescriptor)
+        let operationQueue = OperationQueue()
+
+        let sourceObjects = (0..<objectsCount).map { _ in createRandomFeed() }
+
+        let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
+
+        let fetchOperation = cache.fetch(offset: offset, count: count, reversed: reversed)
+
+        fetchOperation.addDependency(saveOperation)
+
+        let expectation = XCTestExpectation()
+
+        fetchOperation.completionBlock = {
+            expectation.fulfill()
+        }
+
+        operationQueue.addOperations([saveOperation, fetchOperation], waitUntilFinished: false)
+
+        wait(for: [expectation], timeout: Constants.expectationDuration)
+
+        guard let result = fetchOperation.result,
+            case .success(let fetchedObjects) = result else {
+                XCTFail()
+                return
+        }
+
+        let sortedSourceObjects = sourceObjects.sorted { return reversed ? $0.name < $1.name : $0.name > $1.name}
+
+        let reducedSourceObjects: [FeedData]
+
+        if offset + count <= sourceObjects.count {
+            reducedSourceObjects = Array(sortedSourceObjects[offset..<(offset+count)])
+        } else {
+            reducedSourceObjects = Array(sortedSourceObjects[offset..<sourceObjects.count])
+        }
+
+        XCTAssertEqual(reducedSourceObjects, fetchedObjects)
     }
 }
