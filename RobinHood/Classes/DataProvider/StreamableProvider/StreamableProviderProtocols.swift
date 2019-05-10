@@ -9,9 +9,23 @@ public protocol StreamableProviderProtocol {
     func addObserver(_ observer: AnyObject,
                      deliverOn queue: DispatchQueue,
                      executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
-                     failing failureBlock: @escaping (Error) -> Void)
+                     failing failureBlock: @escaping (Error) -> Void,
+                     options: DataProviderObserverOptions)
 
     func removeObserver(_ observer: AnyObject)
+}
+
+public extension StreamableProviderProtocol {
+    func addObserver(_ observer: AnyObject,
+                     deliverOn queue: DispatchQueue,
+                     executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
+                     failing failureBlock: @escaping (Error) -> Void) {
+        addObserver(observer,
+                    deliverOn: queue,
+                    executing: updateBlock,
+                    failing: failureBlock,
+                    options: DataProviderObserverOptions(alwaysNotifyOnRefresh: false))
+    }
 }
 
 public protocol StreamableSourceProtocol {
@@ -24,9 +38,9 @@ public protocol StreamableSourceProtocol {
 public protocol StreamableSourceObservable {
     associatedtype Model
 
-    func addCacheObserver(_ observer: AnyObject,
-                          deliverOn queue: DispatchQueue,
-                          executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void)
+    func addObserver(_ observer: AnyObject,
+                     deliverOn queue: DispatchQueue,
+                     executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void)
 
-    func removeCacheObserver(_ observer: AnyObject)
+    func removeObserver(_ observer: AnyObject)
 }

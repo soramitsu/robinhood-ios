@@ -36,13 +36,36 @@ public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
     }
 
     private func startObservingSource() {
-        observable.addCacheObserver(self, deliverOn: processingQueue) { [weak self] (changes) in
-            self?.observers.forEach { $0.updateBlock(changes) }
+        observable.addObserver(self, deliverOn: processingQueue) { [weak self] (changes) in
+            self?.notifyObservers(with: changes)
         }
     }
 
     private func stopObservingSource() {
-        observable.removeCacheObserver(self)
+        observable.removeObserver(self)
+    }
+
+    private func fetchHistory(offset: Int, count: Int, completionBlock: ((OperationResult<Int>?) -> Void)?) {
+        source.fetchHistory(offset: offset,
+                            count: count,
+                            runningIn: processingQueue,
+                            commitNotificationBlock: completionBlock)
+    }
+
+    private func notifyObservers(with changes: [DataProviderChange<Model>]) {
+        observers.forEach { (observerWrapper) in
+            if observerWrapper.observer != nil {
+                observerWrapper.updateBlock(changes)
+            }
+        }
+    }
+
+    private func notifyObservers(with error: Error) {
+        observers.forEach { (observerWrapper) in
+            if observerWrapper.observer != nil, observerWrapper.options.alwaysNotifyOnRefresh {
+                observerWrapper.failureBlock(error)
+            }
+        }
     }
 }
 
@@ -57,10 +80,16 @@ extension StreamableProvider: StreamableProviderProtocol {
             if
                 let result = operation.result,
                 case .success(let models) = result, models.count < count {
-                self?.source.fetchHistory(offset: offset + models.count,
-                                          count: count - models.count,
-                                          runningIn: nil,
-                                          commitNotificationBlock: nil)
+
+                let completionBlock: (OperationResult<Int>?) -> Void = { (optionalResult) in
+                    if let result = optionalResult, case .error(let error) = result {
+                        self?.notifyObservers(with: error)
+                    }
+                }
+
+                self?.fetchHistory(offset: offset + models.count,
+                                   count: count - models.count,
+                                   completionBlock: completionBlock)
             }
 
             completionBlock(operation.result)
@@ -74,7 +103,8 @@ extension StreamableProvider: StreamableProviderProtocol {
     public func addObserver(_ observer: AnyObject,
                      deliverOn queue: DispatchQueue,
                      executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
-                     failing failureBlock: @escaping (Error) -> Void) {
+                     failing failureBlock: @escaping (Error) -> Void,
+                     options: DataProviderObserverOptions) {
         processingQueue.async {
             let shouldObserveSource = self.observers.isEmpty
 
@@ -85,12 +115,12 @@ extension StreamableProvider: StreamableProviderProtocol {
                                                     queue: queue,
                                                     updateBlock: updateBlock,
                                                     failureBlock: failureBlock,
-                                                    options: DataProviderObserverOptions(alwaysNotifyOnRefresh: false))
+                                                    options: options)
                 self.observers.append(observerWrapper)
+            }
 
-                if shouldObserveSource {
-                    self.startObservingSource()
-                }
+            if shouldObserveSource {
+                self.startObservingSource()
             }
         }
     }

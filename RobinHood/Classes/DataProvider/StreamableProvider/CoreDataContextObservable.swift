@@ -96,9 +96,9 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
 extension CoreDataContextObservable: StreamableSourceObservable {
     public typealias Model = T
 
-    public func addCacheObserver(_ observer: AnyObject,
-                          deliverOn queue: DispatchQueue,
-                          executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void) {
+    public func addObserver(_ observer: AnyObject,
+                            deliverOn queue: DispatchQueue,
+                            executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void) {
         processingQueue.async {
             self.observers = self.observers.filter { $0.observer != nil }
 
@@ -109,7 +109,7 @@ extension CoreDataContextObservable: StreamableSourceObservable {
         }
     }
 
-    public func removeCacheObserver(_ observer: AnyObject) {
+    public func removeObserver(_ observer: AnyObject) {
         processingQueue.async {
             self.observers = self.observers.filter { $0.observer != nil && $0.observer !== observer }
         }
