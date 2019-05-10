@@ -9,10 +9,10 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
 
     private var observers: [StreamableSourceObserver<T>] = []
 
-    init(service: CoreDataServiceProtocol,
-         mapper: AnyCoreDataMapper<T, U>,
-         predicate: @escaping (U) -> Bool,
-         processingQueue: DispatchQueue? = nil) {
+    public init(service: CoreDataServiceProtocol,
+                mapper: AnyCoreDataMapper<T, U>,
+                predicate: @escaping (U) -> Bool,
+                processingQueue: DispatchQueue? = nil) {
         self.service = service
         self.mapper = mapper
         self.predicate = predicate
@@ -27,10 +27,15 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
     }
 
     public func start(completionBlock: @escaping (Error?) -> Void) {
-        service.performAsync { (optionalContext, optionalError) in
+        service.performAsync { [weak self] (optionalContext, optionalError) in
+            guard let strongSelf = self else {
+                completionBlock(nil)
+                return
+            }
+
             if let context = optionalContext {
-                NotificationCenter.default.addObserver(self,
-                                                       selector: #selector(self.didReceive(notification:)),
+                NotificationCenter.default.addObserver(strongSelf,
+                                                       selector: #selector(strongSelf.didReceive(notification:)),
                                                        name: Notification.Name.NSManagedObjectContextDidSave,
                                                        object: context)
             }
@@ -40,9 +45,14 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
     }
 
     public func stop(completionBlock: @escaping (Error?) -> Void) {
-        service.performAsync { (optionalContext, optionalError) in
+        service.performAsync { [weak self] (optionalContext, optionalError) in
+            guard let strongSelf = self else {
+                completionBlock(nil)
+                return
+            }
+
             if let context = optionalContext {
-                NotificationCenter.default.removeObserver(self,
+                NotificationCenter.default.removeObserver(strongSelf,
                                                           name: Notification.Name.NSManagedObjectContextDidSave,
                                                           object: context)
             }
