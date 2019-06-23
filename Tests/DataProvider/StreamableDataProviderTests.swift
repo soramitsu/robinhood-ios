@@ -86,6 +86,26 @@ class StreamableDataProviderTests: XCTestCase {
                                 fetchCount: initialObjects.count + newObjects.count)
     }
 
+    func testAlwaysNotifyWhenFetchEmpty() {
+        let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
+                                                                               cache: cache,
+                                                                               operationQueue: operationQueue,
+                                                                               returns: [])
+
+        let fetchValidator: ([FeedData]) -> Bool = { (items) in
+            return items.isEmpty
+        }
+
+        let updateValidator: ([DataProviderChange<FeedData>]) -> Bool = { (changes) in
+            return changes.isEmpty
+        }
+
+        performSingleChangeTest(with: source,
+                                fetchValidator: fetchValidator,
+                                updateValidator: updateValidator,
+                                options: DataProviderObserverOptions(alwaysNotifyOnRefresh: true))
+    }
+
     func testErrorDispatchWhenFetch() {
         let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
                                                                                returns: NetworkBaseError.unexpectedResponseObject)
@@ -147,7 +167,8 @@ class StreamableDataProviderTests: XCTestCase {
                                          fetchValidator: @escaping ([FeedData]) -> Bool,
                                          updateValidator: @escaping ([DataProviderChange<FeedData>]) -> Bool,
                                          fetchOffset: Int = 0,
-                                         fetchCount: Int = 10) {
+                                         fetchCount: Int = 10,
+                                         options: DataProviderObserverOptions? = nil) {
         let observable = CoreDataContextObservable(service: cache.databaseService,
                                                    mapper: cache.dataMapper,
                                                    predicate: { _ in return true })
@@ -177,9 +198,12 @@ class StreamableDataProviderTests: XCTestCase {
 
         let fetchExpectation = XCTestExpectation()
 
+        let dataProviderOptions = options ?? DataProviderObserverOptions(alwaysNotifyOnRefresh: false)
+
         dataProvider.addObserver(self,
                                  deliverOn: .main, executing: updateBlock,
-                                 failing: failBlock)
+                                 failing: failBlock,
+                                 options: dataProviderOptions)
 
         _ = dataProvider.fetch(offset: fetchOffset, count: fetchCount) { (optionalResult) in
             defer {
