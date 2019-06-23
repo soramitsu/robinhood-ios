@@ -71,6 +71,25 @@ public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
             }
         }
     }
+
+    private func notifyObservers(with fetchResult: OperationResult<Int>) {
+        observers.forEach { (observerWrapper) in
+            if observerWrapper.observer != nil, observerWrapper.options.alwaysNotifyOnRefresh {
+                switch fetchResult {
+                case .success(let count):
+                    if count == 0 {
+                        observerWrapper.queue.async {
+                            observerWrapper.updateBlock([])
+                        }
+                    }
+                case .error(let error):
+                    observerWrapper.queue.async {
+                        observerWrapper.failureBlock(error)
+                    }
+                }
+            }
+        }
+    }
 }
 
 extension StreamableProvider: StreamableProviderProtocol {
@@ -86,8 +105,8 @@ extension StreamableProvider: StreamableProviderProtocol {
                 case .success(let models) = result, models.count < count {
 
                 let completionBlock: (OperationResult<Int>?) -> Void = { (optionalResult) in
-                    if let result = optionalResult, case .error(let error) = result {
-                        self?.notifyObservers(with: error)
+                    if let result = optionalResult {
+                        self?.notifyObservers(with: result)
                     }
                 }
 
