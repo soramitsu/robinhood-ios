@@ -26,4 +26,4 @@ ERussel, emkil.russel@gmail.com
 
 ## License
 
-RobinHood is available under the MIT license. See the LICENSE file for more info.
+RobinHood is available under the GPL-3.0 license. See the LICENSE file for more info.
