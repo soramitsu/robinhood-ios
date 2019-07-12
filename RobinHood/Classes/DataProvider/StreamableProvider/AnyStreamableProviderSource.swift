@@ -1,3 +1,8 @@
+/**
+* Copyright Soramitsu Co., Ltd. All Rights Reserved.
+* SPDX-License-Identifier: GPL-3.0
+*/
+
 import Foundation
 
 public typealias AnyStreamableFetchHistoryBlock = (Int, Int, DispatchQueue?, ((OperationResult<Int>?) -> Void)?) -> Void

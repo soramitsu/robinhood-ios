@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'RobinHood'
-  s.version          = '1.0.2'
+  s.version          = '1.0.3'
   s.summary          = 'Observable data provider implementation with cache support.'
 
   s.description      = <<-DESC
@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
                        DESC
 
   s.homepage         = 'https://github.com/soramitsu'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
+  s.license          = { :type => 'GPL 3.0', :file => 'LICENSE' }
   s.author           = { 'ERussel' => 'emkil.russel@gmail.com' }
   s.source           = { :git => 'https://github.com/soramitsu/robinhood-ios.git', :tag => s.version.to_s }
 
