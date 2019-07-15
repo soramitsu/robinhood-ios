@@ -18,4 +18,5 @@ public enum HttpContentType: String {
 
 public enum HttpHeaderKey: String {
     case contentType = "Content-Type"
+    case authorization = "Authorization"
 }
