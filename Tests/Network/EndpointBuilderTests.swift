@@ -65,4 +65,38 @@ class EndpointBuilderTests: XCTestCase {
             XCTFail("Error: \(error)")
         }
     }
+
+    func testUrlEncodingForSingleParameterWithFragmentSymbol() {
+        // given
+        let asset = "xor#sora"
+        let template = "https://feed.test-1.sora.soramitsu.co.jp/transfer?asset={asset}"
+        let endpointBuilder = EndpointBuilder(urlTemplate: template).withUrlEncoding(allowedCharset: .alphanumerics)
+
+        do {
+            let url = try endpointBuilder.buildParameterURL(asset)
+            let expectedUrl = URL(string: "https://feed.test-1.sora.soramitsu.co.jp/transfer?asset=xor%23sora")
+
+            XCTAssertEqual(url, expectedUrl)
+        } catch {
+            XCTFail("Error \(error)")
+        }
+    }
+
+    func testUrlEncodingForObjectParameterWithFragmentSymbol() {
+        // given
+        let template = "https://feed.test-1.sora.soramitsu.co.jp/feed?id={id}"
+        let enpointBuilder = EndpointBuilder(urlTemplate: template).withUrlEncoding(allowedCharset: .alphanumerics)
+
+        do {
+            var feed = createRandomFeed()
+            feed.identifier = "user#id"
+            let url = try enpointBuilder.buildURL(with: feed)
+
+            let expectedUrl = URL(string: "https://feed.test-1.sora.soramitsu.co.jp/feed?id=user%23id")
+
+            XCTAssertEqual(url, expectedUrl)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+    }
 }

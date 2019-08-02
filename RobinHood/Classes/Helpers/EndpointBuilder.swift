@@ -6,6 +6,7 @@
 import Foundation
 
 public protocol EndpointBuilderProtocol {
+    func withUrlEncoding(allowedCharset: CharacterSet) -> Self
     func buildParameterURL(_ value: String) throws -> URL
     func buildURL<T>(with parameters: T) throws -> URL where T: Encodable
     func buildRegex() throws -> String
@@ -19,6 +20,7 @@ public enum EndpointBuilderError: Error {
     case invalidObject
     case paramMustConvertToString
     case singleParameterExpected
+    case invalidUrlEncoding
 }
 
 public final class EndpointBuilder {
@@ -29,6 +31,8 @@ public final class EndpointBuilder {
     public static let regexSkipString = "\\"
 
     public let urlTemplate: String
+
+    private var allowedUrlEncodingCharset: CharacterSet?
 
     private lazy var encoder = JSONEncoder()
 
@@ -71,9 +75,27 @@ public final class EndpointBuilder {
 
         return result
     }
+
+    private func byEncoding(string: String) throws -> String {
+        guard let encodingCharset = allowedUrlEncodingCharset else {
+            return string
+        }
+
+        guard let encodedString = string
+            .addingPercentEncoding(withAllowedCharacters: encodingCharset) else {
+                throw EndpointBuilderError.invalidUrlEncoding
+        }
+
+        return encodedString
+    }
 }
 
 extension EndpointBuilder: EndpointBuilderProtocol {
+    public func withUrlEncoding(allowedCharset: CharacterSet) -> Self {
+        self.allowedUrlEncodingCharset = allowedCharset
+        return self
+    }
+
     public func buildParameterURL(_ value: String) throws -> URL {
         var alreadyFilledParam: Bool = false
 
@@ -84,7 +106,7 @@ extension EndpointBuilder: EndpointBuilderProtocol {
 
             alreadyFilledParam = true
 
-            return value
+            return try byEncoding(string: value)
         }
 
         guard let url = URL(string: urlString) else {
@@ -103,11 +125,11 @@ extension EndpointBuilder: EndpointBuilderProtocol {
 
         let urlString = try process(urlTemplate: urlTemplate) { param in
             if let paramValue = keyValueParam[param] as? String {
-                return paramValue
+                return try byEncoding(string: paramValue)
             }
 
             if let paramValue = keyValueParam[param] as? Int {
-                return String(paramValue)
+                return try byEncoding(string: String(paramValue))
             }
 
             throw EndpointBuilderError.paramMustConvertToString
