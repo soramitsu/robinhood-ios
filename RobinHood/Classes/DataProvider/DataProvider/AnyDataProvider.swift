@@ -11,7 +11,7 @@ public final class AnyDataProvider<T: Identifiable & Equatable>: DataProviderPro
     private let _fetchById: (String, ((OperationResult<T?>?) -> Void)?) -> BaseOperation<T?>
     private let _fetchPage: (UInt, ((OperationResult<[T]>?) -> Void)?) -> BaseOperation<[T]>
 
-    private let _addCacheObserver: (AnyObject, DispatchQueue,
+    private let _addCacheObserver: (AnyObject, DispatchQueue?,
     @escaping ([DataProviderChange<T>]) -> Void, @escaping (Error) -> Void, DataProviderObserverOptions) -> Void
 
     private let _removeObserver: (AnyObject) -> Void
@@ -38,7 +38,7 @@ public final class AnyDataProvider<T: Identifiable & Equatable>: DataProviderPro
     }
 
     public func addCacheObserver(_ observer: AnyObject,
-                                 deliverOn queue: DispatchQueue,
+                                 deliverOn queue: DispatchQueue?,
                                  executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
                                  failing failureBlock: @escaping (Error) -> Void,
                                  options: DataProviderObserverOptions) {

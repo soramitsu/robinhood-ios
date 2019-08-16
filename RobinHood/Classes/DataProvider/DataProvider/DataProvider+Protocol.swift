@@ -98,7 +98,7 @@ extension DataProvider: DataProviderProtocol {
     }
 
     public func addCacheObserver(_ observer: AnyObject,
-                                 deliverOn queue: DispatchQueue,
+                                 deliverOn queue: DispatchQueue?,
                                  executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
                                  failing failureBlock: @escaping (Error) -> Void,
                                  options: DataProviderObserverOptions) {
@@ -109,9 +109,10 @@ extension DataProvider: DataProviderProtocol {
 
             cacheOperation.completionBlock = {
                 guard let result = cacheOperation.result else {
-                    queue.async {
+                    dispatchInQueueWhenPossible(queue) {
                         failureBlock(DataProviderError.dependencyCancelled)
                     }
+
                     return
                 }
 
@@ -129,12 +130,12 @@ extension DataProvider: DataProviderProtocol {
 
                         let updates = items.map { DataProviderChange<T>.insert(newItem: $0) }
 
-                        queue.async {
+                        dispatchInQueueWhenPossible(queue) {
                             updateBlock(updates)
                         }
                     }
                 case .error(let error):
-                    queue.async {
+                    dispatchInQueueWhenPossible(queue) {
                         failureBlock(error)
                     }
                 }

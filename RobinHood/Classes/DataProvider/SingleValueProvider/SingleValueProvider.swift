@@ -208,7 +208,8 @@ extension SingleValueProvider {
         cacheObservers.forEach { (cacheObserver) in
             if cacheObserver.observer != nil,
                 (update != nil || cacheObserver.options.alwaysNotifyOnRefresh) {
-                cacheObserver.queue.async {
+
+                dispatchInQueueWhenPossible(cacheObserver.queue) {
                     if let update = update {
                         cacheObserver.updateBlock([update])
                     } else {
@@ -222,7 +223,7 @@ extension SingleValueProvider {
     private func notifyObservers(with error: Error) {
         cacheObservers.forEach { (cacheObserver) in
             if cacheObserver.observer != nil, cacheObserver.options.alwaysNotifyOnRefresh {
-                cacheObserver.queue.async {
+                dispatchInQueueWhenPossible(cacheObserver.queue) {
                     cacheObserver.failureBlock(error)
                 }
             }

@@ -13,7 +13,7 @@ public protocol SingleValueProviderProtocol {
     func fetch(with completionBlock: ((OperationResult<Model>?) -> Void)?) -> BaseOperation<Model>
 
     func addCacheObserver(_ observer: AnyObject,
-                          deliverOn queue: DispatchQueue,
+                          deliverOn queue: DispatchQueue?,
                           executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
                           failing failureBlock: @escaping (Error) -> Void,
                           options: DataProviderObserverOptions)
@@ -25,7 +25,7 @@ public protocol SingleValueProviderProtocol {
 
 public extension SingleValueProviderProtocol {
     func addCacheObserver(_ observer: AnyObject,
-                          deliverOn queue: DispatchQueue,
+                          deliverOn queue: DispatchQueue?,
                           executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
                           failing failureBlock: @escaping (Error) -> Void) {
         addCacheObserver(observer,

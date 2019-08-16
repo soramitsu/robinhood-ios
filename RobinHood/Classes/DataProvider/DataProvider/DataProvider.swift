@@ -197,7 +197,7 @@ extension DataProvider {
         cacheObservers.forEach { (cacheObserver) in
             if cacheObserver.observer != nil,
                 (updates.count > 0 || cacheObserver.options.alwaysNotifyOnRefresh) {
-                cacheObserver.queue.async {
+                dispatchInQueueWhenPossible(cacheObserver.queue) {
                     cacheObserver.updateBlock(updates)
                 }
             }
@@ -207,7 +207,7 @@ extension DataProvider {
     private func notifyObservers(with error: Error) {
         cacheObservers.forEach { (cacheObserver) in
             if cacheObserver.observer != nil, cacheObserver.options.alwaysNotifyOnRefresh {
-                cacheObserver.queue.async {
+                dispatchInQueueWhenPossible(cacheObserver.queue) {
                     cacheObserver.failureBlock(error)
                 }
             }
