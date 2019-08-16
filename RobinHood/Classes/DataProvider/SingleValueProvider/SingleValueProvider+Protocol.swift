@@ -46,7 +46,7 @@ extension SingleValueProvider: SingleValueProviderProtocol {
     }
 
     public func addCacheObserver(_ observer: AnyObject,
-                                 deliverOn queue: DispatchQueue,
+                                 deliverOn queue: DispatchQueue?,
                                  executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
                                  failing failureBlock: @escaping (Error) -> Void,
                                  options: DataProviderObserverOptions) {
@@ -57,9 +57,10 @@ extension SingleValueProvider: SingleValueProviderProtocol {
 
             cacheOperation.completionBlock = {
                 guard let result = cacheOperation.result else {
-                    queue.async {
+                    dispatchInQueueWhenPossible(queue) {
                         failureBlock(DataProviderError.dependencyCancelled)
                     }
+
                     return
                 }
 
@@ -82,12 +83,12 @@ extension SingleValueProvider: SingleValueProviderProtocol {
                             updates.append(DataProviderChange.insert(newItem: model))
                         }
 
-                        queue.async {
+                        dispatchInQueueWhenPossible(queue) {
                             updateBlock(updates)
                         }
                     }
                 case .error(let error):
-                    queue.async {
+                    dispatchInQueueWhenPossible(queue) {
                         failureBlock(error)
                     }
                 }

@@ -7,13 +7,13 @@ import Foundation
 
 public final class CacheObserver<T> {
     public private(set) weak var observer: AnyObject?
-    public private(set) var queue: DispatchQueue
+    public private(set) var queue: DispatchQueue?
     public private(set) var updateBlock: ([DataProviderChange<T>]) -> Void
     public private(set) var failureBlock: (Error) -> Void
     public private(set) var options: DataProviderObserverOptions
 
     public init(observer: AnyObject,
-                queue: DispatchQueue,
+                queue: DispatchQueue?,
                 updateBlock: @escaping ([DataProviderChange<T>]) -> Void,
                 failureBlock: @escaping (Error) -> Void,
                 options: DataProviderObserverOptions) {

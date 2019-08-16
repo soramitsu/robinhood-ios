@@ -60,7 +60,7 @@ public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
     private func notifyObservers(with changes: [DataProviderChange<Model>]) {
         observers.forEach { (observerWrapper) in
             if observerWrapper.observer != nil {
-                observerWrapper.queue.async {
+                dispatchInQueueWhenPossible(observerWrapper.queue) {
                     observerWrapper.updateBlock(changes)
                 }
             }
@@ -70,7 +70,7 @@ public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
     private func notifyObservers(with error: Error) {
         observers.forEach { (observerWrapper) in
             if observerWrapper.observer != nil, observerWrapper.options.alwaysNotifyOnRefresh {
-                observerWrapper.queue.async {
+                dispatchInQueueWhenPossible(observerWrapper.queue) {
                     observerWrapper.failureBlock(error)
                 }
             }
@@ -83,12 +83,12 @@ public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
                 switch fetchResult {
                 case .success(let count):
                     if count == 0 {
-                        observerWrapper.queue.async {
+                        dispatchInQueueWhenPossible(observerWrapper.queue) {
                             observerWrapper.updateBlock([])
                         }
                     }
                 case .error(let error):
-                    observerWrapper.queue.async {
+                    dispatchInQueueWhenPossible(observerWrapper.queue) {
                         observerWrapper.failureBlock(error)
                     }
                 }
