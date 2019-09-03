@@ -14,30 +14,30 @@ public struct SingleValueProviderObject: Identifiable & Codable {
 public final class SingleValueProvider<T: Codable & Equatable, U: NSManagedObject> {
     public typealias Model = T
 
-    public private(set) var cache: CoreDataCache<SingleValueProviderObject, U>
+    public private(set) var repository: CoreDataRepository<SingleValueProviderObject, U>
     public private(set) var source: AnySingleValueProviderSource<T>
     public private(set) var updateTrigger: DataProviderTriggerProtocol
     public private(set) var executionQueue: OperationQueue
-    public private(set) var cacheQueue: DispatchQueue
+    public private(set) var syncQueue: DispatchQueue
     public private(set) var targetIdentifier: String
 
-    var cacheObservers: [CacheObserver<T>] = []
+    var observers: [RepositoryObserver<T>] = []
     var lastSyncOperation: Operation?
-    var cacheUpdateOperation: Operation?
+    var repositoryUpdateOperation: Operation?
 
     lazy var encoder = JSONEncoder()
     lazy var decoder = JSONDecoder()
 
     public init(targetIdentifier: String,
                 source: AnySingleValueProviderSource<T>,
-                cache: CoreDataCache<SingleValueProviderObject, U>,
+                repository: CoreDataRepository<SingleValueProviderObject, U>,
                 updateTrigger: DataProviderTriggerProtocol = DataProviderEventTrigger.onAll,
                 executionQueue: OperationQueue? = nil,
-                serialCacheQueue: DispatchQueue? = nil) {
+                serialSyncQueue: DispatchQueue? = nil) {
 
         self.targetIdentifier = targetIdentifier
         self.source = source
-        self.cache = cache
+        self.repository = repository
 
         if let currentExecutionQueue = executionQueue {
             self.executionQueue = currentExecutionQueue
@@ -45,11 +45,11 @@ public final class SingleValueProvider<T: Codable & Equatable, U: NSManagedObjec
             self.executionQueue = OperationQueue()
         }
 
-        if let currentCacheQueue = serialCacheQueue {
-            self.cacheQueue = currentCacheQueue
+        if let currentSyncQueue = serialSyncQueue {
+            self.syncQueue = currentSyncQueue
         } else {
-            self.cacheQueue = DispatchQueue(
-                label: "co.jp.singlevalueprovider.cachequeue.\(UUID().uuidString)",
+            self.syncQueue = DispatchQueue(
+                label: "co.jp.singlevalueprovider.repository.queue.\(UUID().uuidString)",
                 qos: .utility)
         }
 
@@ -59,27 +59,28 @@ public final class SingleValueProvider<T: Codable & Equatable, U: NSManagedObjec
     }
 }
 
-// MARK: Internal Cache update logic implementation
+// MARK: Internal Repository update logic implementation
 extension SingleValueProvider {
-    func dispatchUpdateCache() {
-        cacheQueue.async {
-            self.updateCache()
+    func dispatchUpdateRepository() {
+        syncQueue.async {
+            self.updateRepository()
         }
     }
 
-    private func updateCache() {
-        if let currentUpdateCacheOperation = cacheUpdateOperation, !currentUpdateCacheOperation.isFinished {
+    private func updateRepository() {
+        if let currentUpdateRepositoryOperation = repositoryUpdateOperation,
+            !currentUpdateRepositoryOperation.isFinished {
             return
         }
 
         let sourceOperation = source.fetchOperation()
 
-        let cacheOperation = cache.fetchOperation(by: targetIdentifier)
+        let repositoryOperation = repository.fetchOperation(by: targetIdentifier)
 
         let differenceOperation = createDifferenceOperation(dependingOn: sourceOperation,
-                                                            cacheOperation: cacheOperation)
+                                                            repositoryOperation: repositoryOperation)
 
-        let saveOperation = createSaveCacheOperation(dependingOn: differenceOperation)
+        let saveOperation = createSaveRepositoryOperation(dependingOn: differenceOperation)
 
         saveOperation.completionBlock = {
             guard let saveResult = saveOperation.result else {
@@ -87,7 +88,7 @@ extension SingleValueProvider {
             }
 
             if case .error(let error) = saveResult {
-                self.cacheQueue.async {
+                self.syncQueue.async {
                     self.notifyObservers(with: error)
                 }
 
@@ -99,27 +100,27 @@ extension SingleValueProvider {
                     return
             }
 
-            self.cacheQueue.async {
+            self.syncQueue.async {
                 self.notifyObservers(with: optionalUpdate)
             }
         }
 
-        cacheUpdateOperation = saveOperation
+        repositoryUpdateOperation = saveOperation
 
         if let syncOperation = lastSyncOperation, !syncOperation.isFinished {
             sourceOperation.addDependency(syncOperation)
-            cacheOperation.addDependency(syncOperation)
+            repositoryOperation.addDependency(syncOperation)
         }
 
         lastSyncOperation = saveOperation
 
-        let operations = [sourceOperation, cacheOperation, differenceOperation, saveOperation]
+        let operations = [sourceOperation, repositoryOperation, differenceOperation, saveOperation]
 
         executionQueue.addOperations(operations, waitUntilFinished: false)
     }
 
     private func createDifferenceOperation(dependingOn sourceOperation: BaseOperation<T>,
-                                           cacheOperation: BaseOperation<SingleValueProviderObject?>)
+                                           repositoryOperation: BaseOperation<SingleValueProviderObject?>)
         -> BaseOperation<DataProviderChange<T>?> {
 
             let operation = ClosureOperation<DataProviderChange<T>?> {
@@ -131,31 +132,31 @@ extension SingleValueProvider {
                     throw error
                 }
 
-                guard let cacheResult = cacheOperation.result else {
+                guard let repositoryResult = repositoryOperation.result else {
                     throw DataProviderError.unexpectedSourceResult
                 }
 
-                if case .error(let error) = cacheResult {
+                if case .error(let error) = repositoryResult {
                     throw error
                 }
 
                 if case .success(let sourceModel) = sourceResult,
-                    case .success(let cacheModel) = cacheResult {
+                    case .success(let repositoryModel) = repositoryResult {
 
                     return try self.findChanges(sourceResult: sourceModel,
-                                                cacheResult: cacheModel)
+                                                repositoryResult: repositoryModel)
                 } else {
                     throw DataProviderError.unexpectedSourceResult
                 }
             }
 
             operation.addDependency(sourceOperation)
-            operation.addDependency(cacheOperation)
+            operation.addDependency(repositoryOperation)
 
             return operation
     }
 
-    private func createSaveCacheOperation(dependingOn differenceOperation: BaseOperation<DataProviderChange<T>?>)
+    private func createSaveRepositoryOperation(dependingOn differenceOperation: BaseOperation<DataProviderChange<T>?>)
         -> BaseOperation<Bool> {
 
             let itemIdentifier = targetIdentifier
@@ -197,7 +198,7 @@ extension SingleValueProvider {
                 }
             }
 
-            let operation = cache.saveOperation(updatedItemsBlock, deletedItemsBlock)
+            let operation = repository.saveOperation(updatedItemsBlock, deletedItemsBlock)
 
             operation.addDependency(differenceOperation)
 
@@ -205,15 +206,15 @@ extension SingleValueProvider {
     }
 
     private func notifyObservers(with update: DataProviderChange<T>?) {
-        cacheObservers.forEach { (cacheObserver) in
-            if cacheObserver.observer != nil,
-                (update != nil || cacheObserver.options.alwaysNotifyOnRefresh) {
+        observers.forEach { (repositoryObserver) in
+            if repositoryObserver.observer != nil,
+                (update != nil || repositoryObserver.options.alwaysNotifyOnRefresh) {
 
-                dispatchInQueueWhenPossible(cacheObserver.queue) {
+                dispatchInQueueWhenPossible(repositoryObserver.queue) {
                     if let update = update {
-                        cacheObserver.updateBlock([update])
+                        repositoryObserver.updateBlock([update])
                     } else {
-                        cacheObserver.updateBlock([])
+                        repositoryObserver.updateBlock([])
                     }
                 }
             }
@@ -221,21 +222,21 @@ extension SingleValueProvider {
     }
 
     private func notifyObservers(with error: Error) {
-        cacheObservers.forEach { (cacheObserver) in
-            if cacheObserver.observer != nil, cacheObserver.options.alwaysNotifyOnRefresh {
-                dispatchInQueueWhenPossible(cacheObserver.queue) {
-                    cacheObserver.failureBlock(error)
+        observers.forEach { (repositoryObserver) in
+            if repositoryObserver.observer != nil, repositoryObserver.options.alwaysNotifyOnRefresh {
+                dispatchInQueueWhenPossible(repositoryObserver.queue) {
+                    repositoryObserver.failureBlock(error)
                 }
             }
         }
     }
 
-    private func findChanges(sourceResult: T, cacheResult: SingleValueProviderObject?) throws
+    private func findChanges(sourceResult: T, repositoryResult: SingleValueProviderObject?) throws
         -> DataProviderChange<T>? {
 
             let sourceData = try? encoder.encode(sourceResult)
 
-            guard let existingCacheResult = cacheResult else {
+            guard let existingRepositoryResult = repositoryResult else {
                 if sourceData != nil {
                     return DataProviderChange.insert(newItem: sourceResult)
                 } else {
@@ -247,7 +248,7 @@ extension SingleValueProvider {
                 return DataProviderChange.delete(deletedIdentifier: targetIdentifier)
             }
 
-            if existingSourceData != existingCacheResult.payload {
+            if existingSourceData != existingRepositoryResult.payload {
                 return DataProviderChange.update(newItem: sourceResult)
             } else {
                 return nil

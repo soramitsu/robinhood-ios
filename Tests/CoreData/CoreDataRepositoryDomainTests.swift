@@ -6,31 +6,31 @@
 import XCTest
 @testable import RobinHood
 
-class CoreDataCacheDomainTests: XCTestCase {
-    var defaultDomainCache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared
-        .createCoreDataCache(domain: "defaults")
+class CoreDataRepositoryDomainTests: XCTestCase {
+    var defaultDomainRepository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared
+        .createCoreDataRepository(domain: "defaults")
 
-    var favoriteDomainCache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared
-        .createCoreDataCache(domain: "favorite")
+    var favoriteDomainRepository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared
+        .createCoreDataRepository(domain: "favorite")
 
     var operationQueue = OperationQueue()
 
     override func setUp() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     override func tearDown() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     func testSaveAndFetch() {
         let defaultObjects = (0..<10).map { _ in return createRandomFeed() }
-        XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainCache))
+        XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainRepository))
 
         let favoriteObjects = (0..<15).map { _ in return createRandomFeed() }
-        XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainCache))
+        XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainRepository))
 
-        let optionalFetchedDefaultObjects = fetchAll(from: defaultDomainCache)
+        let optionalFetchedDefaultObjects = fetchAll(from: defaultDomainRepository)
 
         guard let fetchedDefaultObjects = optionalFetchedDefaultObjects else {
             XCTFail()
@@ -39,7 +39,7 @@ class CoreDataCacheDomainTests: XCTestCase {
 
         XCTAssertTrue(isSameObjectSets(defaultObjects, fetchedDefaultObjects))
 
-        let optionalFetchedFavoriteObjects = fetchAll(from: favoriteDomainCache)
+        let optionalFetchedFavoriteObjects = fetchAll(from: favoriteDomainRepository)
 
         guard let fetchedFavoriteObjects = optionalFetchedFavoriteObjects else {
             XCTFail()
@@ -51,14 +51,14 @@ class CoreDataCacheDomainTests: XCTestCase {
 
     func testSaveDeleteFetch() {
         let defaultObjects = (0..<10).map { _ in return createRandomFeed() }
-        XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainCache))
+        XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainRepository))
 
         let favoriteObjects = (0..<15).map { _ in return createRandomFeed() }
-        XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainCache))
+        XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainRepository))
 
-        XCTAssertTrue(deleteAll(in: favoriteDomainCache))
+        XCTAssertTrue(deleteAll(in: favoriteDomainRepository))
 
-        let optionalFetchedDefaultObjects = fetchAll(from: defaultDomainCache)
+        let optionalFetchedDefaultObjects = fetchAll(from: defaultDomainRepository)
 
         guard let fetchedDefaultObjects = optionalFetchedDefaultObjects else {
             XCTFail()
@@ -67,7 +67,7 @@ class CoreDataCacheDomainTests: XCTestCase {
 
         XCTAssertTrue(isSameObjectSets(defaultObjects, fetchedDefaultObjects))
 
-        let optionalFetchedFavoriteObjects = fetchAll(from: favoriteDomainCache)
+        let optionalFetchedFavoriteObjects = fetchAll(from: favoriteDomainRepository)
 
         guard let fetchedFavoriteObjects = optionalFetchedFavoriteObjects else {
             XCTFail()
@@ -79,28 +79,28 @@ class CoreDataCacheDomainTests: XCTestCase {
 
     func testFetchByIdInDomain() {
         let defaultObjects = (0..<10).map { _ in return createRandomFeed() }
-        XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainCache))
+        XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainRepository))
 
         let favoriteObjects = (0..<15).map { _ in return createRandomFeed() }
-        XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainCache))
+        XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainRepository))
 
-        var object = fetchById(defaultObjects[0].identifier, cache: defaultDomainCache)
+        var object = fetchById(defaultObjects[0].identifier, repository: defaultDomainRepository)
         XCTAssertEqual(object, defaultObjects[0])
 
-        object = fetchById(defaultObjects[0].identifier, cache: favoriteDomainCache)
+        object = fetchById(defaultObjects[0].identifier, repository: favoriteDomainRepository)
         XCTAssertNil(object)
     }
 
     func testDeleteByIdentifier() {
         let defaultObjects = (0..<10).map { _ in return createRandomFeed() }
-        XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainCache))
+        XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainRepository))
 
         let favoriteObjects = (0..<15).map { _ in return createRandomFeed() }
-        XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainCache))
+        XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainRepository))
 
-        XCTAssertTrue(delete(objectIds: defaultObjects[0..<5].map { return $0.identifier }, in: defaultDomainCache))
+        XCTAssertTrue(delete(objectIds: defaultObjects[0..<5].map { return $0.identifier }, in: defaultDomainRepository))
 
-        let optionalFetchedDefaultObjects = fetchAll(from: defaultDomainCache)
+        let optionalFetchedDefaultObjects = fetchAll(from: defaultDomainRepository)
 
         guard let fetchedDefaultObjects = optionalFetchedDefaultObjects else {
             XCTFail()
@@ -109,7 +109,7 @@ class CoreDataCacheDomainTests: XCTestCase {
 
         XCTAssertTrue(isSameObjectSets(Array<FeedData>(defaultObjects[5..<defaultObjects.count]), fetchedDefaultObjects))
 
-        let optionalFetchedFavoriteObjects = fetchAll(from: favoriteDomainCache)
+        let optionalFetchedFavoriteObjects = fetchAll(from: favoriteDomainRepository)
 
         guard let fetchedFavoriteObjects = optionalFetchedFavoriteObjects else {
             XCTFail()
@@ -121,8 +121,8 @@ class CoreDataCacheDomainTests: XCTestCase {
 
     // MARK: Private
 
-    private func save(objects: [FeedData], in cache: CoreDataCache<FeedData, CDFeed>) -> Bool {
-        let saveOperation = cache.saveOperation( { return objects }, { return [] })
+    private func save(objects: [FeedData], in repository: CoreDataRepository<FeedData, CDFeed>) -> Bool {
+        let saveOperation = repository.saveOperation( { return objects }, { return [] })
 
         let expectation = XCTestExpectation()
 
@@ -143,8 +143,8 @@ class CoreDataCacheDomainTests: XCTestCase {
         return operationResult
     }
 
-    private func delete(objectIds: [String], in cache: CoreDataCache<FeedData, CDFeed>) -> Bool {
-        let saveOperation = cache.saveOperation( { return [] }, { return objectIds })
+    private func delete(objectIds: [String], in repository: CoreDataRepository<FeedData, CDFeed>) -> Bool {
+        let saveOperation = repository.saveOperation( { return [] }, { return objectIds })
 
         let expectation = XCTestExpectation()
 
@@ -165,8 +165,8 @@ class CoreDataCacheDomainTests: XCTestCase {
         return operationResult
     }
 
-    private func deleteAll(in cache: CoreDataCache<FeedData, CDFeed>) -> Bool {
-        let deleteOperation = cache.deleteAllOperation()
+    private func deleteAll(in repository: CoreDataRepository<FeedData, CDFeed>) -> Bool {
+        let deleteOperation = repository.deleteAllOperation()
 
         let expectation = XCTestExpectation()
 
@@ -187,8 +187,8 @@ class CoreDataCacheDomainTests: XCTestCase {
         return operationResult
     }
 
-    private func fetchAll(from cache: CoreDataCache<FeedData, CDFeed>) -> [FeedData]? {
-        let fetchOperation = cache.fetchAllOperation()
+    private func fetchAll(from repository: CoreDataRepository<FeedData, CDFeed>) -> [FeedData]? {
+        let fetchOperation = repository.fetchAllOperation()
 
         let expectation = XCTestExpectation()
 
@@ -209,8 +209,8 @@ class CoreDataCacheDomainTests: XCTestCase {
         return objects
     }
 
-    private func fetchById(_ modelId: String, cache: CoreDataCache<FeedData, CDFeed>) -> FeedData? {
-        let fetchOperation = cache.fetchOperation(by: modelId)
+    private func fetchById(_ modelId: String, repository: CoreDataRepository<FeedData, CDFeed>) -> FeedData? {
+        let fetchOperation = repository.fetchOperation(by: modelId)
 
         let expectation = XCTestExpectation()
 

@@ -9,20 +9,20 @@ import CoreData
 public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
 
     let source: AnyStreamableSource<T>
-    let cache: CoreDataCache<T, U>
+    let repository: CoreDataRepository<T, U>
     let observable: CoreDataContextObservable<T, U>
     let operationQueue: OperationQueue
     let processingQueue: DispatchQueue
 
-    var observers: [CacheObserver<T>] = []
+    var observers: [RepositoryObserver<T>] = []
 
     public init(source: AnyStreamableSource<T>,
-                cache: CoreDataCache<T, U>,
+                repository: CoreDataRepository<T, U>,
                 observable: CoreDataContextObservable<T, U>,
                 operationQueue: OperationQueue? = nil,
                 serialQueue: DispatchQueue? = nil) {
         self.source = source
-        self.cache = cache
+        self.repository = repository
         self.observable = observable
 
         if let currentExecutionQueue = operationQueue {
@@ -31,11 +31,11 @@ public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
             self.operationQueue = OperationQueue()
         }
 
-        if let currentCacheQueue = serialQueue {
-            self.processingQueue = currentCacheQueue
+        if let currentProcessingQueue = serialQueue {
+            self.processingQueue = currentProcessingQueue
         } else {
             self.processingQueue = DispatchQueue(
-                label: "co.jp.streamableprovider.cachequeue.\(UUID().uuidString)",
+                label: "co.jp.streamableprovider.repository.queue.\(UUID().uuidString)",
                 qos: .utility)
         }
     }
@@ -102,7 +102,7 @@ extension StreamableProvider: StreamableProviderProtocol {
 
     public func fetch(offset: Int, count: Int,
                       with completionBlock: @escaping (OperationResult<[Model]>?) -> Void) -> BaseOperation<[Model]> {
-        let operation = cache.fetch(offset: offset, count: count, reversed: false)
+        let operation = repository.fetch(offset: offset, count: count, reversed: false)
 
         operation.completionBlock = { [weak self] in
             if
@@ -139,11 +139,11 @@ extension StreamableProvider: StreamableProviderProtocol {
             self.observers = self.observers.filter { $0.observer != nil }
 
             if !self.observers.contains(where: { $0.observer === observer }) {
-                let observerWrapper = CacheObserver(observer: observer,
-                                                    queue: queue,
-                                                    updateBlock: updateBlock,
-                                                    failureBlock: failureBlock,
-                                                    options: options)
+                let observerWrapper = RepositoryObserver(observer: observer,
+                                                         queue: queue,
+                                                         updateBlock: updateBlock,
+                                                         failureBlock: failureBlock,
+                                                         options: options)
                 self.observers.append(observerWrapper)
             }
 

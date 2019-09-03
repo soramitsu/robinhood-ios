@@ -7,14 +7,14 @@ import XCTest
 @testable import RobinHood
 
 class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
-    let cache: CoreDataCache<SingleValueProviderObject, CDSingleValue> = CoreDataCacheFacade.shared.createCoreDataCache()
+    let repository: CoreDataRepository<SingleValueProviderObject, CDSingleValue> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
 
     override func setUp() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     override func tearDown() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     func testSynchronizationOnInit() {
@@ -24,7 +24,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let source = createSingleValueSourceMock(base: self, returns: object)
         let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
                                                source: source,
-                                               cache: cache,
+                                               repository: repository,
                                                updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
@@ -43,10 +43,10 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         }
 
         // when
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock)
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
@@ -71,7 +71,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let source = createSingleValueSourceMock(base: self, returns: object)
         let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
                                                                            source: source,
-                                                                           cache: cache,
+                                                                           repository: repository,
                                                                            updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
@@ -91,10 +91,10 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         }
 
         // when
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock)
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
@@ -121,14 +121,14 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         }
     }
 
-    func testFetchFromCache() {
+    func testFetchFromRepository() {
         // given
         let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createSingleValueSourceMock(base: self, returns: object)
         let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
                                                                         source: source,
-                                                                        cache: cache,
+                                                                        repository: repository,
                                                                         updateTrigger: trigger)
 
         let changeExpectation = XCTestExpectation()
@@ -144,10 +144,10 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         }
 
         // when
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock)
 
         wait(for: [changeExpectation], timeout: Constants.expectationDuration)
 
@@ -168,7 +168,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let source = createSingleValueSourceMock(base: self, returns: object)
         let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
                                                                         source: source,
-                                                                        cache: cache,
+                                                                        repository: repository,
                                                                         updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
@@ -188,12 +188,12 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         }
 
         // when
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock)
 
-        dataProvider.refreshCache()
+        dataProvider.refresh()
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
@@ -229,11 +229,11 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
             return
         }
 
-        let cacheValueObject = SingleValueProviderObject(identifier: object.identifier, payload: payload)
+        let repositoryValueObject = SingleValueProviderObject(identifier: object.identifier, payload: payload)
 
         let saveExpectation = XCTestExpectation()
 
-        cache.save(updating: [cacheValueObject], deleting: [], runCompletionIn: .main) { _ in
+        repository.save(updating: [repositoryValueObject], deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
 
@@ -243,7 +243,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let source: AnySingleValueProviderSource<FeedData?> = createSingleValueSourceMock(base: self, returns: nil)
         let dataProvider = SingleValueProvider<FeedData?, CDSingleValue>(targetIdentifier: object.identifier,
                                                                            source: source,
-                                                                           cache: cache,
+                                                                           repository: repository,
                                                                            updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
@@ -260,15 +260,15 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         }
 
         let options = DataProviderObserverOptions(alwaysNotifyOnRefresh: true)
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock,
-                                      options: options)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock,
+                                 options: options)
 
         // when
 
-        dataProvider.refreshCache()
+        dataProvider.refresh()
 
         wait(for: [expectation], timeout: Constants.networkRequestTimeout)
 
@@ -304,11 +304,11 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
             return
         }
 
-        let cacheValueObject = SingleValueProviderObject(identifier: object.identifier, payload: payload)
+        let repositoryValueObject = SingleValueProviderObject(identifier: object.identifier, payload: payload)
 
         let saveExpectation = XCTestExpectation()
 
-        cache.save(updating: [cacheValueObject], deleting: [], runCompletionIn: .main) { _ in
+        repository.save(updating: [repositoryValueObject], deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
 
@@ -318,7 +318,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let source = createSingleValueSourceMock(base: self, returns: object)
         let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: object.identifier,
                                                                         source: source,
-                                                                        cache: cache,
+                                                                        repository: repository,
                                                                         updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
@@ -338,14 +338,14 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         }
 
         let options = DataProviderObserverOptions(alwaysNotifyOnRefresh: true)
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock,
-                                      options: options)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock,
+                                 options: options)
 
         // when
-        dataProvider.refreshCache()
+        dataProvider.refresh()
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
@@ -380,11 +380,11 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
             return
         }
 
-        let cacheValueObject = SingleValueProviderObject(identifier: object.identifier, payload: payload)
+        let repositoryValueObject = SingleValueProviderObject(identifier: object.identifier, payload: payload)
 
         let saveExpectation = XCTestExpectation()
 
-        cache.save(updating: [cacheValueObject], deleting: [], runCompletionIn: .main) { _ in
+        repository.save(updating: [repositoryValueObject], deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
 
@@ -394,7 +394,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let source: AnySingleValueProviderSource<FeedData> = createSingleValueSourceMock(base: self, returns: NetworkBaseError.unexpectedResponseObject)
         let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: object.identifier,
                                                                         source: source,
-                                                                        cache: cache,
+                                                                        repository: repository,
                                                                         updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
@@ -414,14 +414,14 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         }
 
         let options = DataProviderObserverOptions(alwaysNotifyOnRefresh: true)
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock,
-                                      options: options)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock,
+                                 options: options)
 
         // when
-        dataProvider.refreshCache()
+        dataProvider.refresh()
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 

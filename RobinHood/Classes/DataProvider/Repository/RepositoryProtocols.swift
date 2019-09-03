@@ -5,7 +5,7 @@
 
 import Foundation
 
-public protocol DataProviderCacheProtocol {
+public protocol DataProviderRepositoryProtocol {
     associatedtype Model: Identifiable
 
     var domain: String { get }

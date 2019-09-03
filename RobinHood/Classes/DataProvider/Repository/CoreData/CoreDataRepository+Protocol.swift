@@ -5,7 +5,7 @@
 
 import Foundation
 
-extension CoreDataCache: DataProviderCacheProtocol {
+extension CoreDataRepository: DataProviderRepositoryProtocol {
     public func fetchOperation(by modelId: String) -> BaseOperation<Model?> {
         return ClosureOperation {
             var model: Model?
@@ -58,7 +58,7 @@ extension CoreDataCache: DataProviderCacheProtocol {
             if let existingError = error {
                 throw existingError
             } else {
-                throw CoreDataCacheError.bothModelAndErrorNull
+                throw CoreDataRepositoryError.bothModelAndErrorNull
             }
         }
     }
@@ -87,7 +87,7 @@ extension CoreDataCache: DataProviderCacheProtocol {
             if let existingError = error {
                 throw existingError
             } else {
-                throw CoreDataCacheError.bothModelAndErrorNull
+                throw CoreDataRepositoryError.bothModelAndErrorNull
             }
         }
     }

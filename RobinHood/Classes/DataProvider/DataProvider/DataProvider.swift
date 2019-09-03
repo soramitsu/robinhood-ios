@@ -8,30 +8,30 @@ import CoreData
 
 public enum DataProviderError: Error {
     case unexpectedSourceResult
-    case unexpectedCacheResult
+    case unexpectedRepositoryResult
     case dependencyCancelled
 }
 
 public final class DataProvider<T: Identifiable & Equatable, U: NSManagedObject> {
     public typealias Model = T
 
-    public private(set) var cache: CoreDataCache<T, U>
+    public private(set) var repository: CoreDataRepository<T, U>
     public private(set) var source: AnyDataProviderSource<T>
     public private(set) var updateTrigger: DataProviderTriggerProtocol
     public private(set) var executionQueue: OperationQueue
-    public private(set) var cacheQueue: DispatchQueue
+    public private(set) var syncQueue: DispatchQueue
 
-    var cacheObservers: [CacheObserver<T>] = []
+    var observers: [RepositoryObserver<T>] = []
     var lastSyncOperation: Operation?
-    var cacheUpdateOperation: Operation?
+    var repositoryUpdateOperation: Operation?
 
     public init(source: AnyDataProviderSource<T>,
-                cache: CoreDataCache<T, U>,
+                repository: CoreDataRepository<T, U>,
                 updateTrigger: DataProviderTriggerProtocol = DataProviderEventTrigger.onAll,
                 executionQueue: OperationQueue? = nil,
-                serialCacheQueue: DispatchQueue? = nil) {
+                serialSyncQueue: DispatchQueue? = nil) {
         self.source = source
-        self.cache = cache
+        self.repository = repository
 
         if let currentExecutionQueue = executionQueue {
             self.executionQueue = currentExecutionQueue
@@ -39,11 +39,11 @@ public final class DataProvider<T: Identifiable & Equatable, U: NSManagedObject>
             self.executionQueue = OperationQueue()
         }
 
-        if let currentCacheQueue = serialCacheQueue {
-            self.cacheQueue = currentCacheQueue
+        if let currentSyncQueue = serialSyncQueue {
+            self.syncQueue = currentSyncQueue
         } else {
-            self.cacheQueue = DispatchQueue(
-                label: "co.jp.dataprovider.cachequeue.\(UUID().uuidString)",
+            self.syncQueue = DispatchQueue(
+                label: "co.jp.dataprovider.repository.queue.\(UUID().uuidString)",
                 qos: .utility)
         }
 
@@ -53,27 +53,28 @@ public final class DataProvider<T: Identifiable & Equatable, U: NSManagedObject>
     }
 }
 
-// MARK: Internal Cache update logic
+// MARK: Internal Repository update logic
 extension DataProvider {
-    func dispatchUpdateCache() {
-        cacheQueue.async {
-            self.updateCache()
+    func dispatchUpdateRepository() {
+        syncQueue.async {
+            self.updateRepository()
         }
     }
 
-    private func updateCache() {
-        if let currentUpdateCacheOperation = cacheUpdateOperation, !currentUpdateCacheOperation.isFinished {
+    private func updateRepository() {
+        if let currentUpdateRepositoryOperation = repositoryUpdateOperation,
+            !currentUpdateRepositoryOperation.isFinished {
             return
         }
 
         let sourceOperation = source.fetchOperation(page: 0)
 
-        let cacheOperation = cache.fetchAllOperation()
+        let repositoryOperation = repository.fetchAllOperation()
 
         let differenceOperation = createDifferenceOperation(dependingOn: sourceOperation,
-                                                            cacheOperation: cacheOperation)
+                                                            repositoryOperation: repositoryOperation)
 
-        let saveOperation = createSaveCacheOperation(dependingOn: differenceOperation)
+        let saveOperation = createSaveRepositoryOperation(dependingOn: differenceOperation)
 
         saveOperation.completionBlock = {
             guard let saveResult = saveOperation.result else {
@@ -81,7 +82,7 @@ extension DataProvider {
             }
 
             if case .error(let error) = saveResult {
-                self.cacheQueue.async {
+                self.syncQueue.async {
                     self.notifyObservers(with: error)
                 }
 
@@ -93,27 +94,27 @@ extension DataProvider {
                     return
             }
 
-            self.cacheQueue.async {
+            self.syncQueue.async {
                 self.notifyObservers(with: updates)
             }
         }
 
-        cacheUpdateOperation = saveOperation
+        repositoryUpdateOperation = saveOperation
 
         if let syncOperation = lastSyncOperation, !syncOperation.isFinished {
             sourceOperation.addDependency(syncOperation)
-            cacheOperation.addDependency(syncOperation)
+            repositoryOperation.addDependency(syncOperation)
         }
 
         lastSyncOperation = saveOperation
 
-        let operations = [sourceOperation, cacheOperation, differenceOperation, saveOperation]
+        let operations = [sourceOperation, repositoryOperation, differenceOperation, saveOperation]
 
         executionQueue.addOperations(operations, waitUntilFinished: false)
     }
 
     private func createDifferenceOperation(dependingOn sourceOperation: BaseOperation<[T]>,
-                                           cacheOperation: BaseOperation<[T]>)
+                                           repositoryOperation: BaseOperation<[T]>)
         -> BaseOperation<[DataProviderChange<T>]> {
 
             let operation = ClosureOperation<[DataProviderChange<T>]> {
@@ -125,31 +126,31 @@ extension DataProvider {
                     throw error
                 }
 
-                guard let cacheResult = cacheOperation.result else {
-                    throw DataProviderError.unexpectedSourceResult
+                guard let repositoryResult = repositoryOperation.result else {
+                    throw DataProviderError.unexpectedRepositoryResult
                 }
 
-                if case .error(let error) = cacheResult {
+                if case .error(let error) = repositoryResult {
                     throw error
                 }
 
                 if case .success(let sourceModels) = sourceResult,
-                    case .success(let cacheModels) = cacheResult {
+                    case .success(let repositoryModels) = repositoryResult {
 
                     return try self.findChanges(sourceResult: sourceModels,
-                                                cacheResult: cacheModels)
+                                                repositoryResult: repositoryModels)
                 } else {
                     throw DataProviderError.unexpectedSourceResult
                 }
             }
 
             operation.addDependency(sourceOperation)
-            operation.addDependency(cacheOperation)
+            operation.addDependency(repositoryOperation)
 
             return operation
     }
 
-    private func createSaveCacheOperation(dependingOn differenceOperation: BaseOperation<[DataProviderChange<T>]>)
+    private func createSaveRepositoryOperation(dependingOn differenceOperation: BaseOperation<[DataProviderChange<T>]>)
         -> BaseOperation<Bool> {
 
             let updatedItemsBlock = { () throws -> [T] in
@@ -186,7 +187,7 @@ extension DataProvider {
                 }
             }
 
-            let operation = cache.saveOperation(updatedItemsBlock, deletedItemsBlock)
+            let operation = repository.saveOperation(updatedItemsBlock, deletedItemsBlock)
 
             operation.addDependency(differenceOperation)
 
@@ -194,40 +195,40 @@ extension DataProvider {
     }
 
     private func notifyObservers(with updates: [DataProviderChange<T>]) {
-        cacheObservers.forEach { (cacheObserver) in
-            if cacheObserver.observer != nil,
-                (updates.count > 0 || cacheObserver.options.alwaysNotifyOnRefresh) {
-                dispatchInQueueWhenPossible(cacheObserver.queue) {
-                    cacheObserver.updateBlock(updates)
+        observers.forEach { (repositoryObserver) in
+            if repositoryObserver.observer != nil,
+                (updates.count > 0 || repositoryObserver.options.alwaysNotifyOnRefresh) {
+                dispatchInQueueWhenPossible(repositoryObserver.queue) {
+                    repositoryObserver.updateBlock(updates)
                 }
             }
         }
     }
 
     private func notifyObservers(with error: Error) {
-        cacheObservers.forEach { (cacheObserver) in
-            if cacheObserver.observer != nil, cacheObserver.options.alwaysNotifyOnRefresh {
-                dispatchInQueueWhenPossible(cacheObserver.queue) {
-                    cacheObserver.failureBlock(error)
+        observers.forEach { (repositoryObserver) in
+            if repositoryObserver.observer != nil, repositoryObserver.options.alwaysNotifyOnRefresh {
+                dispatchInQueueWhenPossible(repositoryObserver.queue) {
+                    repositoryObserver.failureBlock(error)
                 }
             }
         }
     }
 
-    private func findChanges(sourceResult: [T], cacheResult: [T]) throws -> [DataProviderChange<T>] {
+    private func findChanges(sourceResult: [T], repositoryResult: [T]) throws -> [DataProviderChange<T>] {
         var sourceKeyValue = sourceResult.reduce(into: [String: T]()) { (result, item) in
             result[item.identifier] = item
         }
 
-        var cacheKeyValue = cacheResult.reduce(into: [String: T]()) { (result, item) in
+        var repositoryKeyValue = repositoryResult.reduce(into: [String: T]()) { (result, item) in
             result[item.identifier] = item
         }
 
         var updates: [DataProviderChange<T>] = []
 
         for sourceModel in sourceResult {
-            if let cacheModel = cacheKeyValue[sourceModel.identifier] {
-                if sourceModel != cacheModel {
+            if let repositoryModel = repositoryKeyValue[sourceModel.identifier] {
+                if sourceModel != repositoryModel {
                     updates.append(DataProviderChange.update(newItem: sourceModel))
                 }
 
@@ -236,8 +237,8 @@ extension DataProvider {
             }
         }
 
-        for cacheModel in cacheResult where sourceKeyValue[cacheModel.identifier] == nil {
-            updates.append(DataProviderChange.delete(deletedIdentifier: cacheModel.identifier))
+        for repositoryModel in repositoryResult where sourceKeyValue[repositoryModel.identifier] == nil {
+            updates.append(DataProviderChange.delete(deletedIdentifier: repositoryModel.identifier))
         }
 
         return updates
