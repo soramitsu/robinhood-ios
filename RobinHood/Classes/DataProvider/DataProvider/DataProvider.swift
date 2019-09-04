@@ -4,7 +4,6 @@
 */
 
 import Foundation
-import CoreData
 
 public enum DataProviderError: Error {
     case unexpectedSourceResult
@@ -12,10 +11,10 @@ public enum DataProviderError: Error {
     case dependencyCancelled
 }
 
-public final class DataProvider<T: Identifiable & Equatable, U: NSManagedObject> {
+public final class DataProvider<T: Identifiable & Equatable> {
     public typealias Model = T
 
-    public private(set) var repository: CoreDataRepository<T, U>
+    public private(set) var repository: AnyDataProviderRepository<T>
     public private(set) var source: AnyDataProviderSource<T>
     public private(set) var updateTrigger: DataProviderTriggerProtocol
     public private(set) var executionQueue: OperationQueue
@@ -26,7 +25,7 @@ public final class DataProvider<T: Identifiable & Equatable, U: NSManagedObject>
     var repositoryUpdateOperation: Operation?
 
     public init(source: AnyDataProviderSource<T>,
-                repository: CoreDataRepository<T, U>,
+                repository: AnyDataProviderRepository<T>,
                 updateTrigger: DataProviderTriggerProtocol = DataProviderEventTrigger.onAll,
                 executionQueue: OperationQueue? = nil,
                 serialSyncQueue: DispatchQueue? = nil) {

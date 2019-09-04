@@ -22,9 +22,9 @@ class DataProviderTests: DataProviderBaseTests {
         let objects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createDataSourceMock(base: self, returns: objects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          repository: repository,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
 
@@ -72,9 +72,9 @@ class DataProviderTests: DataProviderBaseTests {
         let projects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onAddObserver
         let source = createDataSourceMock(base: self, returns: projects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          repository: repository,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -125,9 +125,9 @@ class DataProviderTests: DataProviderBaseTests {
         let projects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createDataSourceMock(base: self, returns: projects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          repository: repository,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let changeExpectation = XCTestExpectation()
 
@@ -164,9 +164,9 @@ class DataProviderTests: DataProviderBaseTests {
         // given
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createDataSourceMock(base: self, returns: [FeedData]())
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          repository: repository,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         // when
         let optionalBeforeResult = fetch(page: 0, from: dataProvider)
@@ -208,9 +208,9 @@ class DataProviderTests: DataProviderBaseTests {
         let objects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onNone
         let source = createDataSourceMock(base: self, returns: objects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          repository: repository,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -281,9 +281,9 @@ class DataProviderTests: DataProviderBaseTests {
         // when
         let trigger = DataProviderEventTrigger.onAddObserver
         let source = createDataSourceMock(base: self, returns: objects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          repository: repository,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         var allChanges: [[DataProviderChange<FeedData>]] = []
 
@@ -345,9 +345,9 @@ class DataProviderTests: DataProviderBaseTests {
 
         let trigger = DataProviderEventTrigger.onNone
         let source = createDataSourceMock(base: self, returns: objects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          repository: repository,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -408,9 +408,9 @@ class DataProviderTests: DataProviderBaseTests {
         let trigger = DataProviderEventTrigger.onNone
         let source: AnyDataProviderSource<FeedData> = createDataSourceMock(base: self,
                                                                            returns: NetworkBaseError.unexpectedResponseObject)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          repository: repository,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2

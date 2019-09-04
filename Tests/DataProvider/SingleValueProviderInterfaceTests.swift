@@ -22,9 +22,9 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createSingleValueSourceMock(base: self, returns: object)
-        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
+        let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
                                                source: source,
-                                               repository: repository,
+                                               repository: AnyDataProviderRepository(repository),
                                                updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
@@ -69,10 +69,10 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onAddObserver
         let source = createSingleValueSourceMock(base: self, returns: object)
-        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
-                                                                           source: source,
-                                                                           repository: repository,
-                                                                           updateTrigger: trigger)
+        let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
+                                                         source: source,
+                                                         repository: AnyDataProviderRepository(repository),
+                                                         updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -126,10 +126,10 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createSingleValueSourceMock(base: self, returns: object)
-        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
-                                                                        source: source,
-                                                                        repository: repository,
-                                                                        updateTrigger: trigger)
+        let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
+                                                         source: source,
+                                                         repository: AnyDataProviderRepository(repository),
+                                                         updateTrigger: trigger)
 
         let changeExpectation = XCTestExpectation()
 
@@ -166,10 +166,10 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onNone
         let source = createSingleValueSourceMock(base: self, returns: object)
-        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: "co.jp.sora.project1",
-                                                                        source: source,
-                                                                        repository: repository,
-                                                                        updateTrigger: trigger)
+        let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
+                                                         source: source,
+                                                         repository: AnyDataProviderRepository(repository),
+                                                         updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -241,10 +241,10 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
         let trigger = DataProviderEventTrigger.onNone
         let source: AnySingleValueProviderSource<FeedData?> = createSingleValueSourceMock(base: self, returns: nil)
-        let dataProvider = SingleValueProvider<FeedData?, CDSingleValue>(targetIdentifier: object.identifier,
-                                                                           source: source,
-                                                                           repository: repository,
-                                                                           updateTrigger: trigger)
+        let dataProvider = SingleValueProvider<FeedData?>(targetIdentifier: object.identifier,
+                                                          source: source,
+                                                          repository: AnyDataProviderRepository(repository),
+                                                          updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -316,10 +316,10 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
         let trigger = DataProviderEventTrigger.onNone
         let source = createSingleValueSourceMock(base: self, returns: object)
-        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: object.identifier,
-                                                                        source: source,
-                                                                        repository: repository,
-                                                                        updateTrigger: trigger)
+        let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: object.identifier,
+                                                         source: source,
+                                                         repository: AnyDataProviderRepository(repository),
+                                                         updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -392,10 +392,10 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
         let trigger = DataProviderEventTrigger.onNone
         let source: AnySingleValueProviderSource<FeedData> = createSingleValueSourceMock(base: self, returns: NetworkBaseError.unexpectedResponseObject)
-        let dataProvider = SingleValueProvider<FeedData, CDSingleValue>(targetIdentifier: object.identifier,
-                                                                        source: source,
-                                                                        repository: repository,
-                                                                        updateTrigger: trigger)
+        let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: object.identifier,
+                                                         source: source,
+                                                         repository: AnyDataProviderRepository(repository),
+                                                         updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2

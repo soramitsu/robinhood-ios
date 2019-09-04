@@ -8,7 +8,7 @@ import XCTest
 
 class DataProviderBaseTests: XCTestCase {
 
-    func fetchById<T, U>(_ identifier: String, from dataProvider: DataProvider<T, U>) -> OperationResult<T?>? {
+    func fetchById<T>(_ identifier: String, from dataProvider: DataProvider<T>) -> OperationResult<T?>? {
         let expectation = XCTestExpectation()
 
         let fetchByIdOperation = dataProvider.fetch(by: identifier) { _ in
@@ -20,7 +20,7 @@ class DataProviderBaseTests: XCTestCase {
         return fetchByIdOperation.result
     }
 
-    func fetch<T, U>(page: UInt, from dataProvider: DataProvider<T, U>) -> OperationResult<[T]>? {
+    func fetch<T>(page: UInt, from dataProvider: DataProvider<T>) -> OperationResult<[T]>? {
         let expectation = XCTestExpectation()
 
         let fetchByPageOperation = dataProvider.fetch(page: page) { _ in

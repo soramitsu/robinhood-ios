@@ -7,7 +7,7 @@ import XCTest
 @testable import RobinHood
 
 class SingleValueProviderBaseTests: XCTestCase {
-    func fetch<T, U>(from dataProvider: SingleValueProvider<T, U>) -> OperationResult<T>? {
+    func fetch<T>(from dataProvider: SingleValueProvider<T>) -> OperationResult<T>? {
         let expectation = XCTestExpectation()
 
         let fetchOperation = dataProvider.fetch { _ in

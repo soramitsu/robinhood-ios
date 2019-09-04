@@ -4,17 +4,16 @@
 */
 
 import Foundation
-import CoreData
 
 public struct SingleValueProviderObject: Identifiable & Codable {
     public var identifier: String
     public var payload: Data
 }
 
-public final class SingleValueProvider<T: Codable & Equatable, U: NSManagedObject> {
+public final class SingleValueProvider<T: Codable & Equatable> {
     public typealias Model = T
 
-    public private(set) var repository: CoreDataRepository<SingleValueProviderObject, U>
+    public private(set) var repository: AnyDataProviderRepository<SingleValueProviderObject>
     public private(set) var source: AnySingleValueProviderSource<T>
     public private(set) var updateTrigger: DataProviderTriggerProtocol
     public private(set) var executionQueue: OperationQueue
@@ -30,7 +29,7 @@ public final class SingleValueProvider<T: Codable & Equatable, U: NSManagedObjec
 
     public init(targetIdentifier: String,
                 source: AnySingleValueProviderSource<T>,
-                repository: CoreDataRepository<SingleValueProviderObject, U>,
+                repository: AnyDataProviderRepository<SingleValueProviderObject>,
                 updateTrigger: DataProviderTriggerProtocol = DataProviderEventTrigger.onAll,
                 executionQueue: OperationQueue? = nil,
                 serialSyncQueue: DispatchQueue? = nil) {
