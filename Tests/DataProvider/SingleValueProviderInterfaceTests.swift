@@ -447,4 +447,67 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         }
 
     }
+
+    func testAddObserverWithoutWaitingSynchronization() {
+        // given
+        let object = createRandomFeed()
+
+        let trigger = DataProviderEventTrigger.onNone
+        let source = createSingleValueSourceMock(base: self, returns: object)
+        let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: object.identifier,
+                                                         source: source,
+                                                         repository: AnyDataProviderRepository(repository),
+                                                         updateTrigger: trigger)
+
+        let expectation = XCTestExpectation()
+        expectation.expectedFulfillmentCount = 2
+
+        var allChanges: [[DataProviderChange<FeedData>]] = []
+
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
+            allChanges.append(changes)
+            expectation.fulfill()
+            return
+        }
+
+        let errorBlock: (Error) -> Void = { (error) in
+            XCTFail()
+            return
+        }
+
+        // when
+
+        dataProvider.refresh()
+
+        let options = DataProviderObserverOptions(alwaysNotifyOnRefresh: true,
+                                                  waitsInProgressSyncOnAdd: false)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock,
+                                 options: options)
+
+        wait(for: [expectation], timeout: Constants.expectationDuration)
+
+        // then
+
+        guard allChanges[1].count == 1 else {
+            XCTFail()
+            return
+        }
+
+        guard let change = allChanges[1].first else {
+            XCTFail()
+            return
+        }
+
+        switch change {
+        case .insert(let newItem):
+            XCTAssertEqual(newItem, object)
+        default:
+            XCTFail()
+        }
+
+        XCTAssertTrue(allChanges[0].isEmpty)
+    }
 }

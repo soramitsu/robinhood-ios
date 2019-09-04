@@ -7,19 +7,19 @@ import Foundation
 import RobinHood
 import CoreData
 
-func createDataSourceMock<T>(base: Any, returns items: [T]) -> AnyDataProviderSource<T> {
+func createDataSourceMock<T>(base: Any, returns items: [T], after delay: TimeInterval = 0.0) -> AnyDataProviderSource<T> {
     let fetchPageBlock: (UInt) -> BaseOperation<[T]> = { _ in
-        let pageOperation = BaseOperation<[T]>()
-        pageOperation.result = .success(items)
-
-        return pageOperation
+        return ClosureOperation {
+            usleep(useconds_t(delay * 1e+6))
+            return items
+        }
     }
 
     let fetchByIdBlock: (String) -> BaseOperation<T?> = { _ in
-        let identifierOperation = BaseOperation<T?>()
-        identifierOperation.result = .success(nil)
-
-        return identifierOperation
+        return ClosureOperation {
+            usleep(useconds_t(delay * 1e+6))
+            return nil
+        }
     }
 
     return AnyDataProviderSource(base: base,
@@ -47,12 +47,12 @@ func createDataSourceMock<T>(base: Any, returns error: Error) -> AnyDataProvider
                                  fetchById: fetchByIdBlock)
 }
 
-func createSingleValueSourceMock<T>(base: Any, returns item: T) -> AnySingleValueProviderSource<T> {
+func createSingleValueSourceMock<T>(base: Any, returns item: T, after delay: TimeInterval = 0.0) -> AnySingleValueProviderSource<T> {
     let fetch: () -> BaseOperation<T> = {
-        let operation = BaseOperation<T>()
-        operation.result = .success(item)
-
-        return operation
+        return ClosureOperation {
+            usleep(useconds_t(delay * 1e+6))
+            return item
+        }
     }
 
     return AnySingleValueProviderSource(base: base,

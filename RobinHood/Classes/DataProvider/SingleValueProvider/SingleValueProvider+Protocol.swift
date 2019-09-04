@@ -93,11 +93,13 @@ extension SingleValueProvider: SingleValueProviderProtocol {
                 }
             }
 
-            if let syncOperation = self.lastSyncOperation, !syncOperation.isFinished {
-                repositoryOperation.addDependency(syncOperation)
-            }
+            if options.waitsInProgressSyncOnAdd {
+                if let syncOperation = self.lastSyncOperation, !syncOperation.isFinished {
+                    repositoryOperation.addDependency(syncOperation)
+                }
 
-            self.lastSyncOperation = repositoryOperation
+                self.lastSyncOperation = repositoryOperation
+            }
 
             self.executionQueue.addOperations([repositoryOperation], waitUntilFinished: false)
         }

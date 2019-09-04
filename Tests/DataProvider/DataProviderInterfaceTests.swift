@@ -467,4 +467,59 @@ class DataProviderTests: DataProviderBaseTests {
             }
         }
     }
+
+    func testAddObserverWithoutWaitingSynchronization() {
+        // given
+        let objects = (0..<10).map { _ in createRandomFeed() }
+
+        let trigger = DataProviderEventTrigger.onNone
+        let source = createDataSourceMock(base: self, returns: objects, after: 0.01)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
+
+        let expectation = XCTestExpectation()
+        expectation.expectedFulfillmentCount = 2
+
+        var allChanges: [[DataProviderChange<FeedData>]] = []
+
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
+            allChanges.append(changes)
+            expectation.fulfill()
+            return
+        }
+
+        let errorBlock: (Error) -> Void = { (error) in
+            XCTFail()
+            return
+        }
+
+        let observerOptions = DataProviderObserverOptions(alwaysNotifyOnRefresh: true,
+                                                          waitsInProgressSyncOnAdd: false)
+
+        // when
+
+        dataProvider.refresh()
+
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock,
+                                 options: observerOptions)
+
+        wait(for: [expectation], timeout: Constants.expectationDuration)
+
+        // then
+        XCTAssertTrue(allChanges[0].isEmpty)
+        XCTAssertEqual(allChanges[1].count, objects.count)
+
+        for change in allChanges[1] {
+            switch change {
+            case .insert(let newItem):
+                XCTAssertTrue(objects.contains(newItem))
+            default:
+                XCTFail()
+            }
+        }
+    }
 }
