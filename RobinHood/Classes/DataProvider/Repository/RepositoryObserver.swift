@@ -5,7 +5,7 @@
 
 import Foundation
 
-public final class CacheObserver<T> {
+public final class RepositoryObserver<T> {
     public private(set) weak var observer: AnyObject?
     public private(set) var queue: DispatchQueue?
     public private(set) var updateBlock: ([DataProviderChange<T>]) -> Void

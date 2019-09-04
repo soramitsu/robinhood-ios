@@ -5,7 +5,7 @@
 
 import Foundation
 
-public protocol DataProviderCacheProtocol {
+public protocol DataProviderRepositoryProtocol {
     associatedtype Model: Identifiable
 
     var domain: String { get }
@@ -20,4 +20,17 @@ public protocol DataProviderCacheProtocol {
                        _ deleteIdsBlock: @escaping () throws -> [String]) -> BaseOperation<Bool>
 
     func deleteAllOperation() -> BaseOperation<Bool>
+}
+
+public protocol DataProviderRepositoryObservable {
+    associatedtype Model
+
+    func start(completionBlock: @escaping (Error?) -> Void)
+    func stop(completionBlock: @escaping (Error?) -> Void)
+
+    func addObserver(_ observer: AnyObject,
+                     deliverOn queue: DispatchQueue,
+                     executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void)
+
+    func removeObserver(_ observer: AnyObject)
 }

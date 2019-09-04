@@ -8,19 +8,19 @@ import CoreData
 @testable import RobinHood
 
 class CoreDataContextObserverTests: XCTestCase {
-    let cache: CoreDataCache<FeedData, CDFeed> = {
+    let repository: CoreDataRepository<FeedData, CDFeed> = {
         let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
-        return CoreDataCacheFacade.shared.createCoreDataCache(sortDescriptor: sortDescriptor)
+        return CoreDataRepositoryFacade.shared.createCoreDataRepository(sortDescriptor: sortDescriptor)
     }()
 
     let operationQueue: OperationQueue = OperationQueue()
 
     override func setUp() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     override func tearDown() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     func testInsertionWhenListEmpty() {
@@ -185,8 +185,8 @@ class CoreDataContextObserverTests: XCTestCase {
                              deletedIds: [String],
                              changesValidationBlock: @escaping ([DataProviderChange<FeedData>]) -> Bool,
                              predicateBlock: @escaping (NSManagedObject) -> Bool) {
-        let observable = CoreDataContextObservable(service: CoreDataCacheFacade.shared.databaseService,
-                                                   mapper: cache.dataMapper,
+        let observable = CoreDataContextObservable(service: CoreDataRepositoryFacade.shared.databaseService,
+                                                   mapper: repository.dataMapper,
                                                    predicate: predicateBlock)
 
         observable.start { (optionalError) in
@@ -207,19 +207,19 @@ class CoreDataContextObserverTests: XCTestCase {
             }
         }
 
-        let operation = cache.saveOperation({ updateObjects }, { deletedIds })
+        let operation = repository.saveOperation({ updateObjects }, { deletedIds })
         operationQueue.addOperation(operation)
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
     }
 
     @discardableResult
-    private func performSaveOperation(with updatedObjects: [FeedData], deletedIds: [String]) -> OperationResult<Bool>? {
+    private func performSaveOperation(with updatedObjects: [FeedData], deletedIds: [String]) -> Result<Bool, Error>? {
         let expectation = XCTestExpectation()
 
-        let operation = cache.saveOperation({ updatedObjects }, { deletedIds })
+        let operation = repository.saveOperation({ updatedObjects }, { deletedIds })
 
-        var result: OperationResult<Bool>?
+        var result: Result<Bool, Error>?
 
         operation.completionBlock = {
             result = operation.result

@@ -6,23 +6,23 @@
 import Foundation
 import CoreData
 
-public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
+public final class StreamableProvider<T: Identifiable> {
 
     let source: AnyStreamableSource<T>
-    let cache: CoreDataCache<T, U>
-    let observable: CoreDataContextObservable<T, U>
+    let repository: AnyDataProviderRepository<T>
+    let observable: AnyDataProviderRepositoryObservable<T>
     let operationQueue: OperationQueue
     let processingQueue: DispatchQueue
 
-    var observers: [CacheObserver<T>] = []
+    var observers: [RepositoryObserver<T>] = []
 
     public init(source: AnyStreamableSource<T>,
-                cache: CoreDataCache<T, U>,
-                observable: CoreDataContextObservable<T, U>,
+                repository: AnyDataProviderRepository<T>,
+                observable: AnyDataProviderRepositoryObservable<T>,
                 operationQueue: OperationQueue? = nil,
                 serialQueue: DispatchQueue? = nil) {
         self.source = source
-        self.cache = cache
+        self.repository = repository
         self.observable = observable
 
         if let currentExecutionQueue = operationQueue {
@@ -31,11 +31,11 @@ public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
             self.operationQueue = OperationQueue()
         }
 
-        if let currentCacheQueue = serialQueue {
-            self.processingQueue = currentCacheQueue
+        if let currentProcessingQueue = serialQueue {
+            self.processingQueue = currentProcessingQueue
         } else {
             self.processingQueue = DispatchQueue(
-                label: "co.jp.streamableprovider.cachequeue.\(UUID().uuidString)",
+                label: "co.jp.streamableprovider.repository.queue.\(UUID().uuidString)",
                 qos: .utility)
         }
     }
@@ -50,7 +50,7 @@ public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
         observable.removeObserver(self)
     }
 
-    private func fetchHistory(offset: Int, count: Int, completionBlock: ((OperationResult<Int>?) -> Void)?) {
+    private func fetchHistory(offset: Int, count: Int, completionBlock: ((Result<Int, Error>?) -> Void)?) {
         source.fetchHistory(offset: offset,
                             count: count,
                             runningIn: processingQueue,
@@ -77,7 +77,7 @@ public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
         }
     }
 
-    private func notifyObservers(with fetchResult: OperationResult<Int>) {
+    private func notifyObservers(with fetchResult: Result<Int, Error>) {
         observers.forEach { (observerWrapper) in
             if observerWrapper.observer != nil, observerWrapper.options.alwaysNotifyOnRefresh {
                 switch fetchResult {
@@ -87,7 +87,7 @@ public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
                             observerWrapper.updateBlock([])
                         }
                     }
-                case .error(let error):
+                case .failure(let error):
                     dispatchInQueueWhenPossible(observerWrapper.queue) {
                         observerWrapper.failureBlock(error)
                     }
@@ -101,15 +101,15 @@ extension StreamableProvider: StreamableProviderProtocol {
     public typealias Model = T
 
     public func fetch(offset: Int, count: Int,
-                      with completionBlock: @escaping (OperationResult<[Model]>?) -> Void) -> BaseOperation<[Model]> {
-        let operation = cache.fetch(offset: offset, count: count, reversed: false)
+                      with completionBlock: @escaping (Result<[Model], Error>?) -> Void) -> BaseOperation<[Model]> {
+        let operation = repository.fetch(offset: offset, count: count, reversed: false)
 
         operation.completionBlock = { [weak self] in
             if
                 let result = operation.result,
                 case .success(let models) = result, models.count < count {
 
-                let completionBlock: (OperationResult<Int>?) -> Void = { (optionalResult) in
+                let completionBlock: (Result<Int, Error>?) -> Void = { (optionalResult) in
                     if let result = optionalResult {
                         self?.notifyObservers(with: result)
                     }
@@ -139,11 +139,11 @@ extension StreamableProvider: StreamableProviderProtocol {
             self.observers = self.observers.filter { $0.observer != nil }
 
             if !self.observers.contains(where: { $0.observer === observer }) {
-                let observerWrapper = CacheObserver(observer: observer,
-                                                    queue: queue,
-                                                    updateBlock: updateBlock,
-                                                    failureBlock: failureBlock,
-                                                    options: options)
+                let observerWrapper = RepositoryObserver(observer: observer,
+                                                         queue: queue,
+                                                         updateBlock: updateBlock,
+                                                         failureBlock: failureBlock,
+                                                         options: options)
                 self.observers.append(observerWrapper)
             }
 

@@ -17,8 +17,8 @@
 		32384BF32236F3D000346C90 /* DataProviderBaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE22236F3D000346C90 /* DataProviderBaseTests.swift */; };
 		32384BF52236F3D000346C90 /* SingleValueProviderInterfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE42236F3D000346C90 /* SingleValueProviderInterfaceTests.swift */; };
 		32384BF62236F3D000346C90 /* CoreDataServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE62236F3D000346C90 /* CoreDataServiceTests.swift */; };
-		32384BF82236F3D000346C90 /* CoreDataCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE92236F3D000346C90 /* CoreDataCacheTests.swift */; };
-		32384BF92236F3D000346C90 /* CoreDataCacheDomainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BEA2236F3D000346C90 /* CoreDataCacheDomainTests.swift */; };
+		32384BF82236F3D000346C90 /* CoreDataRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BE92236F3D000346C90 /* CoreDataRepositoryTests.swift */; };
+		32384BF92236F3D000346C90 /* CoreDataRepositoryDomainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BEA2236F3D000346C90 /* CoreDataRepositoryDomainTests.swift */; };
 		32384BFA2236F3D000346C90 /* DummyNetworkMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BEC2236F3D000346C90 /* DummyNetworkMock.swift */; };
 		32384BFB2236F3D000346C90 /* NetworkOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BED2236F3D000346C90 /* NetworkOperationTests.swift */; };
 		32384BFD2236F3D000346C90 /* NetworkOperationTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32384BEF2236F3D000346C90 /* NetworkOperationTestHelper.swift */; };
@@ -69,8 +69,8 @@
 		32384BE22236F3D000346C90 /* DataProviderBaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProviderBaseTests.swift; sourceTree = "<group>"; };
 		32384BE42236F3D000346C90 /* SingleValueProviderInterfaceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleValueProviderInterfaceTests.swift; sourceTree = "<group>"; };
 		32384BE62236F3D000346C90 /* CoreDataServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataServiceTests.swift; sourceTree = "<group>"; };
-		32384BE92236F3D000346C90 /* CoreDataCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataCacheTests.swift; sourceTree = "<group>"; };
-		32384BEA2236F3D000346C90 /* CoreDataCacheDomainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataCacheDomainTests.swift; sourceTree = "<group>"; };
+		32384BE92236F3D000346C90 /* CoreDataRepositoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataRepositoryTests.swift; sourceTree = "<group>"; };
+		32384BEA2236F3D000346C90 /* CoreDataRepositoryDomainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataRepositoryDomainTests.swift; sourceTree = "<group>"; };
 		32384BEC2236F3D000346C90 /* DummyNetworkMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyNetworkMock.swift; sourceTree = "<group>"; };
 		32384BED2236F3D000346C90 /* NetworkOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkOperationTests.swift; sourceTree = "<group>"; };
 		32384BEF2236F3D000346C90 /* NetworkOperationTestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkOperationTestHelper.swift; sourceTree = "<group>"; };
@@ -167,8 +167,8 @@
 		32384BE52236F3D000346C90 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				32384BE92236F3D000346C90 /* CoreDataCacheTests.swift */,
-				32384BEA2236F3D000346C90 /* CoreDataCacheDomainTests.swift */,
+				32384BE92236F3D000346C90 /* CoreDataRepositoryTests.swift */,
+				32384BEA2236F3D000346C90 /* CoreDataRepositoryDomainTests.swift */,
 				32384BE62236F3D000346C90 /* CoreDataServiceTests.swift */,
 				84014FA62243A73A00C35EFD /* CoreDataCompatibilityTests.swift */,
 			);
@@ -552,7 +552,7 @@
 				84E3D6D22285B298004DB81A /* StreamableDataProviderTests.swift in Sources */,
 				32384BF52236F3D000346C90 /* SingleValueProviderInterfaceTests.swift in Sources */,
 				84427D82223F6DE700AA721B /* LoadableBundleClass.swift in Sources */,
-				32384BF92236F3D000346C90 /* CoreDataCacheDomainTests.swift in Sources */,
+				32384BF92236F3D000346C90 /* CoreDataRepositoryDomainTests.swift in Sources */,
 				84530A5B223D96E700AD7598 /* NetworkBaseTests.swift in Sources */,
 				3213A31D223865D7001BE041 /* CoreDataConfiguration+Common.swift in Sources */,
 				84014FA52243A68C00C35EFD /* IEntities.xcdatamodeld in Sources */,
@@ -569,7 +569,7 @@
 				84530A5D223D976E00AD7598 /* NetworkMockManager.swift in Sources */,
 				3213A31A22385EB6001BE041 /* CoreDataCacheHelpers.swift in Sources */,
 				8425364322857D410044032B /* CoreDataContextObserverTests.swift in Sources */,
-				32384BF82236F3D000346C90 /* CoreDataCacheTests.swift in Sources */,
+				32384BF82236F3D000346C90 /* CoreDataRepositoryTests.swift in Sources */,
 				32384BF02236F3D000346C90 /* SingleValueProviderBaseTests.swift in Sources */,
 				32384C022236F7F200346C90 /* Constants.swift in Sources */,
 				32384C0A2236FC2B00346C90 /* FeedData.swift in Sources */,

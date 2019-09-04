@@ -28,8 +28,11 @@ public enum DataProviderChange<T> {
 
 public struct DataProviderObserverOptions {
     public var alwaysNotifyOnRefresh: Bool
+    public var waitsInProgressSyncOnAdd: Bool
 
-    public init(alwaysNotifyOnRefresh: Bool = false) {
+    public init(alwaysNotifyOnRefresh: Bool = false,
+                waitsInProgressSyncOnAdd: Bool = true) {
         self.alwaysNotifyOnRefresh = alwaysNotifyOnRefresh
+        self.waitsInProgressSyncOnAdd = waitsInProgressSyncOnAdd
     }
 }

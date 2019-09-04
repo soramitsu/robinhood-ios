@@ -7,14 +7,14 @@ import XCTest
 @testable import RobinHood
 
 class DataProviderTests: DataProviderBaseTests {
-    let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+    let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
 
     override func setUp() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     override func tearDown() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     func testSynchronizationOnInit() {
@@ -22,9 +22,9 @@ class DataProviderTests: DataProviderBaseTests {
         let objects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createDataSourceMock(base: self, returns: objects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          cache: cache,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
 
@@ -42,10 +42,10 @@ class DataProviderTests: DataProviderBaseTests {
         }
 
         // when
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock)
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
@@ -72,9 +72,9 @@ class DataProviderTests: DataProviderBaseTests {
         let projects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onAddObserver
         let source = createDataSourceMock(base: self, returns: projects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          cache: cache,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -93,10 +93,10 @@ class DataProviderTests: DataProviderBaseTests {
         }
 
         // when
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock)
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
@@ -120,14 +120,14 @@ class DataProviderTests: DataProviderBaseTests {
         }
     }
 
-    func testFetchByIdFromCache() {
+    func testFetchByIdFromRepository() {
         // given
         let projects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createDataSourceMock(base: self, returns: projects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          cache: cache,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let changeExpectation = XCTestExpectation()
 
@@ -142,10 +142,10 @@ class DataProviderTests: DataProviderBaseTests {
         }
 
         // when
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock)
 
         wait(for: [changeExpectation], timeout: Constants.expectationDuration)
 
@@ -160,13 +160,13 @@ class DataProviderTests: DataProviderBaseTests {
         XCTAssertEqual(fetchedProject, projects[0])
     }
 
-    func testFetchAllFromCache() {
+    func testFetchAllFromRepository() {
         // given
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createDataSourceMock(base: self, returns: [FeedData]())
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          cache: cache,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         // when
         let optionalBeforeResult = fetch(page: 0, from: dataProvider)
@@ -183,7 +183,7 @@ class DataProviderTests: DataProviderBaseTests {
         let saveExpectation = XCTestExpectation()
 
         let projects = (0..<10).map { _ in createRandomFeed() }
-        cache.save(updating:projects, deleting: [], runCompletionIn: .main) { _ in
+        repository.save(updating:projects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
 
@@ -208,9 +208,9 @@ class DataProviderTests: DataProviderBaseTests {
         let objects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onNone
         let source = createDataSourceMock(base: self, returns: objects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          cache: cache,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -229,12 +229,12 @@ class DataProviderTests: DataProviderBaseTests {
         }
 
         // when
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock)
 
-        dataProvider.refreshCache()
+        dataProvider.refresh()
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
@@ -263,7 +263,7 @@ class DataProviderTests: DataProviderBaseTests {
         let saveExpectation = XCTestExpectation()
 
         var objects = (0..<10).map { _ in createRandomFeed() }
-        cache.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
+        repository.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
 
@@ -281,9 +281,9 @@ class DataProviderTests: DataProviderBaseTests {
         // when
         let trigger = DataProviderEventTrigger.onAddObserver
         let source = createDataSourceMock(base: self, returns: objects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          cache: cache,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         var allChanges: [[DataProviderChange<FeedData>]] = []
 
@@ -302,10 +302,10 @@ class DataProviderTests: DataProviderBaseTests {
         }
 
         // when
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock)
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
@@ -337,7 +337,7 @@ class DataProviderTests: DataProviderBaseTests {
         let saveExpectation = XCTestExpectation()
 
         let objects = (0..<10).map { _ in createRandomFeed() }
-        cache.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
+        repository.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
 
@@ -345,9 +345,9 @@ class DataProviderTests: DataProviderBaseTests {
 
         let trigger = DataProviderEventTrigger.onNone
         let source = createDataSourceMock(base: self, returns: objects)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                                cache: cache,
-                                                                updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -367,14 +367,14 @@ class DataProviderTests: DataProviderBaseTests {
 
         let observerOptions = DataProviderObserverOptions(alwaysNotifyOnRefresh: true)
 
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock,
-                                      options: observerOptions)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock,
+                                 options: observerOptions)
 
         // when
-        dataProvider.refreshCache()
+        dataProvider.refresh()
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
@@ -399,7 +399,7 @@ class DataProviderTests: DataProviderBaseTests {
         let saveExpectation = XCTestExpectation()
 
         let objects = (0..<10).map { _ in createRandomFeed() }
-        cache.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
+        repository.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
 
@@ -408,9 +408,9 @@ class DataProviderTests: DataProviderBaseTests {
         let trigger = DataProviderEventTrigger.onNone
         let source: AnyDataProviderSource<FeedData> = createDataSourceMock(base: self,
                                                                            returns: NetworkBaseError.unexpectedResponseObject)
-        let dataProvider = DataProvider<FeedData, CDFeed>(source: source,
-                                                          cache: cache,
-                                                          updateTrigger: trigger)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
@@ -432,15 +432,15 @@ class DataProviderTests: DataProviderBaseTests {
 
         let observerOptions = DataProviderObserverOptions(alwaysNotifyOnRefresh: true)
 
-        dataProvider.addCacheObserver(self,
-                                      deliverOn: .main,
-                                      executing: changesBlock,
-                                      failing: errorBlock,
-                                      options: observerOptions)
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock,
+                                 options: observerOptions)
 
         // when
 
-        dataProvider.refreshCache()
+        dataProvider.refresh()
 
         wait(for: [expectation], timeout: Constants.networkRequestTimeout)
 
@@ -459,6 +459,61 @@ class DataProviderTests: DataProviderBaseTests {
         }
 
         for change in allChanges[0] {
+            switch change {
+            case .insert(let newItem):
+                XCTAssertTrue(objects.contains(newItem))
+            default:
+                XCTFail()
+            }
+        }
+    }
+
+    func testAddObserverWithoutWaitingSynchronization() {
+        // given
+        let objects = (0..<10).map { _ in createRandomFeed() }
+
+        let trigger = DataProviderEventTrigger.onNone
+        let source = createDataSourceMock(base: self, returns: objects, after: 0.01)
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
+
+        let expectation = XCTestExpectation()
+        expectation.expectedFulfillmentCount = 2
+
+        var allChanges: [[DataProviderChange<FeedData>]] = []
+
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
+            allChanges.append(changes)
+            expectation.fulfill()
+            return
+        }
+
+        let errorBlock: (Error) -> Void = { (error) in
+            XCTFail()
+            return
+        }
+
+        let observerOptions = DataProviderObserverOptions(alwaysNotifyOnRefresh: true,
+                                                          waitsInProgressSyncOnAdd: false)
+
+        // when
+
+        dataProvider.refresh()
+
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: changesBlock,
+                                 failing: errorBlock,
+                                 options: observerOptions)
+
+        wait(for: [expectation], timeout: Constants.expectationDuration)
+
+        // then
+        XCTAssertTrue(allChanges[0].isEmpty)
+        XCTAssertEqual(allChanges[1].count, objects.count)
+
+        for change in allChanges[1] {
             switch change {
             case .insert(let newItem):
                 XCTAssertTrue(objects.contains(newItem))

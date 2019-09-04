@@ -5,10 +5,9 @@
 
 import Foundation
 
-// MARK: SingleValueProviderProtocol implementation
 extension SingleValueProvider: SingleValueProviderProtocol {
-    public func fetch(with completionBlock: ((OperationResult<T>?) -> Void)?) -> BaseOperation<T> {
-        let cacheOperation = cache.fetchOperation(by: targetIdentifier)
+    public func fetch(with completionBlock: ((Result<T, Error>?) -> Void)?) -> BaseOperation<T> {
+        let repositoryOperation = repository.fetchOperation(by: targetIdentifier)
 
         let sourceOperation = source.fetchOperation()
         sourceOperation.configurationBlock = {
@@ -16,7 +15,7 @@ extension SingleValueProvider: SingleValueProviderProtocol {
                 return
             }
 
-            guard let result = cacheOperation.result else {
+            guard let result = repositoryOperation.result else {
                 sourceOperation.cancel()
                 return
             }
@@ -27,36 +26,36 @@ extension SingleValueProvider: SingleValueProviderProtocol {
                     let model = try? self.decoder.decode(T.self, from: entity.payload) {
                     sourceOperation.result = .success(model)
                 }
-            case .error(let error):
-                sourceOperation.result = .error(error)
+            case .failure(let error):
+                sourceOperation.result = .failure(error)
             }
         }
 
-        sourceOperation.addDependency(cacheOperation)
+        sourceOperation.addDependency(repositoryOperation)
 
         sourceOperation.completionBlock = {
             completionBlock?(sourceOperation.result)
         }
 
-        executionQueue.addOperations([cacheOperation, sourceOperation], waitUntilFinished: false)
+        executionQueue.addOperations([repositoryOperation, sourceOperation], waitUntilFinished: false)
 
         updateTrigger.receive(event: .fetchById(targetIdentifier))
 
         return sourceOperation
     }
 
-    public func addCacheObserver(_ observer: AnyObject,
-                                 deliverOn queue: DispatchQueue?,
-                                 executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
-                                 failing failureBlock: @escaping (Error) -> Void,
-                                 options: DataProviderObserverOptions) {
-        cacheQueue.async {
-            self.cacheObservers = self.cacheObservers.filter { $0.observer != nil }
+    public func addObserver(_ observer: AnyObject,
+                            deliverOn queue: DispatchQueue?,
+                            executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
+                            failing failureBlock: @escaping (Error) -> Void,
+                            options: DataProviderObserverOptions) {
+        syncQueue.async {
+            self.observers = self.observers.filter { $0.observer != nil }
 
-            let cacheOperation = self.cache.fetchOperation(by: self.targetIdentifier)
+            let repositoryOperation = self.repository.fetchOperation(by: self.targetIdentifier)
 
-            cacheOperation.completionBlock = {
-                guard let result = cacheOperation.result else {
+            repositoryOperation.completionBlock = {
+                guard let result = repositoryOperation.result else {
                     dispatchInQueueWhenPossible(queue) {
                         failureBlock(DataProviderError.dependencyCancelled)
                     }
@@ -66,13 +65,13 @@ extension SingleValueProvider: SingleValueProviderProtocol {
 
                 switch result {
                 case .success(let optionalEntity):
-                    self.cacheQueue.async {
-                        let cacheObserver = CacheObserver(observer: observer,
-                                                          queue: queue,
-                                                          updateBlock: updateBlock,
-                                                          failureBlock: failureBlock,
-                                                          options: options)
-                        self.cacheObservers.append(cacheObserver)
+                    self.syncQueue.async {
+                        let repositoryObserver = RepositoryObserver(observer: observer,
+                                                                    queue: queue,
+                                                                    updateBlock: updateBlock,
+                                                                    failureBlock: failureBlock,
+                                                                    options: options)
+                        self.observers.append(repositoryObserver)
 
                         self.updateTrigger.receive(event: .addObserver(observer))
 
@@ -87,32 +86,34 @@ extension SingleValueProvider: SingleValueProviderProtocol {
                             updateBlock(updates)
                         }
                     }
-                case .error(let error):
+                case .failure(let error):
                     dispatchInQueueWhenPossible(queue) {
                         failureBlock(error)
                     }
                 }
             }
 
-            if let syncOperation = self.lastSyncOperation, !syncOperation.isFinished {
-                cacheOperation.addDependency(syncOperation)
+            if options.waitsInProgressSyncOnAdd {
+                if let syncOperation = self.lastSyncOperation, !syncOperation.isFinished {
+                    repositoryOperation.addDependency(syncOperation)
+                }
+
+                self.lastSyncOperation = repositoryOperation
             }
 
-            self.lastSyncOperation = cacheOperation
-
-            self.executionQueue.addOperations([cacheOperation], waitUntilFinished: false)
+            self.executionQueue.addOperations([repositoryOperation], waitUntilFinished: false)
         }
     }
 
-    public func removeCacheObserver(_ observer: AnyObject) {
-        cacheQueue.async {
-            self.cacheObservers = self.cacheObservers.filter { $0.observer !== observer && $0.observer != nil}
+    public func removeObserver(_ observer: AnyObject) {
+        syncQueue.async {
+            self.observers = self.observers.filter { $0.observer !== observer && $0.observer != nil}
 
             self.updateTrigger.receive(event: .removeObserver(observer))
         }
     }
 
-    public func refreshCache() {
-        dispatchUpdateCache()
+    public func refresh() {
+        dispatchUpdateRepository()
     }
 }

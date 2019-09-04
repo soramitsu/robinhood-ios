@@ -127,7 +127,7 @@ class CoreDataCompatibilityTests: XCTestCase {
                                                                          into: context) as? CDSingleValue
                 XCTAssertNotNil(optionalEntity)
 
-                optionalEntity?.domain = Constants.cacheDomain
+                optionalEntity?.domain = Constants.repositoryDomain
                 optionalEntity?.identifier = UUID().uuidString
                 optionalEntity?.payload = Data()
 

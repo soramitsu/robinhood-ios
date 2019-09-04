@@ -6,24 +6,24 @@
 import XCTest
 @testable import RobinHood
 
-class CoreDataCacheTests: XCTestCase {
+class CoreDataRepositoryTests: XCTestCase {
     override func setUp() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     override func tearDown() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     func testSaveFetchAll() {
-        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+        let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
         let operationQueue = OperationQueue()
 
         let sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
-        let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
+        let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
-        let fetchOperation = cache.fetchAllOperation()
+        let fetchOperation = repository.fetchAllOperation()
 
         fetchOperation.addDependency(saveOperation)
 
@@ -52,14 +52,15 @@ class CoreDataCacheTests: XCTestCase {
 
     func testSaveFetchSorted() {
         let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
-        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache(sortDescriptor: sortDescriptor)
+        let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared
+            .createCoreDataRepository(sortDescriptor: sortDescriptor)
         let operationQueue = OperationQueue()
 
         let sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
-        let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
+        let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
-        let fetchOperation = cache.fetchAllOperation()
+        let fetchOperation = repository.fetchAllOperation()
 
         fetchOperation.addDependency(saveOperation)
 
@@ -95,19 +96,19 @@ class CoreDataCacheTests: XCTestCase {
     }
 
     func testSaveFetchById() {
-        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+        let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
         let operationQueue = OperationQueue()
 
         let sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
-        let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
+        let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
         guard let object = sourceObjects.last else {
             XCTFail()
             return
         }
 
-        let fetchOperation = cache.fetchOperation(by: object.identifier)
+        let fetchOperation = repository.fetchOperation(by: object.identifier)
 
         fetchOperation.addDependency(saveOperation)
 
@@ -130,12 +131,12 @@ class CoreDataCacheTests: XCTestCase {
     }
 
     func testDeleteById() {
-        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+        let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
         let operationQueue = OperationQueue()
 
         var sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
-        let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
+        let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
         guard let firstObject = sourceObjects.first else {
             XCTFail()
@@ -147,12 +148,12 @@ class CoreDataCacheTests: XCTestCase {
             return
         }
 
-        let deleteOperation = cache.saveOperation({ [] },
+        let deleteOperation = repository.saveOperation({ [] },
                                                   { [firstObject.identifier, lastObject.identifier] })
 
         deleteOperation.addDependency(saveOperation)
 
-        let fetchAllOperation = cache.fetchAllOperation()
+        let fetchAllOperation = repository.fetchAllOperation()
 
         fetchAllOperation.addDependency(deleteOperation)
 
@@ -182,12 +183,12 @@ class CoreDataCacheTests: XCTestCase {
     }
 
     func testUpdateAndDeleteAtOnce() {
-        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+        let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
         let operationQueue = OperationQueue()
 
         var sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
-        let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
+        let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
         operationQueue.addOperation(saveOperation)
 
@@ -204,13 +205,13 @@ class CoreDataCacheTests: XCTestCase {
             return
         }
 
-        let updateOperation = cache.saveOperation({ [firstObject] }, { [lastObject.identifier] })
+        let updateOperation = repository.saveOperation({ [firstObject] }, { [lastObject.identifier] })
 
         updateOperation.addDependency(saveOperation)
 
         operationQueue.addOperation(updateOperation)
 
-        let fetchAllOperation = cache.fetchAllOperation()
+        let fetchAllOperation = repository.fetchAllOperation()
 
         fetchAllOperation.addDependency(updateOperation)
 
@@ -240,18 +241,18 @@ class CoreDataCacheTests: XCTestCase {
     }
 
     func testDeleteAll() {
-        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache()
+        let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
         let operationQueue = OperationQueue()
 
         let sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
-        let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
+        let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
-        let deleteAllOperation = cache.deleteAllOperation()
+        let deleteAllOperation = repository.deleteAllOperation()
 
         deleteAllOperation.addDependency(saveOperation)
 
-        let fetchAllOperation = cache.fetchAllOperation()
+        let fetchAllOperation = repository.fetchAllOperation()
 
         fetchAllOperation.addDependency(deleteAllOperation)
 
@@ -279,14 +280,15 @@ class CoreDataCacheTests: XCTestCase {
 
     private func performTestSaveFetch(offset: Int, count: Int, reversed: Bool, objectsCount: Int = 10) {
         let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
-        let cache: CoreDataCache<FeedData, CDFeed> = CoreDataCacheFacade.shared.createCoreDataCache(sortDescriptor: sortDescriptor)
+        let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared
+            .createCoreDataRepository(sortDescriptor: sortDescriptor)
         let operationQueue = OperationQueue()
 
         let sourceObjects = (0..<objectsCount).map { _ in createRandomFeed() }
 
-        let saveOperation = cache.saveOperation({ sourceObjects }, { [] })
+        let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
-        let fetchOperation = cache.fetch(offset: offset, count: count, reversed: reversed)
+        let fetchOperation = repository.fetch(offset: offset, count: count, reversed: reversed)
 
         fetchOperation.addDependency(saveOperation)
 

@@ -7,19 +7,19 @@ import Foundation
 import RobinHood
 import CoreData
 
-func createDataSourceMock<T>(base: Any, returns items: [T]) -> AnyDataProviderSource<T> {
+func createDataSourceMock<T>(base: Any, returns items: [T], after delay: TimeInterval = 0.0) -> AnyDataProviderSource<T> {
     let fetchPageBlock: (UInt) -> BaseOperation<[T]> = { _ in
-        let pageOperation = BaseOperation<[T]>()
-        pageOperation.result = .success(items)
-
-        return pageOperation
+        return ClosureOperation {
+            usleep(useconds_t(delay * 1e+6))
+            return items
+        }
     }
 
     let fetchByIdBlock: (String) -> BaseOperation<T?> = { _ in
-        let identifierOperation = BaseOperation<T?>()
-        identifierOperation.result = .success(nil)
-
-        return identifierOperation
+        return ClosureOperation {
+            usleep(useconds_t(delay * 1e+6))
+            return nil
+        }
     }
 
     return AnyDataProviderSource(base: base,
@@ -30,14 +30,14 @@ func createDataSourceMock<T>(base: Any, returns items: [T]) -> AnyDataProviderSo
 func createDataSourceMock<T>(base: Any, returns error: Error) -> AnyDataProviderSource<T> {
     let fetchPageBlock: (UInt) -> BaseOperation<[T]> = { _ in
         let pageOperation = BaseOperation<[T]>()
-        pageOperation.result = .error(error)
+        pageOperation.result = .failure(error)
 
         return pageOperation
     }
 
     let fetchByIdBlock: (String) -> BaseOperation<T?> = { _ in
         let identifierOperation = BaseOperation<T?>()
-        identifierOperation.result = .error(error)
+        identifierOperation.result = .failure(error)
 
         return identifierOperation
     }
@@ -47,12 +47,12 @@ func createDataSourceMock<T>(base: Any, returns error: Error) -> AnyDataProvider
                                  fetchById: fetchByIdBlock)
 }
 
-func createSingleValueSourceMock<T>(base: Any, returns item: T) -> AnySingleValueProviderSource<T> {
+func createSingleValueSourceMock<T>(base: Any, returns item: T, after delay: TimeInterval = 0.0) -> AnySingleValueProviderSource<T> {
     let fetch: () -> BaseOperation<T> = {
-        let operation = BaseOperation<T>()
-        operation.result = .success(item)
-
-        return operation
+        return ClosureOperation {
+            usleep(useconds_t(delay * 1e+6))
+            return item
+        }
     }
 
     return AnySingleValueProviderSource(base: base,
@@ -62,7 +62,7 @@ func createSingleValueSourceMock<T>(base: Any, returns item: T) -> AnySingleValu
 func createSingleValueSourceMock<T>(base: Any, returns error: Error) -> AnySingleValueProviderSource<T> {
     let fetch: () -> BaseOperation<T> = {
         let operation = BaseOperation<T>()
-        operation.result = .error(error)
+        operation.result = .failure(error)
 
         return operation
     }
@@ -71,17 +71,19 @@ func createSingleValueSourceMock<T>(base: Any, returns error: Error) -> AnySingl
                                         fetch: fetch)
 }
 
-func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(base: Any, cache: CoreDataCache<T, U>, operationQueue: OperationQueue,
+func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(base: Any,
+                                                                     repository: CoreDataRepository<T, U>,
+                                                                     operationQueue: OperationQueue,
                                                                      returns items: [T]) -> AnyStreamableSource<T> {
     let source: AnyStreamableSource<T> = AnyStreamableSource(source: base) { (offset, count, queue, completionBlock) in
         let dispatchQueue = queue ?? .main
 
-        let saveOperation = cache.saveOperation( { items }, { [] })
+        let saveOperation = repository.saveOperation( { items }, { [] })
 
         operationQueue.addOperation(saveOperation)
 
         dispatchQueue.async {
-            completionBlock?(OperationResult.success(items.count))
+            completionBlock?(.success(items.count))
         }
     }
 
@@ -93,7 +95,7 @@ func createStreamableSourceMock<T: Identifiable>(base: Any, returns error: Error
         let dispatchQueue = queue ?? .main
 
         dispatchQueue.async {
-            completionBlock?(OperationResult.error(error))
+            completionBlock?(.failure(error))
         }
     }
 

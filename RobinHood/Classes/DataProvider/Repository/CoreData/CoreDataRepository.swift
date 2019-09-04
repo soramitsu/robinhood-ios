@@ -6,12 +6,12 @@
 import Foundation
 import CoreData
 
-public enum CoreDataCacheError: Error {
+public enum CoreDataRepositoryError: Error {
     case bothModelAndErrorNull
     case unexpectedSaveResult
 }
 
-public final class CoreDataCache<T: Identifiable, U: NSManagedObject> {
+public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
     public typealias Model = T
 
     public let databaseService: CoreDataServiceProtocol
@@ -50,7 +50,7 @@ public final class CoreDataCache<T: Identifiable, U: NSManagedObject> {
             }
 
             guard let entity = optionalEntitity else {
-                throw CoreDataCacheError.unexpectedSaveResult
+                throw CoreDataRepositoryError.unexpectedSaveResult
             }
 
             try dataMapper.populate(entity: entity, from: model)

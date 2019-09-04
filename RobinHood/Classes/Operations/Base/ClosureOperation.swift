@@ -28,7 +28,7 @@ public final class ClosureOperation<ResultType>: BaseOperation<ResultType> {
             let executionResult = try closure()
             result = .success(executionResult)
         } catch {
-            result = .error(error)
+            result = .failure(error)
         }
     }
 }

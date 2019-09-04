@@ -7,26 +7,26 @@ import XCTest
 import RobinHood
 
 class StreamableDataProviderTests: XCTestCase {
-    let cache: CoreDataCache<FeedData, CDFeed> = {
+    let repository: CoreDataRepository<FeedData, CDFeed> = {
         let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
-        return CoreDataCacheFacade.shared.createCoreDataCache(sortDescriptor: sortDescriptor)
+        return CoreDataRepositoryFacade.shared.createCoreDataRepository(sortDescriptor: sortDescriptor)
     }()
 
     let operationQueue = OperationQueue()
 
     override func setUp() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     override func tearDown() {
-        try! CoreDataCacheFacade.shared.clearDatabase()
+        try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
 
     func testChangesWhenListEmpty() {
         let sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
         let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
-                                                                               cache: cache,
+                                                                               repository: repository,
                                                                                operationQueue: operationQueue,
                                                                                returns: sourceObjects)
 
@@ -61,7 +61,7 @@ class StreamableDataProviderTests: XCTestCase {
         let newObjects = (0..<20).map { _ in createRandomFeed() }
 
         let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
-                                                                               cache: cache,
+                                                                               repository: repository,
                                                                                operationQueue: operationQueue,
                                                                                returns: newObjects)
 
@@ -93,7 +93,7 @@ class StreamableDataProviderTests: XCTestCase {
 
     func testAlwaysNotifyWhenFetchEmpty() {
         let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
-                                                                               cache: cache,
+                                                                               repository: repository,
                                                                                operationQueue: operationQueue,
                                                                                returns: [])
 
@@ -115,15 +115,15 @@ class StreamableDataProviderTests: XCTestCase {
         let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
                                                                                returns: NetworkBaseError.unexpectedResponseObject)
 
-        let observable = CoreDataContextObservable(service: cache.databaseService,
-                                                   mapper: cache.dataMapper,
+        let observable = CoreDataContextObservable(service: repository.databaseService,
+                                                   mapper: repository.dataMapper,
                                                    predicate: { _ in return true })
 
         observable.start { _ in }
 
         let dataProvider = StreamableProvider(source: source,
-                                              cache: cache,
-                                              observable: observable,
+                                              repository: AnyDataProviderRepository(repository),
+                                              observable: AnyDataProviderRepositoryObservable(observable),
                                               operationQueue: operationQueue)
 
         let failExpectation = XCTestExpectation()
@@ -174,15 +174,15 @@ class StreamableDataProviderTests: XCTestCase {
                                          fetchOffset: Int = 0,
                                          fetchCount: Int = 10,
                                          options: DataProviderObserverOptions? = nil) {
-        let observable = CoreDataContextObservable(service: cache.databaseService,
-                                                   mapper: cache.dataMapper,
+        let observable = CoreDataContextObservable(service: repository.databaseService,
+                                                   mapper: repository.dataMapper,
                                                    predicate: { _ in return true })
 
         observable.start { _ in }
 
         let dataProvider = StreamableProvider(source: source,
-                                              cache: cache,
-                                              observable: observable,
+                                              repository: AnyDataProviderRepository(repository),
+                                              observable: AnyDataProviderRepositoryObservable(observable),
                                               operationQueue: operationQueue)
 
         let updateExpectation = XCTestExpectation()
@@ -227,12 +227,12 @@ class StreamableDataProviderTests: XCTestCase {
     }
 
     @discardableResult
-    private func performSaveOperation(with updatedObjects: [FeedData], deletedIds: [String]) -> OperationResult<Bool>? {
+    private func performSaveOperation(with updatedObjects: [FeedData], deletedIds: [String]) -> Result<Bool, Error>? {
         let expectation = XCTestExpectation()
 
-        let operation = cache.saveOperation({ updatedObjects }, { deletedIds })
+        let operation = repository.saveOperation({ updatedObjects }, { deletedIds })
 
-        var result: OperationResult<Bool>?
+        var result: Result<Bool, Error>?
 
         operation.completionBlock = {
             result = operation.result

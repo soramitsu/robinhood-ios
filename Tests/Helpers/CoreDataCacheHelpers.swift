@@ -12,8 +12,8 @@ func clear(databaseService: CoreDataServiceProtocol) throws {
     try databaseService.drop()
 }
 
-final class CoreDataCacheFacade {
-    static let shared = CoreDataCacheFacade()
+final class CoreDataRepositoryFacade {
+    static let shared = CoreDataRepositoryFacade()
 
     let databaseService: CoreDataServiceProtocol
 
@@ -22,14 +22,14 @@ final class CoreDataCacheFacade {
         databaseService = CoreDataService(configuration: configuration)
     }
 
-    func createCoreDataCache<T, U>(domain: String = UUID().uuidString, sortDescriptor: NSSortDescriptor? = nil) -> CoreDataCache<T, U>
+    func createCoreDataRepository<T, U>(domain: String = UUID().uuidString, sortDescriptor: NSSortDescriptor? = nil) -> CoreDataRepository<T, U>
         where T: Identifiable & Codable, U: NSManagedObject & CoreDataCodable  {
 
             let mapper = AnyCoreDataMapper(CodableCoreDataMapper<T, U>())
-            return CoreDataCache(databaseService: databaseService,
-                                 mapper: mapper,
-                                 domain: domain,
-                                 sortDescriptor: sortDescriptor)
+            return CoreDataRepository(databaseService: databaseService,
+                                      mapper: mapper,
+                                      domain: domain,
+                                      sortDescriptor: sortDescriptor)
     }
 
     func clearDatabase() throws {

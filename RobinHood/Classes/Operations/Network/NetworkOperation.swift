@@ -80,7 +80,7 @@ public final class NetworkOperation<ResultType>: BaseOperation<ResultType> {
                                                 response: receivedResponse, error: receivedError)
 
         } catch {
-            result = .error(error)
+            result = .failure(error)
         }
     }
 

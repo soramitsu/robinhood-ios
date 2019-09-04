@@ -5,7 +5,7 @@
 
 import Foundation
 
-public typealias AnyStreamableFetchHistoryBlock = (Int, Int, DispatchQueue?, ((OperationResult<Int>?) -> Void)?) -> Void
+public typealias AnyStreamableFetchHistoryBlock = (Int, Int, DispatchQueue?, ((Result<Int, Error>?) -> Void)?) -> Void
 
 public final class AnyStreamableSource<T: Identifiable>: StreamableSourceProtocol {
     public typealias Model = T
@@ -25,7 +25,7 @@ public final class AnyStreamableSource<T: Identifiable>: StreamableSourceProtoco
     }
 
     public func fetchHistory(offset: Int, count: Int, runningIn queue: DispatchQueue?,
-                             commitNotificationBlock: ((OperationResult<Int>?) -> Void)?) {
+                             commitNotificationBlock: ((Result<Int, Error>?) -> Void)?) {
         _fetchHistory(offset, count, queue, commitNotificationBlock)
     }
 }

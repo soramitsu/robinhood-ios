@@ -9,7 +9,7 @@ public protocol StreamableProviderProtocol {
     associatedtype Model: Identifiable
 
     func fetch(offset: Int, count: Int,
-               with completionBlock: @escaping (OperationResult<[Model]>?) -> Void) -> BaseOperation<[Model]>
+               with completionBlock: @escaping (Result<[Model], Error>?) -> Void) -> BaseOperation<[Model]>
 
     func addObserver(_ observer: AnyObject,
                      deliverOn queue: DispatchQueue,
@@ -37,15 +37,5 @@ public protocol StreamableSourceProtocol {
     associatedtype Model: Identifiable
 
     func fetchHistory(offset: Int, count: Int, runningIn queue: DispatchQueue?,
-                      commitNotificationBlock: ((OperationResult<Int>?) -> Void)?)
-}
-
-public protocol StreamableSourceObservable {
-    associatedtype Model
-
-    func addObserver(_ observer: AnyObject,
-                     deliverOn queue: DispatchQueue,
-                     executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void)
-
-    func removeObserver(_ observer: AnyObject)
+                      commitNotificationBlock: ((Result<Int, Error>?) -> Void)?)
 }

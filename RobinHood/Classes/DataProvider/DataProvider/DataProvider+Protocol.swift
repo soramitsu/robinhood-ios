@@ -6,8 +6,8 @@
 import Foundation
 
 extension DataProvider: DataProviderProtocol {
-    public func fetch(by modelId: String, completionBlock: ((OperationResult<T?>?) -> Void)?) -> BaseOperation<T?> {
-        let cacheOperation = cache.fetchOperation(by: modelId)
+    public func fetch(by modelId: String, completionBlock: ((Result<T?, Error>?) -> Void)?) -> BaseOperation<T?> {
+        let repositoryOperation = repository.fetchOperation(by: modelId)
         let sourceOperation = source.fetchOperation(by: modelId)
 
         sourceOperation.configurationBlock = {
@@ -15,28 +15,28 @@ extension DataProvider: DataProviderProtocol {
                 return
             }
 
-            guard let cacheResult = cacheOperation.result else {
+            guard let repositoryResult = repositoryOperation.result else {
                 sourceOperation.cancel()
                 return
             }
 
-            switch cacheResult {
+            switch repositoryResult {
             case .success(let optionalModel):
                 if let model = optionalModel {
                     sourceOperation.result = .success(model)
                 }
-            case .error(let error):
-                sourceOperation.result = .error(error)
+            case .failure(let error):
+                sourceOperation.result = .failure(error)
             }
         }
 
-        sourceOperation.addDependency(cacheOperation)
+        sourceOperation.addDependency(repositoryOperation)
 
         sourceOperation.completionBlock = {
             completionBlock?(sourceOperation.result)
         }
 
-        executionQueue.addOperations([cacheOperation, sourceOperation], waitUntilFinished: false)
+        executionQueue.addOperations([repositoryOperation, sourceOperation], waitUntilFinished: false)
 
         updateTrigger.receive(event: .fetchById(modelId))
 
@@ -44,7 +44,7 @@ extension DataProvider: DataProviderProtocol {
     }
 
     public func fetch(page index: UInt,
-                      completionBlock: ((OperationResult<[Model]>?) -> Void)?)
+                      completionBlock: ((Result<[Model], Error>?) -> Void)?)
         -> BaseOperation<[Model]> {
 
             if index > 0 {
@@ -61,7 +61,7 @@ extension DataProvider: DataProviderProtocol {
                 return sourceOperation
             }
 
-            let cacheOperation = cache.fetchAllOperation()
+            let repositoryOperation = repository.fetchAllOperation()
 
             let sourceOperation = source.fetchOperation(page: 0)
             sourceOperation.configurationBlock = {
@@ -69,7 +69,7 @@ extension DataProvider: DataProviderProtocol {
                     return
                 }
 
-                guard let result = cacheOperation.result else {
+                guard let result = repositoryOperation.result else {
                     sourceOperation.cancel()
                     return
                 }
@@ -79,36 +79,36 @@ extension DataProvider: DataProviderProtocol {
                     if models.count > 0 {
                         sourceOperation.result = .success(models)
                     }
-                case .error(let error):
-                    sourceOperation.result = .error(error)
+                case .failure(let error):
+                    sourceOperation.result = .failure(error)
                 }
             }
 
-            sourceOperation.addDependency(cacheOperation)
+            sourceOperation.addDependency(repositoryOperation)
 
             sourceOperation.completionBlock = {
                 completionBlock?(sourceOperation.result)
             }
 
-            executionQueue.addOperations([cacheOperation, sourceOperation], waitUntilFinished: false)
+            executionQueue.addOperations([repositoryOperation, sourceOperation], waitUntilFinished: false)
 
             updateTrigger.receive(event: .fetchPage(index))
 
             return sourceOperation
     }
 
-    public func addCacheObserver(_ observer: AnyObject,
-                                 deliverOn queue: DispatchQueue?,
-                                 executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
-                                 failing failureBlock: @escaping (Error) -> Void,
-                                 options: DataProviderObserverOptions) {
-        cacheQueue.async {
-            self.cacheObservers = self.cacheObservers.filter { $0.observer != nil }
+    public func addObserver(_ observer: AnyObject,
+                            deliverOn queue: DispatchQueue?,
+                            executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
+                            failing failureBlock: @escaping (Error) -> Void,
+                            options: DataProviderObserverOptions) {
+        syncQueue.async {
+            self.observers = self.observers.filter { $0.observer != nil }
 
-            let cacheOperation = self.cache.fetchAllOperation()
+            let repositoryOperation = self.repository.fetchAllOperation()
 
-            cacheOperation.completionBlock = {
-                guard let result = cacheOperation.result else {
+            repositoryOperation.completionBlock = {
+                guard let result = repositoryOperation.result else {
                     dispatchInQueueWhenPossible(queue) {
                         failureBlock(DataProviderError.dependencyCancelled)
                     }
@@ -118,13 +118,13 @@ extension DataProvider: DataProviderProtocol {
 
                 switch result {
                 case .success(let items):
-                    self.cacheQueue.async {
-                        let cacheObserver = CacheObserver(observer: observer,
-                                                          queue: queue,
-                                                          updateBlock: updateBlock,
-                                                          failureBlock: failureBlock,
-                                                          options: options)
-                        self.cacheObservers.append(cacheObserver)
+                    self.syncQueue.async {
+                        let repositoryObserver = RepositoryObserver(observer: observer,
+                                                                    queue: queue,
+                                                                    updateBlock: updateBlock,
+                                                                    failureBlock: failureBlock,
+                                                                    options: options)
+                        self.observers.append(repositoryObserver)
 
                         self.updateTrigger.receive(event: .addObserver(observer))
 
@@ -134,32 +134,34 @@ extension DataProvider: DataProviderProtocol {
                             updateBlock(updates)
                         }
                     }
-                case .error(let error):
+                case .failure(let error):
                     dispatchInQueueWhenPossible(queue) {
                         failureBlock(error)
                     }
                 }
             }
 
-            if let syncOperation = self.lastSyncOperation, !syncOperation.isFinished {
-                cacheOperation.addDependency(syncOperation)
+            if options.waitsInProgressSyncOnAdd {
+                if let syncOperation = self.lastSyncOperation, !syncOperation.isFinished {
+                    repositoryOperation.addDependency(syncOperation)
+                }
+
+                self.lastSyncOperation = repositoryOperation
             }
 
-            self.lastSyncOperation = cacheOperation
-
-            self.executionQueue.addOperations([cacheOperation], waitUntilFinished: false)
+            self.executionQueue.addOperations([repositoryOperation], waitUntilFinished: false)
         }
     }
 
-    public func removeCacheObserver(_ observer: AnyObject) {
-        cacheQueue.async {
-            self.cacheObservers = self.cacheObservers.filter { $0.observer !== observer && $0.observer != nil}
+    public func removeObserver(_ observer: AnyObject) {
+        syncQueue.async {
+            self.observers = self.observers.filter { $0.observer !== observer && $0.observer != nil}
 
             self.updateTrigger.receive(event: .removeObserver(observer))
         }
     }
 
-    public func refreshCache() {
-        dispatchUpdateCache()
+    public func refresh() {
+        dispatchUpdateRepository()
     }
 }
