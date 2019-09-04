@@ -39,13 +39,3 @@ public protocol StreamableSourceProtocol {
     func fetchHistory(offset: Int, count: Int, runningIn queue: DispatchQueue?,
                       commitNotificationBlock: ((OperationResult<Int>?) -> Void)?)
 }
-
-public protocol StreamableSourceObservable {
-    associatedtype Model
-
-    func addObserver(_ observer: AnyObject,
-                     deliverOn queue: DispatchQueue,
-                     executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void)
-
-    func removeObserver(_ observer: AnyObject)
-}

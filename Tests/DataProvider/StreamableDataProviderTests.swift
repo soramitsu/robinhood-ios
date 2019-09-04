@@ -122,8 +122,8 @@ class StreamableDataProviderTests: XCTestCase {
         observable.start { _ in }
 
         let dataProvider = StreamableProvider(source: source,
-                                              repository: repository,
-                                              observable: observable,
+                                              repository: AnyDataProviderRepository(repository),
+                                              observable: AnyDataProviderRepositoryObservable(observable),
                                               operationQueue: operationQueue)
 
         let failExpectation = XCTestExpectation()
@@ -181,8 +181,8 @@ class StreamableDataProviderTests: XCTestCase {
         observable.start { _ in }
 
         let dataProvider = StreamableProvider(source: source,
-                                              repository: repository,
-                                              observable: observable,
+                                              repository: AnyDataProviderRepository(repository),
+                                              observable: AnyDataProviderRepositoryObservable(observable),
                                               operationQueue: operationQueue)
 
         let updateExpectation = XCTestExpectation()

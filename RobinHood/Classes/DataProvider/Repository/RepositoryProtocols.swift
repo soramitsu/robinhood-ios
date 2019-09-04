@@ -21,3 +21,16 @@ public protocol DataProviderRepositoryProtocol {
 
     func deleteAllOperation() -> BaseOperation<Bool>
 }
+
+public protocol DataProviderRepositoryObservable {
+    associatedtype Model
+
+    func start(completionBlock: @escaping (Error?) -> Void)
+    func stop(completionBlock: @escaping (Error?) -> Void)
+
+    func addObserver(_ observer: AnyObject,
+                     deliverOn queue: DispatchQueue,
+                     executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void)
+
+    func removeObserver(_ observer: AnyObject)
+}

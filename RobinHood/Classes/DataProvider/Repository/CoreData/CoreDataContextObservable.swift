@@ -31,41 +31,6 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
         }
     }
 
-    public func start(completionBlock: @escaping (Error?) -> Void) {
-        service.performAsync { [weak self] (optionalContext, optionalError) in
-            guard let strongSelf = self else {
-                completionBlock(nil)
-                return
-            }
-
-            if let context = optionalContext {
-                NotificationCenter.default.addObserver(strongSelf,
-                                                       selector: #selector(strongSelf.didReceive(notification:)),
-                                                       name: Notification.Name.NSManagedObjectContextDidSave,
-                                                       object: context)
-            }
-
-            completionBlock(optionalError)
-        }
-    }
-
-    public func stop(completionBlock: @escaping (Error?) -> Void) {
-        service.performAsync { [weak self] (optionalContext, optionalError) in
-            guard let strongSelf = self else {
-                completionBlock(nil)
-                return
-            }
-
-            if let context = optionalContext {
-                NotificationCenter.default.removeObserver(strongSelf,
-                                                          name: Notification.Name.NSManagedObjectContextDidSave,
-                                                          object: context)
-            }
-
-            completionBlock(optionalError)
-        }
-    }
-
     @objc private func didReceive(notification: Notification) {
         var changes: [DataProviderChange<T>] = []
 
@@ -118,8 +83,43 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
     }
 }
 
-extension CoreDataContextObservable: StreamableSourceObservable {
+extension CoreDataContextObservable: DataProviderRepositoryObservable {
     public typealias Model = T
+
+    public func start(completionBlock: @escaping (Error?) -> Void) {
+        service.performAsync { [weak self] (optionalContext, optionalError) in
+            guard let strongSelf = self else {
+                completionBlock(nil)
+                return
+            }
+
+            if let context = optionalContext {
+                NotificationCenter.default.addObserver(strongSelf,
+                                                       selector: #selector(strongSelf.didReceive(notification:)),
+                                                       name: Notification.Name.NSManagedObjectContextDidSave,
+                                                       object: context)
+            }
+
+            completionBlock(optionalError)
+        }
+    }
+
+    public func stop(completionBlock: @escaping (Error?) -> Void) {
+        service.performAsync { [weak self] (optionalContext, optionalError) in
+            guard let strongSelf = self else {
+                completionBlock(nil)
+                return
+            }
+
+            if let context = optionalContext {
+                NotificationCenter.default.removeObserver(strongSelf,
+                                                          name: Notification.Name.NSManagedObjectContextDidSave,
+                                                          object: context)
+            }
+
+            completionBlock(optionalError)
+        }
+    }
 
     public func addObserver(_ observer: AnyObject,
                             deliverOn queue: DispatchQueue,

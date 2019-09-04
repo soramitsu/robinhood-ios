@@ -6,19 +6,19 @@
 import Foundation
 import CoreData
 
-public final class StreamableProvider<T: Identifiable, U: NSManagedObject> {
+public final class StreamableProvider<T: Identifiable> {
 
     let source: AnyStreamableSource<T>
-    let repository: CoreDataRepository<T, U>
-    let observable: CoreDataContextObservable<T, U>
+    let repository: AnyDataProviderRepository<T>
+    let observable: AnyDataProviderRepositoryObservable<T>
     let operationQueue: OperationQueue
     let processingQueue: DispatchQueue
 
     var observers: [RepositoryObserver<T>] = []
 
     public init(source: AnyStreamableSource<T>,
-                repository: CoreDataRepository<T, U>,
-                observable: CoreDataContextObservable<T, U>,
+                repository: AnyDataProviderRepository<T>,
+                observable: AnyDataProviderRepositoryObservable<T>,
                 operationQueue: OperationQueue? = nil,
                 serialQueue: DispatchQueue? = nil) {
         self.source = source
