@@ -86,7 +86,7 @@ extension SingleValueProvider {
                 return
             }
 
-            if case .error(let error) = saveResult {
+            if case .failure(let error) = saveResult {
                 self.syncQueue.async {
                     self.notifyObservers(with: error)
                 }
@@ -127,7 +127,7 @@ extension SingleValueProvider {
                     throw DataProviderError.unexpectedSourceResult
                 }
 
-                if case .error(let error) = sourceResult {
+                if case .failure(let error) = sourceResult {
                     throw error
                 }
 
@@ -135,7 +135,7 @@ extension SingleValueProvider {
                     throw DataProviderError.unexpectedSourceResult
                 }
 
-                if case .error(let error) = repositoryResult {
+                if case .failure(let error) = repositoryResult {
                     throw error
                 }
 
@@ -175,7 +175,7 @@ extension SingleValueProvider {
                     } else {
                         return []
                     }
-                case .error(let error):
+                case .failure(let error):
                     throw error
                 }
             }
@@ -192,7 +192,7 @@ extension SingleValueProvider {
                     } else {
                         return []
                     }
-                case .error(let error):
+                case .failure(let error):
                     throw error
                 }
             }

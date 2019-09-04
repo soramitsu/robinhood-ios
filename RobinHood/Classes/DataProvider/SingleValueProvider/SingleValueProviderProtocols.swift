@@ -10,7 +10,7 @@ public protocol SingleValueProviderProtocol {
 
     var executionQueue: OperationQueue { get }
 
-    func fetch(with completionBlock: ((OperationResult<Model>?) -> Void)?) -> BaseOperation<Model>
+    func fetch(with completionBlock: ((Result<Model, Error>?) -> Void)?) -> BaseOperation<Model>
 
     func addObserver(_ observer: AnyObject,
                      deliverOn queue: DispatchQueue?,

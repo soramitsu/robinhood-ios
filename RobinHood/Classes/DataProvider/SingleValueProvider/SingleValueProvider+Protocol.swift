@@ -6,7 +6,7 @@
 import Foundation
 
 extension SingleValueProvider: SingleValueProviderProtocol {
-    public func fetch(with completionBlock: ((OperationResult<T>?) -> Void)?) -> BaseOperation<T> {
+    public func fetch(with completionBlock: ((Result<T, Error>?) -> Void)?) -> BaseOperation<T> {
         let repositoryOperation = repository.fetchOperation(by: targetIdentifier)
 
         let sourceOperation = source.fetchOperation()
@@ -26,8 +26,8 @@ extension SingleValueProvider: SingleValueProviderProtocol {
                     let model = try? self.decoder.decode(T.self, from: entity.payload) {
                     sourceOperation.result = .success(model)
                 }
-            case .error(let error):
-                sourceOperation.result = .error(error)
+            case .failure(let error):
+                sourceOperation.result = .failure(error)
             }
         }
 
@@ -86,7 +86,7 @@ extension SingleValueProvider: SingleValueProviderProtocol {
                             updateBlock(updates)
                         }
                     }
-                case .error(let error):
+                case .failure(let error):
                     dispatchInQueueWhenPossible(queue) {
                         failureBlock(error)
                     }

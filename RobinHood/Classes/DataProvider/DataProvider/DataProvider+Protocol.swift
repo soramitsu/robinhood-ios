@@ -6,7 +6,7 @@
 import Foundation
 
 extension DataProvider: DataProviderProtocol {
-    public func fetch(by modelId: String, completionBlock: ((OperationResult<T?>?) -> Void)?) -> BaseOperation<T?> {
+    public func fetch(by modelId: String, completionBlock: ((Result<T?, Error>?) -> Void)?) -> BaseOperation<T?> {
         let repositoryOperation = repository.fetchOperation(by: modelId)
         let sourceOperation = source.fetchOperation(by: modelId)
 
@@ -25,8 +25,8 @@ extension DataProvider: DataProviderProtocol {
                 if let model = optionalModel {
                     sourceOperation.result = .success(model)
                 }
-            case .error(let error):
-                sourceOperation.result = .error(error)
+            case .failure(let error):
+                sourceOperation.result = .failure(error)
             }
         }
 
@@ -44,7 +44,7 @@ extension DataProvider: DataProviderProtocol {
     }
 
     public func fetch(page index: UInt,
-                      completionBlock: ((OperationResult<[Model]>?) -> Void)?)
+                      completionBlock: ((Result<[Model], Error>?) -> Void)?)
         -> BaseOperation<[Model]> {
 
             if index > 0 {
@@ -79,8 +79,8 @@ extension DataProvider: DataProviderProtocol {
                     if models.count > 0 {
                         sourceOperation.result = .success(models)
                     }
-                case .error(let error):
-                    sourceOperation.result = .error(error)
+                case .failure(let error):
+                    sourceOperation.result = .failure(error)
                 }
             }
 
@@ -134,7 +134,7 @@ extension DataProvider: DataProviderProtocol {
                             updateBlock(updates)
                         }
                     }
-                case .error(let error):
+                case .failure(let error):
                     dispatchInQueueWhenPossible(queue) {
                         failureBlock(error)
                     }

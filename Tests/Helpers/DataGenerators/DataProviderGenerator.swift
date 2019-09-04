@@ -30,14 +30,14 @@ func createDataSourceMock<T>(base: Any, returns items: [T]) -> AnyDataProviderSo
 func createDataSourceMock<T>(base: Any, returns error: Error) -> AnyDataProviderSource<T> {
     let fetchPageBlock: (UInt) -> BaseOperation<[T]> = { _ in
         let pageOperation = BaseOperation<[T]>()
-        pageOperation.result = .error(error)
+        pageOperation.result = .failure(error)
 
         return pageOperation
     }
 
     let fetchByIdBlock: (String) -> BaseOperation<T?> = { _ in
         let identifierOperation = BaseOperation<T?>()
-        identifierOperation.result = .error(error)
+        identifierOperation.result = .failure(error)
 
         return identifierOperation
     }
@@ -62,7 +62,7 @@ func createSingleValueSourceMock<T>(base: Any, returns item: T) -> AnySingleValu
 func createSingleValueSourceMock<T>(base: Any, returns error: Error) -> AnySingleValueProviderSource<T> {
     let fetch: () -> BaseOperation<T> = {
         let operation = BaseOperation<T>()
-        operation.result = .error(error)
+        operation.result = .failure(error)
 
         return operation
     }
@@ -83,7 +83,7 @@ func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(base: Any,
         operationQueue.addOperation(saveOperation)
 
         dispatchQueue.async {
-            completionBlock?(OperationResult.success(items.count))
+            completionBlock?(.success(items.count))
         }
     }
 
@@ -95,7 +95,7 @@ func createStreamableSourceMock<T: Identifiable>(base: Any, returns error: Error
         let dispatchQueue = queue ?? .main
 
         dispatchQueue.async {
-            completionBlock?(OperationResult.error(error))
+            completionBlock?(.failure(error))
         }
     }
 

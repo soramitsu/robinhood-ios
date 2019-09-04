@@ -7,10 +7,10 @@ import Foundation
 
 public protocol NetworkResultFactoryProtocol: class {
     associatedtype ResultType
-    func createResult(data: Data?, response: URLResponse?, error: Error?) -> OperationResult<ResultType>
+    func createResult(data: Data?, response: URLResponse?, error: Error?) -> Result<ResultType, Error>
 }
 
-public typealias NetworkResultFactoryBlock<ResultType> = (Data?, URLResponse?, Error?) -> OperationResult<ResultType>
+public typealias NetworkResultFactoryBlock<ResultType> = (Data?, URLResponse?, Error?) -> Result<ResultType, Error>
 public typealias NetworkResultFactorySuccessResponseBlock<ResultType> = () -> ResultType
 public typealias NetworkResultFactoryProcessingBlock<ResultType> = (Data) throws -> ResultType
 
@@ -28,13 +28,13 @@ public final class AnyNetworkResultFactory<T>: NetworkResultFactoryProtocol {
     }
 
     public convenience init(successResponseBlock: @escaping NetworkResultFactorySuccessResponseBlock<ResultType>) {
-        self.init { (_, response, error) -> OperationResult<ResultType> in
+        self.init { (_, response, error) -> Result<ResultType, Error> in
             if let connectionError = error {
-                return .error(connectionError)
+                return .failure(connectionError)
             }
 
             if let error = NetworkOperationHelper.createError(from: response) {
-                return .error(error)
+                return .failure(error)
             }
 
             let result = successResponseBlock()
@@ -43,29 +43,29 @@ public final class AnyNetworkResultFactory<T>: NetworkResultFactoryProtocol {
     }
 
     public convenience init(processingBlock: @escaping NetworkResultFactoryProcessingBlock<ResultType>) {
-        self.init { (data, response, error) -> OperationResult<ResultType> in
+        self.init { (data, response, error) -> Result<ResultType, Error> in
             if let connectionError = error {
-                return .error(connectionError)
+                return .failure(connectionError)
             }
 
             if let error = NetworkOperationHelper.createError(from: response) {
-                return .error(error)
+                return .failure(error)
             }
 
             guard let documentData = data else {
-                return .error(NetworkBaseError.unexpectedEmptyData)
+                return .failure(NetworkBaseError.unexpectedEmptyData)
             }
 
             do {
                 let value = try processingBlock(documentData)
                 return .success(value)
             } catch {
-                return .error(error)
+                return .failure(error)
             }
         }
     }
 
-    public func createResult(data: Data?, response: URLResponse?, error: Error?) -> OperationResult<ResultType> {
+    public func createResult(data: Data?, response: URLResponse?, error: Error?) -> Result<ResultType, Error> {
         return _createResult(data, response, error)
     }
 }

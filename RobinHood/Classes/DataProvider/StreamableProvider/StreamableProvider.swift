@@ -50,7 +50,7 @@ public final class StreamableProvider<T: Identifiable> {
         observable.removeObserver(self)
     }
 
-    private func fetchHistory(offset: Int, count: Int, completionBlock: ((OperationResult<Int>?) -> Void)?) {
+    private func fetchHistory(offset: Int, count: Int, completionBlock: ((Result<Int, Error>?) -> Void)?) {
         source.fetchHistory(offset: offset,
                             count: count,
                             runningIn: processingQueue,
@@ -77,7 +77,7 @@ public final class StreamableProvider<T: Identifiable> {
         }
     }
 
-    private func notifyObservers(with fetchResult: OperationResult<Int>) {
+    private func notifyObservers(with fetchResult: Result<Int, Error>) {
         observers.forEach { (observerWrapper) in
             if observerWrapper.observer != nil, observerWrapper.options.alwaysNotifyOnRefresh {
                 switch fetchResult {
@@ -87,7 +87,7 @@ public final class StreamableProvider<T: Identifiable> {
                             observerWrapper.updateBlock([])
                         }
                     }
-                case .error(let error):
+                case .failure(let error):
                     dispatchInQueueWhenPossible(observerWrapper.queue) {
                         observerWrapper.failureBlock(error)
                     }
@@ -101,7 +101,7 @@ extension StreamableProvider: StreamableProviderProtocol {
     public typealias Model = T
 
     public func fetch(offset: Int, count: Int,
-                      with completionBlock: @escaping (OperationResult<[Model]>?) -> Void) -> BaseOperation<[Model]> {
+                      with completionBlock: @escaping (Result<[Model], Error>?) -> Void) -> BaseOperation<[Model]> {
         let operation = repository.fetch(offset: offset, count: count, reversed: false)
 
         operation.completionBlock = { [weak self] in
@@ -109,7 +109,7 @@ extension StreamableProvider: StreamableProviderProtocol {
                 let result = operation.result,
                 case .success(let models) = result, models.count < count {
 
-                let completionBlock: (OperationResult<Int>?) -> Void = { (optionalResult) in
+                let completionBlock: (Result<Int, Error>?) -> Void = { (optionalResult) in
                     if let result = optionalResult {
                         self?.notifyObservers(with: result)
                     }

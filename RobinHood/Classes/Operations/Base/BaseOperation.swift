@@ -5,11 +5,6 @@
 
 import Foundation
 
-public enum OperationResult<T> {
-    case success(T)
-    case error(Error)
-}
-
 public typealias OperationConfigBlock = () -> Void
 
 public enum BaseOperationError: Error {
@@ -18,7 +13,7 @@ public enum BaseOperationError: Error {
 }
 
 open class BaseOperation<ResultType>: Operation {
-    open var result: OperationResult<ResultType>?
+    open var result: Result<ResultType, Error>?
 
     open var configurationBlock: OperationConfigBlock?
 

@@ -80,7 +80,7 @@ extension DataProvider {
                 return
             }
 
-            if case .error(let error) = saveResult {
+            if case .failure(let error) = saveResult {
                 self.syncQueue.async {
                     self.notifyObservers(with: error)
                 }
@@ -121,7 +121,7 @@ extension DataProvider {
                     throw DataProviderError.unexpectedSourceResult
                 }
 
-                if case .error(let error) = sourceResult {
+                if case .failure(let error) = sourceResult {
                     throw error
                 }
 
@@ -129,7 +129,7 @@ extension DataProvider {
                     throw DataProviderError.unexpectedRepositoryResult
                 }
 
-                if case .error(let error) = repositoryResult {
+                if case .failure(let error) = repositoryResult {
                     throw error
                 }
 
@@ -162,7 +162,7 @@ extension DataProvider {
                     return updates.compactMap { (update) in
                         return update.item
                     }
-                case .error(let error):
+                case .failure(let error):
                     throw error
                 }
             }
@@ -181,7 +181,7 @@ extension DataProvider {
                             return nil
                         }
                     }
-                case .error(let error):
+                case .failure(let error):
                     throw error
                 }
             }
