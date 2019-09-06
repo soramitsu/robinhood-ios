@@ -522,4 +522,50 @@ class DataProviderTests: DataProviderBaseTests {
             }
         }
     }
+
+    func testDoNothingWhenTheSameObserverAdded() {
+        // given
+
+        let trigger = DataProviderEventTrigger.onNone
+        let source = createDataSourceMock(base: self, returns: [FeedData]())
+        let dataProvider = DataProvider<FeedData>(source: source,
+                                                  repository: AnyDataProviderRepository(repository),
+                                                  updateTrigger: trigger)
+
+        let callsCount: Int = 5
+
+        let changesExpectation = XCTestExpectation()
+        changesExpectation.expectedFulfillmentCount = 1
+
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
+            changesExpectation.fulfill()
+        }
+
+        let failureExpectation = XCTestExpectation()
+        failureExpectation.expectedFulfillmentCount = callsCount - 1
+
+        let errorBlock: (Error) -> Void = { (error) in
+            if let dataProviderError = error as? DataProviderError {
+                XCTAssertEqual(dataProviderError, DataProviderError.observerAlreadyAdded)
+            } else {
+                XCTFail("Unexpected error \(error)")
+            }
+
+            failureExpectation.fulfill()
+        }
+
+        // when
+
+        (0..<callsCount).forEach { _ in
+            dataProvider.addObserver(self,
+                                     deliverOn: nil,
+                                     executing: changesBlock,
+                                     failing: errorBlock,
+                                     options: DataProviderObserverOptions())
+        }
+
+        // then
+
+        wait(for: [changesExpectation, failureExpectation], timeout: Constants.networkRequestTimeout)
+    }
 }
