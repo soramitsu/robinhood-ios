@@ -63,7 +63,7 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
         }
     }
 
-    public func fetch(offset: Int, count: Int, reversed: Bool) -> BaseOperation<[Model]> {
+    public func fetchOperation(by offset: Int, count: Int, reversed: Bool) -> BaseOperation<[Model]> {
         return ClosureOperation {
             var models: [Model]?
             var error: Error?
@@ -93,7 +93,7 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
     }
 
     public func saveOperation(_ updateModelsBlock: @escaping () throws -> [Model],
-                              _ deleteIdsBlock: @escaping () throws -> [String]) -> BaseOperation<Bool> {
+                              _ deleteIdsBlock: @escaping () throws -> [String]) -> BaseOperation<Void> {
         return ClosureOperation {
             var error: Error?
 
@@ -101,7 +101,7 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
             let deletedIds = try deleteIdsBlock()
 
             if updatedModels.count == 0, deletedIds.count == 0 {
-                return true
+                return
             }
 
             let semaphore = DispatchSemaphore(value: 0)
@@ -117,13 +117,11 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
 
             if let existingError = error {
                 throw existingError
-            } else {
-                return true
             }
         }
     }
 
-    public func deleteAllOperation() -> BaseOperation<Bool> {
+    public func deleteAllOperation() -> BaseOperation<Void> {
         return ClosureOperation {
             var error: Error?
 
@@ -138,8 +136,6 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
 
             if let existingError = error {
                 throw existingError
-            } else {
-                return true
             }
         }
     }

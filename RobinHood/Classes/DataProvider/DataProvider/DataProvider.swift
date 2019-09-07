@@ -171,7 +171,7 @@ extension DataProvider {
     }
 
     private func createSaveRepositoryOperation(dependingOn differenceOperation: BaseOperation<[DataProviderChange<T>]>)
-        -> BaseOperation<Bool> {
+        -> BaseOperation<Void> {
 
             let updatedItemsBlock = { () throws -> [T] in
                 guard let result = differenceOperation.result else {

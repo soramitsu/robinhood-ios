@@ -15,15 +15,15 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
     private let _fetchByModelId: (String) -> BaseOperation<Model?>
     private let _fetchAll: () -> BaseOperation<[Model]>
     private let _fetchByOffsetCount: (Int, Int, Bool) -> BaseOperation<[Model]>
-    private let _save: (@escaping () throws -> [Model], @escaping () throws -> [String]) -> BaseOperation<Bool>
-    private let _deleteAll: () -> BaseOperation<Bool>
+    private let _save: (@escaping () throws -> [Model], @escaping () throws -> [String]) -> BaseOperation<Void>
+    private let _deleteAll: () -> BaseOperation<Void>
 
     public init<U: DataProviderRepositoryProtocol>(_ repository: U) where U.Model == Model {
         base = repository
         domain = repository.domain
         _fetchByModelId = repository.fetchOperation
         _fetchAll = repository.fetchAllOperation
-        _fetchByOffsetCount = repository.fetch
+        _fetchByOffsetCount = repository.fetchOperation
         _save = repository.saveOperation
         _deleteAll = repository.deleteAllOperation
     }
@@ -32,7 +32,7 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
         return _fetchByModelId(modelId)
     }
 
-    public func fetch(offset: Int, count: Int, reversed: Bool) -> BaseOperation<[T]> {
+    public func fetchOperation(by offset: Int, count: Int, reversed: Bool) -> BaseOperation<[T]> {
         return _fetchByOffsetCount(offset, count, reversed)
     }
 
@@ -41,11 +41,11 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
     }
 
     public func saveOperation(_ updateModelsBlock: @escaping () throws -> [T],
-                              _ deleteIdsBlock: @escaping () throws -> [String]) -> BaseOperation<Bool> {
+                              _ deleteIdsBlock: @escaping () throws -> [String]) -> BaseOperation<Void> {
         return _save(updateModelsBlock, deleteIdsBlock)
     }
 
-    public func deleteAllOperation() -> BaseOperation<Bool> {
+    public func deleteAllOperation() -> BaseOperation<Void> {
         return _deleteAll()
     }
 }

@@ -102,7 +102,7 @@ extension StreamableProvider: StreamableProviderProtocol {
 
     public func fetch(offset: Int, count: Int,
                       with completionBlock: @escaping (Result<[Model], Error>?) -> Void) -> BaseOperation<[Model]> {
-        let operation = repository.fetch(offset: offset, count: count, reversed: false)
+        let operation = repository.fetchOperation(by: offset, count: count, reversed: false)
 
         operation.completionBlock = { [weak self] in
             if

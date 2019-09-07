@@ -214,12 +214,12 @@ class CoreDataContextObserverTests: XCTestCase {
     }
 
     @discardableResult
-    private func performSaveOperation(with updatedObjects: [FeedData], deletedIds: [String]) -> Result<Bool, Error>? {
+    private func performSaveOperation(with updatedObjects: [FeedData], deletedIds: [String]) -> Result<Void, Error>? {
         let expectation = XCTestExpectation()
 
         let operation = repository.saveOperation({ updatedObjects }, { deletedIds })
 
-        var result: Result<Bool, Error>?
+        var result: Result<Void, Error>?
 
         operation.completionBlock = {
             result = operation.result

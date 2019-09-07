@@ -156,7 +156,7 @@ extension SingleValueProvider {
     }
 
     private func createSaveRepositoryOperation(dependingOn differenceOperation: BaseOperation<DataProviderChange<T>?>)
-        -> BaseOperation<Bool> {
+        -> BaseOperation<Void> {
 
             let itemIdentifier = targetIdentifier
 

@@ -129,8 +129,8 @@ class CoreDataRepositoryDomainTests: XCTestCase {
         var operationResult: Bool = false
 
         saveOperation.completionBlock = {
-            if let result = saveOperation.result, case .success(let isSuccess) = result {
-                operationResult = isSuccess
+            if let result = saveOperation.result, case .success = result {
+                operationResult = true
             }
 
             expectation.fulfill()
@@ -151,8 +151,8 @@ class CoreDataRepositoryDomainTests: XCTestCase {
         var operationResult: Bool = false
 
         saveOperation.completionBlock = {
-            if let result = saveOperation.result, case .success(let isSuccess) = result {
-                operationResult = isSuccess
+            if let result = saveOperation.result, case .success = result {
+                operationResult = true
             }
 
             expectation.fulfill()
@@ -173,8 +173,8 @@ class CoreDataRepositoryDomainTests: XCTestCase {
         var operationResult: Bool = false
 
         deleteOperation.completionBlock = {
-            if let result = deleteOperation.result, case .success(let isSuccess) = result {
-                operationResult = isSuccess
+            if let result = deleteOperation.result, case .success = result {
+                operationResult = true
             }
 
             expectation.fulfill()
