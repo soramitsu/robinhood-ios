@@ -58,7 +58,7 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
             if let existingError = error {
                 throw existingError
             } else {
-                throw CoreDataRepositoryError.bothModelAndErrorNull
+                throw CoreDataRepositoryError.undefined
             }
         }
     }
@@ -87,7 +87,7 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
             if let existingError = error {
                 throw existingError
             } else {
-                throw CoreDataRepositoryError.bothModelAndErrorNull
+                throw CoreDataRepositoryError.undefined
             }
         }
     }

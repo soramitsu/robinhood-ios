@@ -6,6 +6,14 @@
 import Foundation
 import CoreData
 
+/**
+ *  Class is designed to provide implementation for ```DataProviderRepositoryObservable``` and allows
+ *  observation of Core Data based repositories through NSManagedObjectContext notifications.
+ *
+ *  Changes are delivered as a list of ```DataProviderChange``` values to every subscribed observer.
+ *  Changes can be filtered by providing predicate closure during initialization.
+ */
+
 final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject> {
     private(set) var service: CoreDataServiceProtocol
     private(set) var mapper: AnyCoreDataMapper<T, U>
@@ -13,6 +21,18 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
     private(set) var predicate: (U) -> Bool
 
     private var observers: [RepositoryObserver<T>] = []
+
+    /**
+     *  Creates Core Data context observable object.
+     *
+     *  - parameters:
+     *    - service: Core Data service which manages persistent store and contexts.
+     *    - mapper: Mapper which maps swift model to NSManagedObjects.
+     *    - predicate: Closure to filter changes that are deliviered to observers.
+     *    - processingQueue: Serial queue for internal synchronization needs. By
+     *    default parameter is ```nil``` which mean that new queue is created internally
+     *    but the client can pass shared queue for optimization reasons.
+     */
 
     public init(service: CoreDataServiceProtocol,
                 mapper: AnyCoreDataMapper<T, U>,

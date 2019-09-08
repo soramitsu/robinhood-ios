@@ -6,7 +6,7 @@
 import Foundation
 
 /**
- *  Class is designed to apply type erasure technique to ```DataProviderRepositoryProtocol```
+ *  Class is designed to apply type erasure technique to ```DataProviderRepositoryProtocol```.
  */
 
 public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepositoryProtocol {
