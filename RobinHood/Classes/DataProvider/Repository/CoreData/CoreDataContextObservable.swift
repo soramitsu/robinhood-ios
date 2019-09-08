@@ -12,7 +12,7 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
     private(set) var processingQueue: DispatchQueue
     private(set) var predicate: (U) -> Bool
 
-    private var observers: [StreamableSourceObserver<T>] = []
+    private var observers: [RepositoryObserver<T>] = []
 
     public init(service: CoreDataServiceProtocol,
                 mapper: AnyCoreDataMapper<T, U>,
@@ -128,7 +128,7 @@ extension CoreDataContextObservable: DataProviderRepositoryObservable {
             self.observers = self.observers.filter { $0.observer != nil }
 
             if !self.observers.contains(where: { $0.observer === observer }) {
-                let newObserver = StreamableSourceObserver(observer: observer, queue: queue, updateBlock: updateBlock)
+                let newObserver = RepositoryObserver(observer: observer, queue: queue, updateBlock: updateBlock)
                 self.observers.append(newObserver)
             }
         }

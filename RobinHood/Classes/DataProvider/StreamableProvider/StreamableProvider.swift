@@ -14,7 +14,7 @@ public final class StreamableProvider<T: Identifiable> {
     let operationQueue: OperationQueue
     let processingQueue: DispatchQueue
 
-    var observers: [RepositoryObserver<T>] = []
+    var observers: [DataProviderObserver<T>] = []
 
     public init(source: AnyStreamableSource<T>,
                 repository: AnyDataProviderRepository<T>,
@@ -105,9 +105,9 @@ extension StreamableProvider: StreamableProviderProtocol {
         let operation = repository.fetchOperation(by: offset, count: count, reversed: false)
 
         operation.completionBlock = { [weak self] in
-            if
-                let result = operation.result,
-                case .success(let models) = result, models.count < count {
+            if let result = operation.result,
+                case .success(let models) = result,
+                models.count < count {
 
                 let completionBlock: (Result<Int, Error>?) -> Void = { (optionalResult) in
                     if let result = optionalResult {
@@ -139,11 +139,11 @@ extension StreamableProvider: StreamableProviderProtocol {
             self.observers = self.observers.filter { $0.observer != nil }
 
             if !self.observers.contains(where: { $0.observer === observer }) {
-                let observerWrapper = RepositoryObserver(observer: observer,
-                                                         queue: queue,
-                                                         updateBlock: updateBlock,
-                                                         failureBlock: failureBlock,
-                                                         options: options)
+                let observerWrapper = DataProviderObserver(observer: observer,
+                                                           queue: queue,
+                                                           updateBlock: updateBlock,
+                                                           failureBlock: failureBlock,
+                                                           options: options)
                 self.observers.append(observerWrapper)
             }
 

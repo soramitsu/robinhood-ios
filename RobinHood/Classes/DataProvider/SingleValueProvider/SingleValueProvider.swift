@@ -20,7 +20,7 @@ public final class SingleValueProvider<T: Codable & Equatable> {
     public private(set) var syncQueue: DispatchQueue
     public private(set) var targetIdentifier: String
 
-    var observers: [RepositoryObserver<T>] = []
+    var observers: [DataProviderObserver<T>] = []
     var lastSyncOperation: Operation?
     var repositoryUpdateOperation: Operation?
 

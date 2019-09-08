@@ -23,7 +23,7 @@ public final class DataProvider<T: Identifiable & Equatable> {
     public private(set) var executionQueue: OperationQueue
     public private(set) var syncQueue: DispatchQueue
 
-    var observers: [RepositoryObserver<T>] = []
+    var observers: [DataProviderObserver<T>] = []
     var lastSyncOperation: Operation?
     var repositoryUpdateOperation: Operation?
 

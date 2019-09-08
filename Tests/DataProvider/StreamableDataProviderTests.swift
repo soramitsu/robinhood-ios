@@ -25,8 +25,7 @@ class StreamableDataProviderTests: XCTestCase {
     func testChangesWhenListEmpty() {
         let sourceObjects = (0..<10).map { _ in createRandomFeed() }
 
-        let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
-                                                                               repository: repository,
+        let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(repository: repository,
                                                                                operationQueue: operationQueue,
                                                                                returns: sourceObjects)
 
@@ -60,8 +59,7 @@ class StreamableDataProviderTests: XCTestCase {
 
         let newObjects = (0..<20).map { _ in createRandomFeed() }
 
-        let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
-                                                                               repository: repository,
+        let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(repository: repository,
                                                                                operationQueue: operationQueue,
                                                                                returns: newObjects)
 
@@ -92,8 +90,7 @@ class StreamableDataProviderTests: XCTestCase {
     }
 
     func testAlwaysNotifyWhenFetchEmpty() {
-        let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
-                                                                               repository: repository,
+        let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(repository: repository,
                                                                                operationQueue: operationQueue,
                                                                                returns: [])
 
@@ -112,8 +109,7 @@ class StreamableDataProviderTests: XCTestCase {
     }
 
     func testErrorDispatchWhenFetch() {
-        let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(base: self,
-                                                                               returns: NetworkBaseError.unexpectedResponseObject)
+        let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(returns: NetworkBaseError.unexpectedResponseObject)
 
         let observable = CoreDataContextObservable(service: repository.databaseService,
                                                    mapper: repository.dataMapper,

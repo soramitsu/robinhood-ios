@@ -128,11 +128,11 @@ extension DataProvider: DataProviderProtocol {
                             return
                         }
 
-                        let repositoryObserver = RepositoryObserver(observer: observer,
-                                                                    queue: queue,
-                                                                    updateBlock: updateBlock,
-                                                                    failureBlock: failureBlock,
-                                                                    options: options)
+                        let repositoryObserver = DataProviderObserver(observer: observer,
+                                                                      queue: queue,
+                                                                      updateBlock: updateBlock,
+                                                                      failureBlock: failureBlock,
+                                                                      options: options)
                         self.observers.append(repositoryObserver)
 
                         self.updateTrigger.receive(event: .addObserver(observer))

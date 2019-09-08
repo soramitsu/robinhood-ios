@@ -14,9 +14,6 @@ import Foundation
 public final class AnyDataProviderSource<T: Identifiable>: DataProviderSourceProtocol {
     public typealias Model = T
 
-    /// Object responsible for handling communication with remote source
-    public private(set) var base: Any
-
     private let _fetchById: (String) -> BaseOperation<Model?>
     private let _fetchByPage: (UInt) -> BaseOperation<[Model]>
 
@@ -28,7 +25,6 @@ public final class AnyDataProviderSource<T: Identifiable>: DataProviderSourcePro
      */
 
     public init<U: DataProviderSourceProtocol>(_ source: U) where U.Model == Model {
-        self.base = source
         _fetchById = source.fetchOperation
         _fetchByPage = source.fetchOperation
     }
@@ -43,10 +39,8 @@ public final class AnyDataProviderSource<T: Identifiable>: DataProviderSourcePro
      *    - fetchById: Closure to return object by id.
      */
 
-    public init(base: Any,
-                fetchByPage: @escaping (UInt) -> BaseOperation<[Model]>,
+    public init(fetchByPage: @escaping (UInt) -> BaseOperation<[Model]>,
                 fetchById: @escaping (String) -> BaseOperation<Model?>) {
-        self.base = base
         _fetchByPage = fetchByPage
         _fetchById = fetchById
     }

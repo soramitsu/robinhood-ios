@@ -21,7 +21,7 @@ class DataProviderTests: DataProviderBaseTests {
         // given
         let objects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onInitialization
-        let source = createDataSourceMock(base: self, returns: objects)
+        let source = createDataSourceMock(returns: objects)
         let dataProvider = DataProvider<FeedData>(source: source,
                                                   repository: AnyDataProviderRepository(repository),
                                                   updateTrigger: trigger)
@@ -71,7 +71,7 @@ class DataProviderTests: DataProviderBaseTests {
         // given
         let projects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onAddObserver
-        let source = createDataSourceMock(base: self, returns: projects)
+        let source = createDataSourceMock(returns: projects)
         let dataProvider = DataProvider<FeedData>(source: source,
                                                   repository: AnyDataProviderRepository(repository),
                                                   updateTrigger: trigger)
@@ -124,7 +124,7 @@ class DataProviderTests: DataProviderBaseTests {
         // given
         let projects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onInitialization
-        let source = createDataSourceMock(base: self, returns: projects)
+        let source = createDataSourceMock(returns: projects)
         let dataProvider = DataProvider<FeedData>(source: source,
                                                   repository: AnyDataProviderRepository(repository),
                                                   updateTrigger: trigger)
@@ -163,7 +163,7 @@ class DataProviderTests: DataProviderBaseTests {
     func testFetchAllFromRepository() {
         // given
         let trigger = DataProviderEventTrigger.onInitialization
-        let source = createDataSourceMock(base: self, returns: [FeedData]())
+        let source = createDataSourceMock(returns: [FeedData]())
         let dataProvider = DataProvider<FeedData>(source: source,
                                                   repository: AnyDataProviderRepository(repository),
                                                   updateTrigger: trigger)
@@ -207,7 +207,7 @@ class DataProviderTests: DataProviderBaseTests {
     func testManualSynchronization() {
         let objects = (0..<10).map { _ in createRandomFeed() }
         let trigger = DataProviderEventTrigger.onNone
-        let source = createDataSourceMock(base: self, returns: objects)
+        let source = createDataSourceMock(returns: objects)
         let dataProvider = DataProvider<FeedData>(source: source,
                                                   repository: AnyDataProviderRepository(repository),
                                                   updateTrigger: trigger)
@@ -280,7 +280,7 @@ class DataProviderTests: DataProviderBaseTests {
 
         // when
         let trigger = DataProviderEventTrigger.onAddObserver
-        let source = createDataSourceMock(base: self, returns: objects)
+        let source = createDataSourceMock(returns: objects)
         let dataProvider = DataProvider<FeedData>(source: source,
                                                   repository: AnyDataProviderRepository(repository),
                                                   updateTrigger: trigger)
@@ -344,7 +344,7 @@ class DataProviderTests: DataProviderBaseTests {
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source = createDataSourceMock(base: self, returns: objects)
+        let source = createDataSourceMock(returns: objects)
         let dataProvider = DataProvider<FeedData>(source: source,
                                                   repository: AnyDataProviderRepository(repository),
                                                   updateTrigger: trigger)
@@ -406,8 +406,7 @@ class DataProviderTests: DataProviderBaseTests {
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source: AnyDataProviderSource<FeedData> = createDataSourceMock(base: self,
-                                                                           returns: NetworkBaseError.unexpectedResponseObject)
+        let source: AnyDataProviderSource<FeedData> = createDataSourceMock(returns: NetworkBaseError.unexpectedResponseObject)
         let dataProvider = DataProvider<FeedData>(source: source,
                                                   repository: AnyDataProviderRepository(repository),
                                                   updateTrigger: trigger)
@@ -473,7 +472,7 @@ class DataProviderTests: DataProviderBaseTests {
         let objects = (0..<10).map { _ in createRandomFeed() }
 
         let trigger = DataProviderEventTrigger.onNone
-        let source = createDataSourceMock(base: self, returns: objects, after: 0.01)
+        let source = createDataSourceMock(returns: objects, after: 0.01)
         let dataProvider = DataProvider<FeedData>(source: source,
                                                   repository: AnyDataProviderRepository(repository),
                                                   updateTrigger: trigger)
@@ -527,7 +526,7 @@ class DataProviderTests: DataProviderBaseTests {
         // given
 
         let trigger = DataProviderEventTrigger.onNone
-        let source = createDataSourceMock(base: self, returns: [FeedData]())
+        let source = createDataSourceMock(returns: [FeedData]())
         let dataProvider = DataProvider<FeedData>(source: source,
                                                   repository: AnyDataProviderRepository(repository),
                                                   updateTrigger: trigger)

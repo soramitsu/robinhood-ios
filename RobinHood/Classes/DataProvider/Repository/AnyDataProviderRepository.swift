@@ -5,10 +5,12 @@
 
 import Foundation
 
+/**
+ *  Class is designed to apply type erasure technique to ```DataProviderRepositoryProtocol```
+ */
+
 public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepositoryProtocol {
     public typealias Model = T
-
-    public private(set) var base: Any
 
     public let domain: String
 
@@ -18,8 +20,14 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
     private let _save: (@escaping () throws -> [Model], @escaping () throws -> [String]) -> BaseOperation<Void>
     private let _deleteAll: () -> BaseOperation<Void>
 
+    /**
+     *  Initializes type erasure wrapper for repository implementation.
+     *
+     *  - parameters:
+     *    - repository: Repository implementation to erase type of.
+     */
+
     public init<U: DataProviderRepositoryProtocol>(_ repository: U) where U.Model == Model {
-        base = repository
         domain = repository.domain
         _fetchByModelId = repository.fetchOperation
         _fetchAll = repository.fetchAllOperation

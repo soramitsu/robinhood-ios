@@ -47,8 +47,3 @@ public protocol CoreDataServiceProtocol {
     func close() throws
     func drop() throws
 }
-
-public enum CoreDataManagerBaseError: Error {
-    case missingContext
-    case unexpectedEntity
-}
