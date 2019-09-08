@@ -6,22 +6,48 @@
 import Foundation
 import CoreData
 
+/**
+ *  Enum is defining errors which can occur during
+ *  Core Data service work.
+ */
+
 public enum CoreDataServiceError: Error {
+    /// Database file can't be created at given url.
     case databaseURLInvalid
+
+    /// Can't instantiate Core Data entity model from url.
     case modelInitializationFailed
+
+    /// Thrown when service is trying to be closed during setup.
     case unexpectedCloseDuringSetup
+
+    /// Thrown when service is trying to drop persistent store but not closed.
     case unexpectedDropWhenOpen
+
+    /// Can't remove incompatible persistent store.
     case incompatibleModelRemoveFailed
 }
 
+/**
+ *  Class is designed to provide implementation of ```CoreDataServiceProtocol```
+ *  which manages Core Data persistent store and contexts.
+ */
+
 public class CoreDataService {
-    public enum SetupState {
+    enum SetupState {
         case initial
         case inprogress
         case completed
     }
 
     public let configuration: CoreDataServiceConfigurationProtocol
+
+    /**
+     *  Creates Core Data service object.
+     *
+     *  - parameters:
+     *    - configuration: Value to setup the service.
+     */
 
     public init(configuration: CoreDataServiceConfigurationProtocol) {
         self.configuration = configuration
