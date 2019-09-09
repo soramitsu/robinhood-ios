@@ -17,10 +17,19 @@ import Foundation
 public final class DataProvider<T: Identifiable & Equatable> {
     public typealias Model = T
 
+    /// Type erased implementation of `DataProviderRepositoryProtocol` that manages local storage.
     public private(set) var repository: AnyDataProviderRepository<T>
+
+    /// Type erased implementation of `DataProviderRepositoryProtocol` that manages local storage.
     public private(set) var source: AnyDataProviderSource<T>
+
+    /// Implementation of `DataProviderTriggerProtocol` protocol to trigger objects synchronization.
     public private(set) var updateTrigger: DataProviderTriggerProtocol
+
+    /// Operation queue to execute internal operations.
     public private(set) var executionQueue: OperationQueue
+
+    /// Serial dispatch queue to use as synchronization primitive internally.
     public private(set) var syncQueue: DispatchQueue
 
     var observers: [DataProviderObserver<T>] = []

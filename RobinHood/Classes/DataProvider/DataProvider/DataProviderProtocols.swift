@@ -13,7 +13,7 @@ import Foundation
  *  Concrete implementation is expected to:
  *  - provide list of objects to the client;
  *  - synchronize list of object with remote source;
- *  - be in charge of finding difference between old and new lists to notify observers only when there are changes;
+ *  - be in charge of finding difference between old and new sets to notify observers only when there are changes;
  *  - support pagination, however it is only expected that it caches first page;
  */
 
@@ -63,8 +63,8 @@ public protocol DataProviderProtocol {
     /**
      *  Adds observer to notify when there are changes in local storage.
      *
-     *  The method calls update block as soon as an observer is added and passes
-     *  list of persisted objects. The block is also called later after each synchronization attempt
+     *  The method calls update closure as soon as an observer is added and passes
+     *  list of persisted objects. The closure is also called later after each synchronization attempt
      *  in case of changes or if `alwaysNotifyOnRefresh` flag set in provided `options`. Failure block
      *  is called in case data provider is failed to add an observer or after each failed synchronization
      *  attempt in case `alwaysNotifyOnRefresh` flag is set. Consider also `options` parameter to
@@ -75,8 +75,8 @@ public protocol DataProviderProtocol {
      *      so it will be automatically removed from observation when deallocated. If the object
      *      is already in the observers list then failure block is called with `observerAlreadyAdded` error.
      *    - queue: Queue to dispatch update and failure blocks in. If `nil` is provided for this parameter
-     *      then blocks are dispatched in internal queue.
-     *    - updateBlock: Block to call when there are changes in local store. It is also called immediately
+     *      then closures are dispatched in internal queue.
+     *    - updateBlock: Closure to call when there are changes in local store. It is also called immediately
      *      after observer is added to observers list and delivers current list of objects from local store.
      *      If there is a need to be notified even if there are no changes during synchronization then
      *      consider to set `alwaysNotifyOnRefresh` in options.
@@ -95,7 +95,7 @@ public protocol DataProviderProtocol {
      *  Removes an observer from the list of observers.
      *
      *  - parameters:
-     *    - observer: An object to remove from the list of observers;
+     *    - observer: An object to remove from the list of observers.
      */
 
     func removeObserver(_ observer: AnyObject)
@@ -112,8 +112,8 @@ public extension DataProviderProtocol {
     /**
      *  Adds observer to notify when there are changes in local storage.
      *
-     *  The method calls update block as soon as an observer is added and passes
-     *  list of persisted objects. The block is also called later after each synchronization attempt
+     *  The method calls update closure as soon as an observer is added and passes
+     *  list of persisted objects. The closure is also called later after each synchronization attempt
      *  in case of changes or if `alwaysNotifyOnRefresh` flag set in provided `options`. Failure block
      *  is called in case data provider is failed to add an observer or after each failed synchronization
      *  attempt in case `alwaysNotifyOnRefresh` flag is set. Consider also `options` parameter to
@@ -127,8 +127,8 @@ public extension DataProviderProtocol {
      *      so it will be automatically removed from observation when deallocated. If the object
      *      is already in the observers list then failure block is called with `observerAlreadyAdded` error.
      *    - queue: Queue to dispatch update and failure blocks in. If `nil` is provided for this parameter
-     *      then blocks are dispatched in internal queue.
-     *    - updateBlock: Block to call when there are changes in local store. It is also called immediately
+     *      then closures are dispatched in internal queue.
+     *    - updateBlock: Closure to call when there are changes in local store. It is also called immediately
      *      after observer is added to observers list and delivers current list of objects from local store.
      *      If there is a need to be notified even if there are no changes during synchronization then
      *      consider to set `alwaysNotifyOnRefresh` in options.
@@ -149,7 +149,7 @@ public extension DataProviderProtocol {
 }
 
 /**
- *  Protocol designed to fetch data from remote source by a data provider.
+ *  Protocol is designed to fetch data from remote source by a data provider.
  */
 
 public protocol DataProviderSourceProtocol {
