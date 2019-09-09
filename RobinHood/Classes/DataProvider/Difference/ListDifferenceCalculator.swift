@@ -11,12 +11,15 @@ import Foundation
 
 public enum ListDifference<Model> {
     /// An object at given index was replaced with new one.
+    /// An index, old and new objects are passed as associated values.
     case update(index: Int, old: Model, new: Model)
 
     /// An object at given index was deleted.
+    /// An index and old object are passed as associated values.
     case delete(index: Int, old: Model)
 
     /// New object at given index was inserted
+    /// An index and new object are passed as associated value.
     case insert(index: Int, new: Model)
 }
 

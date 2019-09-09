@@ -7,7 +7,7 @@ import Foundation
 
 /**
  *  Type erasure implementation of `DataProviderSourceProtocol` protocol. It should be used
- *  to wrap concrete implementation of `DataProviderSourceProtocol` before passing as dependecy,
+ *  to wrap concrete implementation of `DataProviderSourceProtocol` before passing as dependency,
  *  for example, to data provider.
  */
 

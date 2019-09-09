@@ -5,6 +5,10 @@
 
 import Foundation
 
+/**
+ *  Class is designed to apply type erasure technique to ```DataProviderProtocol```.
+ */
+
 public final class AnyDataProvider<T: Identifiable & Equatable>: DataProviderProtocol {
     public typealias Model = T
 
@@ -19,6 +23,13 @@ public final class AnyDataProvider<T: Identifiable & Equatable>: DataProviderPro
     private let _refresh: () -> Void
 
     public private(set) var executionQueue: OperationQueue
+
+    /**
+     *  Initializes type erasure wrapper for data provider protocol implementation.
+     *
+     *  - parameters:
+     *    - dataProvider: Data provider to apply type erasure to.
+     */
 
     public init<U: DataProviderProtocol>(_ dataProvider: U) where U.Model == Model {
         _fetchById = dataProvider.fetch

@@ -60,7 +60,7 @@ public protocol SingleValueProviderProtocol {
      *      after observer is added to observers list and delivers current list of objects from local store.
      *      If there is a need to be notified even if there are no changes during synchronization then
      *      consider to set `alwaysNotifyOnRefresh` in options.
-     *    - failureBlock: Block to call in case data provider failed to add the observer. It is also called
+     *    - failureBlock: Closure to call in case data provider failed to add the observer. It is also called
      *      after failed synchronization but only if `alwaysNotifyOnRefresh` flag is set in options.
      *    - options: Controls a way of how and when observer is notified.
      */
@@ -111,7 +111,7 @@ public extension SingleValueProviderProtocol {
      *      after observer is added to observers list and delivers current list of objects from local store.
      *      If there is a need to be notified even if there are no changes during synchronization then
      *      consider to set `alwaysNotifyOnRefresh` in options.
-     *    - failureBlock: Block to call in case data provider failed to add the observer. It is also called
+     *    - failureBlock: Closure to call in case data provider failed to add the observer. It is also called
      *      after failed synchronization but only if `alwaysNotifyOnRefresh` flag is set in options.
      */
 
