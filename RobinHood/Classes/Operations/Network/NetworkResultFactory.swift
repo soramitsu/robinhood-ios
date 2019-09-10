@@ -30,7 +30,7 @@ public typealias NetworkResultFactoryBlock<ResultType> = (Data?, URLResponse?, E
 /// Closure to produce result in case of successfull response.
 public typealias NetworkResultFactorySuccessResponseBlock<ResultType> = () -> ResultType
 
-/// Closure to converts network response data to concrete value in case of successfull response.
+/// Closure to convert network response data to concrete value to form result in case of successfull response.
 public typealias NetworkResultFactoryProcessingBlock<ResultType> = (Data) throws -> ResultType
 
 /**
@@ -55,13 +55,27 @@ public final class AnyNetworkResultFactory<T>: NetworkResultFactoryProtocol {
         _createResult = factory.createResult
     }
 
+    /**
+     *  Creates type erasure wrapper of network result factory protocol
+     *  that executes closure to process the response in order to form result.
+     *
+     *  - parameters:
+     *    - block: Closure to process network response in order to form
+     *    result.
+     */
+
     public init(block: @escaping NetworkResultFactoryBlock<ResultType>) {
         _createResult = block
     }
 
     /**
-     *  Creates ```NetworkResultFactoryProtocol``` implementation
-     *  that executes closure where there is no error.
+     *  Creates type erasure wrapper of network result factory protocol
+     *  that executes closure to receive the result value in case if response
+     *  contains no errors. Otherwise an error is returned.
+     *
+     *  - parameters:
+     *    - successResponseBlock: Closure to execute, in case response contains no error, to receive
+     *    result.
      */
 
     public convenience init(successResponseBlock: @escaping NetworkResultFactorySuccessResponseBlock<ResultType>) {
@@ -78,6 +92,16 @@ public final class AnyNetworkResultFactory<T>: NetworkResultFactoryProtocol {
             return .success(result)
         }
     }
+
+    /**
+     *  Creates type erasure wrapper of network result factory protocol
+     *  that executes closure to produce result from response data in case of successfull
+     *  response.
+     *
+     *  - parameters:
+     *    - processingBlock: Closure to execute, in case response contains no error, to receive
+     *    result from response data.
+     */
 
     public convenience init(processingBlock: @escaping NetworkResultFactoryProcessingBlock<ResultType>) {
         self.init { (data, response, error) -> Result<ResultType, Error> in
