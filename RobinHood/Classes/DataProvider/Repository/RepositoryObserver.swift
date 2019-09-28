@@ -5,23 +5,34 @@
 
 import Foundation
 
-public final class RepositoryObserver<T> {
+/**
+ *  Class is designed to weakly store information about repository observer.
+ */
+
+public struct RepositoryObserver<T> {
+    /// An object which is responsible for handling changes in repository.
     public private(set) weak var observer: AnyObject?
-    public private(set) var queue: DispatchQueue?
+
+    /// Queue to execute update closure in.
+    public private(set) var queue: DispatchQueue
+
+    /// Closure to deliver changes to observers. Closure is executed in ```queue```.
     public private(set) var updateBlock: ([DataProviderChange<T>]) -> Void
-    public private(set) var failureBlock: (Error) -> Void
-    public private(set) var options: DataProviderObserverOptions
+
+    /**
+     *  Initializes repository observer.
+     *
+     *  - parameters:
+     *    - observer: An object which is responsible for handling changes in repository.
+     *    - queue: Queue to execute update closure in.
+     *    - updateBlock: Closure to deliver changes to observers. Closure is executed in ```queue```.
+     */
 
     public init(observer: AnyObject,
-                queue: DispatchQueue?,
-                updateBlock: @escaping ([DataProviderChange<T>]) -> Void,
-                failureBlock: @escaping (Error) -> Void,
-                options: DataProviderObserverOptions) {
-
+                queue: DispatchQueue,
+                updateBlock: @escaping ([DataProviderChange<T>]) -> Void) {
         self.observer = observer
-        self.options = options
         self.queue = queue
         self.updateBlock = updateBlock
-        self.failureBlock = failureBlock
     }
 }

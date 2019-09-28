@@ -119,11 +119,20 @@ extension DataProvider: DataProviderProtocol {
                 switch result {
                 case .success(let items):
                     self.syncQueue.async {
-                        let repositoryObserver = RepositoryObserver(observer: observer,
-                                                                    queue: queue,
-                                                                    updateBlock: updateBlock,
-                                                                    failureBlock: failureBlock,
-                                                                    options: options)
+
+                        if self.observers.contains(where: { $0.observer === observer }) {
+                            dispatchInQueueWhenPossible(queue) {
+                                failureBlock(DataProviderError.observerAlreadyAdded)
+                            }
+
+                            return
+                        }
+
+                        let repositoryObserver = DataProviderObserver(observer: observer,
+                                                                      queue: queue,
+                                                                      updateBlock: updateBlock,
+                                                                      failureBlock: failureBlock,
+                                                                      options: options)
                         self.observers.append(repositoryObserver)
 
                         self.updateTrigger.receive(event: .addObserver(observer))

@@ -6,18 +6,59 @@
 import Foundation
 import CoreData
 
+/**
+ *  Enum is designed to define internal errors which can occur
+ *  in ```CoreDataRepository```.
+ */
+
 public enum CoreDataRepositoryError: Error {
-    case bothModelAndErrorNull
-    case unexpectedSaveResult
+    /// Returned where there is no information about error.
+    case undefined
+
+    /// Returned when new entity can't be created.
+    case creationFailed
 }
+
+/**
+ *  Implementation of ```DataProviderRepositoryProtocol``` based on Core Data which manages list of
+ *  objects of a particular type.
+ *
+ *  Repository requires an implementation of ```CoreDataServiceProtocol``` to request a context to save/fetch
+ *  Core Data entities to/from persistent store. More precisely, repository operates two
+ *  kind of models: swift model and NSManagedObject provided by the client as generic parameters.
+ *  Repository converts swift model to NSManagedObject using mapper passed as a parameter during
+ *  initialization and saves Core Data entity through context. And vice versa, repository converts
+ *  NSManagedObject, fetched from the context, to swift model and returns to the client.
+ *  Additionally, repository allows sorting fetched entities using ```NSSortDescriptor``` provided
+ *  during initialization.
+ */
 
 public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
     public typealias Model = T
 
+    /// Service which manages Core Data contexts and persistent storage.
     public let databaseService: CoreDataServiceProtocol
+
+    /// Mapper to convert from swift model to Core Data NSManagedObject and back.
     public let dataMapper: AnyCoreDataMapper<T, U>
+
+    /// Domain to access only subset of objects.
     public let domain: String
+
+    /// Descriptor that sorts fetched NSManagedObject list.
     public let sortDescriptor: NSSortDescriptor?
+
+    /**
+     *  Creates new Core Data repository object.
+     *
+     *  - parameters:
+     *    - databaseService: Core Data persistent store and contexts manager.
+     *    - mapper: Mapper converts from swift model to NSManagedObject and back.
+     *    - domain: Domain of the subset of objects to access. Each NSManagedObject
+     *    inside repository should have a field to store domain.
+     *    See ```CoreDataMapperProtocol``` for more details.
+     *    - sortDescriptor: Descriptor to sort fetched objects.
+     */
 
     public init(databaseService: CoreDataServiceProtocol,
                 mapper: AnyCoreDataMapper<T, U>,
@@ -50,7 +91,7 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
             }
 
             guard let entity = optionalEntitity else {
-                throw CoreDataRepositoryError.unexpectedSaveResult
+                throw CoreDataRepositoryError.creationFailed
             }
 
             try dataMapper.populate(entity: entity, from: model)

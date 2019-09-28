@@ -5,10 +5,23 @@
 
 import UIKit
 
+/**
+ *  Protocol is designed to manage display of the network activity indicator.
+ *
+ *  Network indicator is displayed if number of increments greater than number of decrements.
+ */
+
 public protocol NetworkIndicatorManagerProtocol {
+    /// Display network activity indicator.
     func increment()
+
+    /// Hide network actity indicator if there is no running network operations.
     func decrement()
 }
+
+/**
+ *  Class is designed to provide implementation of ```NetworkIndicatorManagerProtocol```.
+ */
 
 public final class NetworkIndicatorManager {
     static let shared = NetworkIndicatorManager()

@@ -5,36 +5,106 @@
 
 import Foundation
 
+/**
+ *  Protocol is designed to provide an interface for building urls from
+ *  a template.
+ */
+
 public protocol EndpointBuilderProtocol {
+    /**
+     *  Setups a set of characters to leave without encoding in final url.
+     *
+     *  - parameters:
+     *    - allowedCharset: Character set to leave without encoding in final url.
+     *  - returns: Current instance.
+     */
+
     func withUrlEncoding(allowedCharset: CharacterSet) -> Self
+
+    /**
+     *  Creates a url for single parameter.
+     *
+     *  - parameters:
+     *    - value: single parameter to replace in template.
+     *  - returns: URL value if success or an error is thrown in case of failure.
+     *  - throws: EnpointBuilderError.
+     */
+
     func buildParameterURL(_ value: String) throws -> URL
+
+    /**
+     *  Creates a url where each parameter is replaced with correponding value
+     *  of encodable object.
+     *
+     *  - parameters:
+     *    - parameters: Encodable object to replace template parameters.
+     *  - returns: URL value if success or an error is thrown in case of failure.
+     */
+
     func buildURL<T>(with parameters: T) throws -> URL where T: Encodable
+
+    /**
+     *  Creates a string where each parameter is replaced with regex '*' (star)
+     *  symbol.
+     */
     func buildRegex() throws -> String
 }
 
+/**
+ *  Enum if designed to define possible error which can occur
+ *  during template processing by endpoint builder.
+ */
+
 public enum EndpointBuilderError: Error {
+    /// Unexpected parameter start symbol found during template parsing.
     case unexpectedParameterStart
+
+    /// Unexpected parameter end symbol found during template parsing.
     case unexpectedParameterEnd
-    case parameterNotFound
+
+    /// URL can't be created from processed template string.
     case invalidUrl
+
+    /// Can't serialize parameters object to process template string.
     case invalidObject
+
+    /// Parameters object must contain either string or int as fields.
     case paramMustConvertToString
+
+    /// Multiple parameters found in template string but expected only a single one.
     case singleParameterExpected
+
+    /// Can't encode symbols in final url.
     case invalidUrlEncoding
 }
 
-public final class EndpointBuilder {
-    public static let paramStart = Character("{")
-    public static let paramEnd = Character("}")
-    public static let regexReplacement: String = "[^/?&]+"
-    public static let regexSpecialCharacters = CharacterSet(charactersIn: "+?.*")
-    public static let regexSkipString = "\\"
+/**
+ *  Class is designed to provide implementation of ```EndpointBuilderProtocol```.
+ *
+ *  Template part that should be replaced must be surrounded with a pair of brackets ```{}```.
+ *  For example, ```https://google.com/{search}?count={count}```.
+ */
 
+public final class EndpointBuilder {
+    static let paramStart = Character("{")
+    static let paramEnd = Character("}")
+    static let regexReplacement: String = "[^/?&]+"
+    static let regexSpecialCharacters = CharacterSet(charactersIn: "+?.*")
+    static let regexSkipString = "\\"
+
+    /// Template string to build url from.
     public let urlTemplate: String
 
     private var allowedUrlEncodingCharset: CharacterSet?
 
     private lazy var encoder = JSONEncoder()
+
+    /**
+     *  Initializes endpoint builder.
+     *
+     *  - parameters:
+     *    - urlTemplate: Template to build url from.
+     */
 
     public init(urlTemplate: String) {
         self.urlTemplate = urlTemplate

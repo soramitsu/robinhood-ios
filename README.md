@@ -20,6 +20,8 @@ it, simply add the following line to your Podfile:
 pod 'RobinHood'
 ```
 
+Motivation behind the project and code examples can be found in [Wiki](https://github.com/soramitsu/robinhood-ios/wiki/1.-Introduction).
+
 ## Author
 
 ERussel, emkil.russel@gmail.com

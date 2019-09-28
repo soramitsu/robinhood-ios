@@ -7,7 +7,7 @@ import Foundation
 import RobinHood
 import CoreData
 
-func createDataSourceMock<T>(base: Any, returns items: [T], after delay: TimeInterval = 0.0) -> AnyDataProviderSource<T> {
+func createDataSourceMock<T>(returns items: [T], after delay: TimeInterval = 0.0) -> AnyDataProviderSource<T> {
     let fetchPageBlock: (UInt) -> BaseOperation<[T]> = { _ in
         return ClosureOperation {
             usleep(useconds_t(delay * 1e+6))
@@ -22,12 +22,11 @@ func createDataSourceMock<T>(base: Any, returns items: [T], after delay: TimeInt
         }
     }
 
-    return AnyDataProviderSource(base: base,
-                                 fetchByPage: fetchPageBlock,
+    return AnyDataProviderSource(fetchByPage: fetchPageBlock,
                                  fetchById: fetchByIdBlock)
 }
 
-func createDataSourceMock<T>(base: Any, returns error: Error) -> AnyDataProviderSource<T> {
+func createDataSourceMock<T>(returns error: Error) -> AnyDataProviderSource<T> {
     let fetchPageBlock: (UInt) -> BaseOperation<[T]> = { _ in
         let pageOperation = BaseOperation<[T]>()
         pageOperation.result = .failure(error)
@@ -42,12 +41,11 @@ func createDataSourceMock<T>(base: Any, returns error: Error) -> AnyDataProvider
         return identifierOperation
     }
 
-    return AnyDataProviderSource(base: base,
-                                 fetchByPage: fetchPageBlock,
+    return AnyDataProviderSource(fetchByPage: fetchPageBlock,
                                  fetchById: fetchByIdBlock)
 }
 
-func createSingleValueSourceMock<T>(base: Any, returns item: T, after delay: TimeInterval = 0.0) -> AnySingleValueProviderSource<T> {
+func createSingleValueSourceMock<T>(returns item: T, after delay: TimeInterval = 0.0) -> AnySingleValueProviderSource<T> {
     let fetch: () -> BaseOperation<T> = {
         return ClosureOperation {
             usleep(useconds_t(delay * 1e+6))
@@ -55,11 +53,10 @@ func createSingleValueSourceMock<T>(base: Any, returns item: T, after delay: Tim
         }
     }
 
-    return AnySingleValueProviderSource(base: base,
-                                        fetch: fetch)
+    return AnySingleValueProviderSource(fetch: fetch)
 }
 
-func createSingleValueSourceMock<T>(base: Any, returns error: Error) -> AnySingleValueProviderSource<T> {
+func createSingleValueSourceMock<T>(returns error: Error) -> AnySingleValueProviderSource<T> {
     let fetch: () -> BaseOperation<T> = {
         let operation = BaseOperation<T>()
         operation.result = .failure(error)
@@ -67,15 +64,13 @@ func createSingleValueSourceMock<T>(base: Any, returns error: Error) -> AnySingl
         return operation
     }
 
-    return AnySingleValueProviderSource(base: base,
-                                        fetch: fetch)
+    return AnySingleValueProviderSource(fetch: fetch)
 }
 
-func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(base: Any,
-                                                                     repository: CoreDataRepository<T, U>,
+func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(repository: CoreDataRepository<T, U>,
                                                                      operationQueue: OperationQueue,
                                                                      returns items: [T]) -> AnyStreamableSource<T> {
-    let source: AnyStreamableSource<T> = AnyStreamableSource(source: base) { (offset, count, queue, completionBlock) in
+    let source: AnyStreamableSource<T> = AnyStreamableSource { (offset, count, queue, completionBlock) in
         let dispatchQueue = queue ?? .main
 
         let saveOperation = repository.saveOperation( { items }, { [] })
@@ -90,8 +85,8 @@ func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(base: Any,
     return source
 }
 
-func createStreamableSourceMock<T: Identifiable>(base: Any, returns error: Error) -> AnyStreamableSource<T> {
-    let source: AnyStreamableSource<T> = AnyStreamableSource(source: base) { (offset, count, queue, completionBlock) in
+func createStreamableSourceMock<T: Identifiable>(returns error: Error) -> AnyStreamableSource<T> {
+    let source: AnyStreamableSource<T> = AnyStreamableSource { (offset, count, queue, completionBlock) in
         let dispatchQueue = queue ?? .main
 
         dispatchQueue.async {

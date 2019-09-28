@@ -21,7 +21,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         // given
         let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onInitialization
-        let source = createSingleValueSourceMock(base: self, returns: object)
+        let source = createSingleValueSourceMock(returns: object)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
                                                source: source,
                                                repository: AnyDataProviderRepository(repository),
@@ -68,7 +68,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         // given
         let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onAddObserver
-        let source = createSingleValueSourceMock(base: self, returns: object)
+        let source = createSingleValueSourceMock(returns: object)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
                                                          source: source,
                                                          repository: AnyDataProviderRepository(repository),
@@ -125,7 +125,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         // given
         let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onInitialization
-        let source = createSingleValueSourceMock(base: self, returns: object)
+        let source = createSingleValueSourceMock(returns: object)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
                                                          source: source,
                                                          repository: AnyDataProviderRepository(repository),
@@ -165,7 +165,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
     func testManualSynchronization() {
         let object = createRandomFeed()
         let trigger = DataProviderEventTrigger.onNone
-        let source = createSingleValueSourceMock(base: self, returns: object)
+        let source = createSingleValueSourceMock(returns: object)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
                                                          source: source,
                                                          repository: AnyDataProviderRepository(repository),
@@ -240,7 +240,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source: AnySingleValueProviderSource<FeedData?> = createSingleValueSourceMock(base: self, returns: nil)
+        let source: AnySingleValueProviderSource<FeedData?> = createSingleValueSourceMock(returns: nil)
         let dataProvider = SingleValueProvider<FeedData?>(targetIdentifier: object.identifier,
                                                           source: source,
                                                           repository: AnyDataProviderRepository(repository),
@@ -315,7 +315,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source = createSingleValueSourceMock(base: self, returns: object)
+        let source = createSingleValueSourceMock(returns: object)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: object.identifier,
                                                          source: source,
                                                          repository: AnyDataProviderRepository(repository),
@@ -391,7 +391,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source: AnySingleValueProviderSource<FeedData> = createSingleValueSourceMock(base: self, returns: NetworkBaseError.unexpectedResponseObject)
+        let source: AnySingleValueProviderSource<FeedData> = createSingleValueSourceMock(returns: NetworkBaseError.unexpectedResponseObject)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: object.identifier,
                                                          source: source,
                                                          repository: AnyDataProviderRepository(repository),
@@ -453,7 +453,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         let object = createRandomFeed()
 
         let trigger = DataProviderEventTrigger.onNone
-        let source = createSingleValueSourceMock(base: self, returns: object)
+        let source = createSingleValueSourceMock(returns: object)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: object.identifier,
                                                          source: source,
                                                          repository: AnyDataProviderRepository(repository),

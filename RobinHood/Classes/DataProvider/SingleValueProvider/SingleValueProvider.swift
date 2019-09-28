@@ -5,27 +5,75 @@
 
 import Foundation
 
+/**
+ *  Structure is designed to represent universal swift model for single object to
+ *  pass and receive from repository.
+ */
+
 public struct SingleValueProviderObject: Identifiable & Codable {
+    /// Identifier of the object
     public var identifier: String
+
+    /// serialized object's data
     public var payload: Data
 }
+
+/**
+ *  Implementation of `SingleValueProviderProtocol` is designed to satify defined requirements of the protocol
+ *  and to be first consideration when there is a need to cache a remote object.
+ *
+ *  Besides methods defined in protocol the implementation provides an ability to control when
+ *  synchronization executes requiring special trigger object to be passed
+ *  during initialization (see `DataProviderTriggerProtocol`).
+ */
 
 public final class SingleValueProvider<T: Codable & Equatable> {
     public typealias Model = T
 
+    /// Type erased implementation of `DataProviderRepositoryProtocol` that manages local storage.
     public private(set) var repository: AnyDataProviderRepository<SingleValueProviderObject>
+
+    /// Type erased implementation of `SingleValueProviderSourceProtocol` that controls fetching data
+    /// from remote source.
     public private(set) var source: AnySingleValueProviderSource<T>
+
+    /// Implementation of `DataProviderTriggerProtocol` protocol.
     public private(set) var updateTrigger: DataProviderTriggerProtocol
+
+    /// Operation queue to execute internal operations.
     public private(set) var executionQueue: OperationQueue
+
+    /// Serial dispatch queue to use as synchronization primitive internally.
     public private(set) var syncQueue: DispatchQueue
+
+    /// Identifier of the object to manage.
     public private(set) var targetIdentifier: String
 
-    var observers: [RepositoryObserver<T>] = []
+    var observers: [DataProviderObserver<T>] = []
     var lastSyncOperation: Operation?
     var repositoryUpdateOperation: Operation?
 
     lazy var encoder = JSONEncoder()
     lazy var decoder = JSONDecoder()
+
+    /**
+     *  Creates data provider object.
+     *
+     *  - parameters:
+     *    - targetIdentifier: Identifier of the object to manage.
+     *    - source: Type erased implementation of `SingleValueProviderSourceProtocol` that controls fetching data
+     *      from remote source.
+     *    - repository: Type erased implementation of `DataProviderRepositoryProtocol` that manages local storage.
+     *    - updateTrigger: Implementation of `DataProviderTriggerProtocol` protocol.
+     *      By default `DataProviderEventTrigger.onAll` is passed which means that synchronization is triggered
+     *      after each access to public methods including constructor.
+     *    - executionQueue: Operation queue to execute internal operations. Pass `nil` (default) to create
+     *      new operation queue. However, sometimes, it is convienent to share operation queue to take advantage
+     *      of chaining and dependency features.
+     *    - serialSyncQueue: Serial dispatch queue to use as synchronization primitive internally.
+     *      Usually, this parameter should be ignored which creates new synchronization queue (with utility QOS class)
+     *      but sometimes there is a need to share a global queue due to optimization reasons.
+     */
 
     public init(targetIdentifier: String,
                 source: AnySingleValueProviderSource<T>,
@@ -156,7 +204,7 @@ extension SingleValueProvider {
     }
 
     private func createSaveRepositoryOperation(dependingOn differenceOperation: BaseOperation<DataProviderChange<T>?>)
-        -> BaseOperation<Bool> {
+        -> BaseOperation<Void> {
 
             let itemIdentifier = targetIdentifier
 

@@ -66,11 +66,11 @@ extension SingleValueProvider: SingleValueProviderProtocol {
                 switch result {
                 case .success(let optionalEntity):
                     self.syncQueue.async {
-                        let repositoryObserver = RepositoryObserver(observer: observer,
-                                                                    queue: queue,
-                                                                    updateBlock: updateBlock,
-                                                                    failureBlock: failureBlock,
-                                                                    options: options)
+                        let repositoryObserver = DataProviderObserver(observer: observer,
+                                                                      queue: queue,
+                                                                      updateBlock: updateBlock,
+                                                                      failureBlock: failureBlock,
+                                                                      options: options)
                         self.observers.append(repositoryObserver)
 
                         self.updateTrigger.receive(event: .addObserver(observer))

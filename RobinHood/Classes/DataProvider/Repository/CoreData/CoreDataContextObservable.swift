@@ -6,13 +6,33 @@
 import Foundation
 import CoreData
 
+/**
+ *  Class is designed to provide implementation for ```DataProviderRepositoryObservable``` and allows
+ *  observation of Core Data based repositories through NSManagedObjectContext notifications.
+ *
+ *  Changes are delivered as a list of ```DataProviderChange``` values to every subscribed observer.
+ *  Changes can be filtered by providing predicate closure during initialization.
+ */
+
 final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject> {
     private(set) var service: CoreDataServiceProtocol
     private(set) var mapper: AnyCoreDataMapper<T, U>
     private(set) var processingQueue: DispatchQueue
     private(set) var predicate: (U) -> Bool
 
-    private var observers: [StreamableSourceObserver<T>] = []
+    private var observers: [RepositoryObserver<T>] = []
+
+    /**
+     *  Creates Core Data context observable object.
+     *
+     *  - parameters:
+     *    - service: Core Data service which manages persistent store and contexts.
+     *    - mapper: Mapper which maps swift model to NSManagedObjects.
+     *    - predicate: Closure to filter changes that are deliviered to observers.
+     *    - processingQueue: Serial queue for internal synchronization needs. By
+     *    default parameter is ```nil``` which mean that new queue is created internally
+     *    but the client can pass shared queue for optimization reasons.
+     */
 
     public init(service: CoreDataServiceProtocol,
                 mapper: AnyCoreDataMapper<T, U>,
@@ -128,7 +148,7 @@ extension CoreDataContextObservable: DataProviderRepositoryObservable {
             self.observers = self.observers.filter { $0.observer != nil }
 
             if !self.observers.contains(where: { $0.observer === observer }) {
-                let newObserver = StreamableSourceObserver(observer: observer, queue: queue, updateBlock: updateBlock)
+                let newObserver = RepositoryObserver(observer: observer, queue: queue, updateBlock: updateBlock)
                 self.observers.append(newObserver)
             }
         }

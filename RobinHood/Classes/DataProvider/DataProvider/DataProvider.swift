@@ -5,24 +5,54 @@
 
 import Foundation
 
-public enum DataProviderError: Error {
-    case unexpectedSourceResult
-    case unexpectedRepositoryResult
-    case dependencyCancelled
-}
+/**
+ *  Implementation of `DataProviderProtocol` is designed to satify defined requirements of the protocol
+ *  and to be first consideration when there is a need to cache a list of remote objects.
+ *
+ *  Besides methods defined in protocol the implementation provides an ability to control when
+ *  synchronization executes requiring special trigger object to be passed
+ *  during initialization (see `DataProviderTriggerProtocol`).
+ */
 
 public final class DataProvider<T: Identifiable & Equatable> {
     public typealias Model = T
 
+    /// Type erased implementation of `DataProviderRepositoryProtocol` that manages local storage.
     public private(set) var repository: AnyDataProviderRepository<T>
+
+    /// Type erased implementation of `DataProviderRepositoryProtocol` that manages local storage.
     public private(set) var source: AnyDataProviderSource<T>
+
+    /// Implementation of `DataProviderTriggerProtocol` protocol to trigger objects synchronization.
     public private(set) var updateTrigger: DataProviderTriggerProtocol
+
+    /// Operation queue to execute internal operations.
     public private(set) var executionQueue: OperationQueue
+
+    /// Serial dispatch queue to use as synchronization primitive internally.
     public private(set) var syncQueue: DispatchQueue
 
-    var observers: [RepositoryObserver<T>] = []
+    var observers: [DataProviderObserver<T>] = []
     var lastSyncOperation: Operation?
     var repositoryUpdateOperation: Operation?
+
+    /**
+     *  Creates data provider object.
+     *
+     *  - parameters:
+     *    - source: Type erased implementation of `DataProviderSourceProtocol` that controls fetching data
+     *      from remote source.
+     *    - repository: Type erased implementation of `DataProviderRepositoryProtocol` that manages local storage.
+     *    - updateTrigger: Implementation of `DataProviderTriggerProtocol` protocol.
+     *      By default `DataProviderEventTrigger.onAll` is passed which means that synchronization is triggered
+     *      after each access to public methods including constructor.
+     *    - executionQueue: Operation queue to execute internal operations. Pass `nil` (default) to create
+     *      new operation queue. However, sometimes, it is convienent to share operation queue to take advantage
+     *      of chaining and dependency features.
+     *    - serialSyncQueue: Serial dispatch queue to use as synchronization primitive internally.
+     *      Usually, this parameter should be ignored which creates new synchronization queue (with utility QOS class)
+     *      but sometimes there is a need to share a global queue due to optimization reasons.
+     */
 
     public init(source: AnyDataProviderSource<T>,
                 repository: AnyDataProviderRepository<T>,
@@ -150,7 +180,7 @@ extension DataProvider {
     }
 
     private func createSaveRepositoryOperation(dependingOn differenceOperation: BaseOperation<[DataProviderChange<T>]>)
-        -> BaseOperation<Bool> {
+        -> BaseOperation<Void> {
 
             let updatedItemsBlock = { () throws -> [T] in
                 guard let result = differenceOperation.result else {
