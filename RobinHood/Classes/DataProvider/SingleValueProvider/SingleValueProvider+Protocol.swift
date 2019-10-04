@@ -6,7 +6,7 @@
 import Foundation
 
 extension SingleValueProvider: SingleValueProviderProtocol {
-    public func fetch(with completionBlock: ((Result<T, Error>?) -> Void)?) -> BaseOperation<T> {
+    public func fetch(with completionBlock: ((Result<T?, Error>?) -> Void)?) -> BaseOperation<T?> {
         let repositoryOperation = repository.fetchOperation(by: targetIdentifier)
 
         let sourceOperation = source.fetchOperation()

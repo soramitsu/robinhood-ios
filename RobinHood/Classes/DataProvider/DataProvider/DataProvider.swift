@@ -245,11 +245,11 @@ extension DataProvider {
     }
 
     private func findChanges(sourceResult: [T], repositoryResult: [T]) throws -> [DataProviderChange<T>] {
-        var sourceKeyValue = sourceResult.reduce(into: [String: T]()) { (result, item) in
+        let sourceKeyValue = sourceResult.reduce(into: [String: T]()) { (result, item) in
             result[item.identifier] = item
         }
 
-        var repositoryKeyValue = repositoryResult.reduce(into: [String: T]()) { (result, item) in
+        let repositoryKeyValue = repositoryResult.reduce(into: [String: T]()) { (result, item) in
             result[item.identifier] = item
         }
 
