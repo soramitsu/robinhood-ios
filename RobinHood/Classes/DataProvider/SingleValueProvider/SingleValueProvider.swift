@@ -166,7 +166,7 @@ extension SingleValueProvider {
         executionQueue.addOperations(operations, waitUntilFinished: false)
     }
 
-    private func createDifferenceOperation(dependingOn sourceOperation: BaseOperation<T>,
+    private func createDifferenceOperation(dependingOn sourceOperation: BaseOperation<T?>,
                                            repositoryOperation: BaseOperation<SingleValueProviderObject?>)
         -> BaseOperation<DataProviderChange<T>?> {
 
@@ -278,25 +278,25 @@ extension SingleValueProvider {
         }
     }
 
-    private func findChanges(sourceResult: T, repositoryResult: SingleValueProviderObject?) throws
+    private func findChanges(sourceResult: T?, repositoryResult: SingleValueProviderObject?) throws
         -> DataProviderChange<T>? {
 
-            let sourceData = try? encoder.encode(sourceResult)
-
             guard let existingRepositoryResult = repositoryResult else {
-                if sourceData != nil {
-                    return DataProviderChange.insert(newItem: sourceResult)
+                if let existingSourceResult = sourceResult {
+                    return DataProviderChange.insert(newItem: existingSourceResult)
                 } else {
                     return nil
                 }
             }
 
-            guard let existingSourceData = sourceData else {
-                return DataProviderChange.delete(deletedIdentifier: targetIdentifier)
+            guard
+                let existingSourceResult = sourceResult,
+                let existingSourceData = try? encoder.encode(existingSourceResult) else {
+                    return DataProviderChange.delete(deletedIdentifier: targetIdentifier)
             }
 
             if existingSourceData != existingRepositoryResult.payload {
-                return DataProviderChange.update(newItem: sourceResult)
+                return DataProviderChange.update(newItem: existingSourceResult)
             } else {
                 return nil
             }

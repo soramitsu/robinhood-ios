@@ -240,24 +240,23 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
 
         let trigger = DataProviderEventTrigger.onNone
-        let source: AnySingleValueProviderSource<FeedData?> = createSingleValueSourceMock(returns: nil)
-        let dataProvider = SingleValueProvider<FeedData?>(targetIdentifier: object.identifier,
-                                                          source: source,
-                                                          repository: AnyDataProviderRepository(repository),
-                                                          updateTrigger: trigger)
+        let source: AnySingleValueProviderSource<FeedData> = createSingleValueSourceMock(returns: nil)
+        let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: object.identifier,
+                                                         source: source,
+                                                         repository: AnyDataProviderRepository(repository),
+                                                         updateTrigger: trigger)
 
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = 2
 
-        var allChanges: [[DataProviderChange<FeedData?>]] = []
+        var allChanges: [[DataProviderChange<FeedData>]] = []
 
-        let changesBlock: ([DataProviderChange<FeedData?>]) -> Void = { (changes) in
+        let changesBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             allChanges.append(changes)
             expectation.fulfill()
         }
 
-        let errorBlock: (Error) -> Void = { (error) in
-        }
+        let errorBlock: (Error) -> Void = { (error) in }
 
         let options = DataProviderObserverOptions(alwaysNotifyOnRefresh: true)
         dataProvider.addObserver(self,

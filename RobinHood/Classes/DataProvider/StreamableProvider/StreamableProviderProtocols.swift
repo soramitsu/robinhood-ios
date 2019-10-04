@@ -49,8 +49,9 @@ public protocol StreamableProviderProtocol {
      *    - queue: Queue to dispatch update and failure blocks in. If `nil` is provided for this parameter
      *      then closures are dispatched in internal queue.
      *    - updateBlock: Closure to call when there are changes in local store.
-     *      If there is a need to be notified even if there are no objects recevied after ```fetch(offset:count:with:)```
-     *      call from remote source then consider to set `alwaysNotifyOnRefresh` in options.
+     *      If there is a need to be notified even if there are no objects recevied
+     *      after ```fetch(offset:count:with:)``` call from remote source then consider to set
+     *      `alwaysNotifyOnRefresh` in options.
      *    - failureBlock: Closure to call in case data provider failed to add the observer. It is also called
      *      after failed synchronization but only if `alwaysNotifyOnRefresh` flag is set in options.
      *    - options: Controls a way of how and when observer is notified.
@@ -93,8 +94,9 @@ public extension StreamableProviderProtocol {
      *    - queue: Queue to dispatch update and failure blocks in. If `nil` is provided for this parameter
      *      then closures are dispatched in internal queue.
      *    - updateBlock: Closure to call when there are changes in local store.
-     *      If there is a need to be notified even if there are no objects recevied after ```fetch(offset:count:with:)```
-     *      call from remote source then consider to set `alwaysNotifyOnRefresh` in options.
+     *      If there is a need to be notified even if there are no objects recevied after
+     *      ```fetch(offset:count:with:)``` call from remote source then consider to set
+     *      `alwaysNotifyOnRefresh` in options.
      *    - failureBlock: Closure to call in case data provider failed to add the observer. It is also called
      *      after failed synchronization but only if `alwaysNotifyOnRefresh` flag is set in options.
      *    - options: Controls a way of how and when observer is notified.

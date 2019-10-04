@@ -45,8 +45,8 @@ func createDataSourceMock<T>(returns error: Error) -> AnyDataProviderSource<T> {
                                  fetchById: fetchByIdBlock)
 }
 
-func createSingleValueSourceMock<T>(returns item: T, after delay: TimeInterval = 0.0) -> AnySingleValueProviderSource<T> {
-    let fetch: () -> BaseOperation<T> = {
+func createSingleValueSourceMock<T>(returns item: T?, after delay: TimeInterval = 0.0) -> AnySingleValueProviderSource<T> {
+    let fetch: () -> BaseOperation<T?> = {
         return ClosureOperation {
             usleep(useconds_t(delay * 1e+6))
             return item
@@ -57,8 +57,8 @@ func createSingleValueSourceMock<T>(returns item: T, after delay: TimeInterval =
 }
 
 func createSingleValueSourceMock<T>(returns error: Error) -> AnySingleValueProviderSource<T> {
-    let fetch: () -> BaseOperation<T> = {
-        let operation = BaseOperation<T>()
+    let fetch: () -> BaseOperation<T?> = {
+        let operation = BaseOperation<T?>()
         operation.result = .failure(error)
 
         return operation

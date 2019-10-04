@@ -38,7 +38,7 @@ public protocol SingleValueProviderProtocol {
      *  **Don't try** to override operation's completion block but provide completion block to the function instead.
      */
 
-    func fetch(with completionBlock: ((Result<Model, Error>?) -> Void)?) -> BaseOperation<Model>
+    func fetch(with completionBlock: ((Result<Model?, Error>?) -> Void)?) -> BaseOperation<Model?>
 
     /**
      *  Adds observer to notify when there are changes in local storage.
@@ -141,5 +141,5 @@ public protocol SingleValueProviderSourceProtocol {
      *  operations.
      */
 
-    func fetchOperation() -> BaseOperation<Model>
+    func fetchOperation() -> BaseOperation<Model?>
 }
