@@ -7,3 +7,7 @@ import Foundation
 import RobinHood
 
 extension FeedData: Identifiable {}
+
+extension MessageData: Identifiable {}
+
+extension ChatData: Identifiable {}

@@ -5,6 +5,7 @@
 
 import Foundation
 import RobinHood
+import CoreData
 
 extension CDFeed: CoreDataCodable {
     enum CodingKeys: String, CodingKey {
@@ -18,7 +19,7 @@ extension CDFeed: CoreDataCodable {
         case likesCount
     }
 
-    public func populate(from decoder: Decoder) throws {
+    public func populate(from decoder: Decoder, using context: NSManagedObjectContext) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         identifier = try container.decode(String.self, forKey: .identifier)

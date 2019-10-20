@@ -94,7 +94,7 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
                 throw CoreDataRepositoryError.creationFailed
             }
 
-            try dataMapper.populate(entity: entity, from: model)
+            try dataMapper.populate(entity: entity, from: model, using: context)
         }
     }
 
