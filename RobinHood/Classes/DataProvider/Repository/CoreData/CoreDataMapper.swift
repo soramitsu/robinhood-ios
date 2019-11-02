@@ -9,7 +9,7 @@ import CoreData
 /**
  *  Protocol is designed to provide an interface for mapping swift identifiable model
  *  to Core Data NSManageObjectContext and back. It is expected that NSManagedObject
- *  contains at least two fields: one to store identifier and another for domain.
+ *  contains a field to store identifier.
  */
 
 public protocol CoreDataMapperProtocol: class {

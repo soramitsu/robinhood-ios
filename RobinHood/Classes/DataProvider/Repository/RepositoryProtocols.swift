@@ -16,7 +16,7 @@ public protocol DataProviderRepositoryProtocol {
     associatedtype Model: Identifiable
 
     /**
-     *  Creates operation which fetches object by identifier in current domain.
+     *  Creates operation which fetches object by identifier.
      *
      *  - parameters:
      *    - modelId: Identifier of the object to fetch.
@@ -27,7 +27,7 @@ public protocol DataProviderRepositoryProtocol {
     func fetchOperation(by modelId: String) -> BaseOperation<Model?>
 
     /**
-     *  Creates operation which fetches all objects in current domain.
+     *  Creates operation which fetches all objects.
      *
      *  - returns: Operation that results in a list of objects.
      */
@@ -35,7 +35,7 @@ public protocol DataProviderRepositoryProtocol {
     func fetchAllOperation() -> BaseOperation<[Model]>
 
     /**
-     *  Creates operation which fetches subset of objects in current domain.
+     *  Creates operation which fetches subset of objects.
      *
      *  - parameters:
      *      - offset: An offset to fetch objects from.
@@ -48,7 +48,7 @@ public protocol DataProviderRepositoryProtocol {
     func fetchOperation(by offset: Int, count: Int, reversed: Bool) -> BaseOperation<[Model]>
 
     /**
-     *  Creates operation which persists changes to the list of objects in current domain.
+     *  Creates operation which persists changes to the list of objects.
      *
      *  - parameters:
      *    - updateModelsBlocks: Closure which returns list of objects to create or update.
@@ -60,7 +60,7 @@ public protocol DataProviderRepositoryProtocol {
                        _ deleteIdsBlock: @escaping () throws -> [String]) -> BaseOperation<Void>
 
     /**
-     *  Creates operation which removes all objects in current domain.s
+     *  Creates operation which removes all objects.
      *
      *  - returns: Operation which returns nothing.
      */
