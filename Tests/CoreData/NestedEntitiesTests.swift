@@ -3,6 +3,8 @@ import XCTest
 
 class NestedEntitiesTests: XCTestCase {
 
+    let operationQueue = OperationQueue()
+
     override func setUp() {
         try! CoreDataRepositoryFacade.shared.clearDatabase()
     }
@@ -24,10 +26,53 @@ class NestedEntitiesTests: XCTestCase {
             return createRandomMessage(for: chat)
         }
 
+        // when
+
         let repository: CoreDataRepository<MessageData, CDMessage> =
             CoreDataRepositoryFacade.shared.createCoreDataRepository()
-        let operationQueue = OperationQueue()
 
+        save(messages: messages, to: repository)
+
+        // then
+
+        let fetchedMessages = fetchAllMessages(from: repository)
+
+        for fetchedMessage in fetchedMessages {
+            XCTAssert(messages.contains(fetchedMessage))
+        }
+
+        XCTAssertEqual(fetchedMessages.count, messages.count)
+    }
+
+    func testUpdateNestedItem() {
+        // given
+
+        let oldChat = createRandomChat()
+        var message = createRandomMessage(for: oldChat)
+
+        let repository: CoreDataRepository<MessageData, CDMessage> =
+        CoreDataRepositoryFacade.shared.createCoreDataRepository()
+
+        save(messages: [message], to: repository)
+
+        // when
+
+        let newChat = createRandomChat()
+        message.chat = newChat
+
+        save(messages: [message], to: repository)
+
+        // then
+
+        let allMessages = fetchAllMessages(from: repository)
+
+        XCTAssertEqual(allMessages.count, 1)
+        XCTAssertEqual(allMessages.first, message)
+    }
+
+    // MARK: Private
+
+    func save(messages: [MessageData], to repository: CoreDataRepository<MessageData, CDMessage>) {
         let saveOperation = repository.saveOperation({ messages }, { [] })
 
         let saveExpectation = XCTestExpectation()
@@ -39,9 +84,9 @@ class NestedEntitiesTests: XCTestCase {
         operationQueue.addOperation(saveOperation)
 
         wait(for: [saveExpectation], timeout: Constants.expectationDuration)
+    }
 
-        // when
-
+    func fetchAllMessages(from repository: CoreDataRepository<MessageData, CDMessage>) -> [MessageData] {
         let fetchOperation = repository.fetchAllOperation()
 
         let fetchExpectation = XCTestExpectation()
@@ -54,22 +99,16 @@ class NestedEntitiesTests: XCTestCase {
 
         wait(for: [fetchExpectation], timeout: Constants.expectationDuration)
 
-        // then
-
         guard let fetchResult = fetchOperation.result else {
             XCTFail("Unexpected empty result")
-            return
+            return []
         }
 
         guard case .success(let fetchedMessages) = fetchResult else {
             XCTFail("Unexpected fetch error")
-            return
+            return []
         }
 
-        for fetchedMessage in fetchedMessages {
-            XCTAssert(messages.contains(fetchedMessage))
-        }
-
-        XCTAssertEqual(fetchedMessages.count, messages.count)
+        return fetchedMessages
     }
 }
