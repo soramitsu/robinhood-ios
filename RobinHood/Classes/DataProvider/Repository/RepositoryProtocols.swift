@@ -8,17 +8,12 @@ import Foundation
 /**
  *  Protocol is designed to interface access to local persistent storage and provides
  *  necessary CRUD operations to manage single entity type (```Model```).
- *  It is assumed that objects are identifiable and can be grouped by ```domain```.
  *  All methods of the implementation must return an operation and a client is responsible
- *  for it execution to receive result.
+ *  for its execution to receive result.
  */
 
 public protocol DataProviderRepositoryProtocol {
     associatedtype Model: Identifiable
-
-    /// Identifier that allows to access subset of objects belonging to certain ```Model```.
-
-    var domain: String { get }
 
     /**
      *  Creates operation which fetches object by identifier in current domain.

@@ -23,7 +23,7 @@ class StreamableDataProviderTests: XCTestCase {
     }
 
     func testChangesWhenListEmpty() {
-        let sourceObjects = (0..<10).map { _ in createRandomFeed() }
+        let sourceObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(repository: repository,
                                                                                operationQueue: operationQueue,
@@ -54,10 +54,10 @@ class StreamableDataProviderTests: XCTestCase {
     }
 
     func testChangesWhenListNotEmpty() {
-        let initialObjects = (0..<10).map({ _ in createRandomFeed()}).sorted { $0.name > $1.name }
+        let initialObjects = (0..<10).map({ _ in createRandomFeed(in: .default)}).sorted { $0.name > $1.name }
         performSaveOperation(with: initialObjects, deletedIds: [])
 
-        let newObjects = (0..<20).map { _ in createRandomFeed() }
+        let newObjects = (0..<20).map { _ in createRandomFeed(in: .default) }
 
         let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(repository: repository,
                                                                                operationQueue: operationQueue,

@@ -42,9 +42,6 @@ public protocol CoreDataMapperProtocol: class {
 
     /// Name of idetifier field to access NSManagedObject by.
     var entityIdentifierFieldName: String { get }
-
-    /// Name of domain field to access NSManagedObject by.
-    var entityDomainFieldName: String { get }
 }
 
 /**
@@ -58,7 +55,6 @@ public final class AnyCoreDataMapper<T: Identifiable, U: NSManagedObject>: CoreD
     private let _transform: (CoreDataEntity) throws -> DataProviderModel
     private let _populate: (CoreDataEntity, DataProviderModel, NSManagedObjectContext) throws -> Void
     private let _entityIdentifierFieldName: String
-    private let _entityDomainFieldName: String
 
     /**
      *  Initializes type erasure wrapper for mapper implementation.
@@ -71,7 +67,6 @@ public final class AnyCoreDataMapper<T: Identifiable, U: NSManagedObject>: CoreD
         _transform = mapper.transform
         _populate = mapper.populate
         _entityIdentifierFieldName = mapper.entityIdentifierFieldName
-        _entityDomainFieldName = mapper.entityDomainFieldName
     }
 
     public func transform(entity: CoreDataEntity) throws -> DataProviderModel {
@@ -86,10 +81,6 @@ public final class AnyCoreDataMapper<T: Identifiable, U: NSManagedObject>: CoreD
 
     public var entityIdentifierFieldName: String {
         return _entityIdentifierFieldName
-    }
-
-    public var entityDomainFieldName: String {
-        return _entityDomainFieldName
     }
 }
 
@@ -136,19 +127,16 @@ U: NSManagedObject & CoreDataCodable>: CoreDataMapperProtocol {
     public typealias CoreDataEntity = U
 
     public var entityIdentifierFieldName: String
-    public var entityDomainFieldName: String
 
     /**
      *  Creates Core Data mapper object.
      *
      *  - parameters:
      *    - entityIdentifierFieldName: Field name to extract identifier by. By default ```identifier```.
-     *    - entityDomainFieldName: Field name to extract domain by. By default ```domain```.
      */
 
-    public init(entityIdentifierFieldName: String = "identifier", entityDomainFieldName: String = "domain") {
+    public init(entityIdentifierFieldName: String = "identifier") {
         self.entityIdentifierFieldName = entityIdentifierFieldName
-        self.entityDomainFieldName = entityDomainFieldName
     }
 
     public func transform(entity: U) throws -> T {

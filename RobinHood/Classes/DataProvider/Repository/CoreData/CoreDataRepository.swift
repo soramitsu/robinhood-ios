@@ -29,8 +29,8 @@ public enum CoreDataRepositoryError: Error {
  *  Repository converts swift model to NSManagedObject using mapper passed as a parameter during
  *  initialization and saves Core Data entity through context. And vice versa, repository converts
  *  NSManagedObject, fetched from the context, to swift model and returns to the client.
- *  Additionally, repository allows sorting fetched entities using ```NSSortDescriptor``` provided
- *  during initialization.
+ *  Additionally, repository allows filtering and sorting fetched entities using ```NSPredicate``` and
+ *  ```NSSortDescriptor``` provided during initialization.
  */
 
 public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
@@ -42,8 +42,8 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
     /// Mapper to convert from swift model to Core Data NSManagedObject and back.
     public let dataMapper: AnyCoreDataMapper<T, U>
 
-    /// Domain to access only subset of objects.
-    public let domain: String
+    /// Predicate to access only subset of objects.
+    public let filter: NSPredicate?
 
     /// Descriptor that sorts fetched NSManagedObject list.
     public let sortDescriptor: NSSortDescriptor?
@@ -54,20 +54,18 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
      *  - parameters:
      *    - databaseService: Core Data persistent store and contexts manager.
      *    - mapper: Mapper converts from swift model to NSManagedObject and back.
-     *    - domain: Domain of the subset of objects to access. Each NSManagedObject
-     *    inside repository should have a field to store domain.
-     *    See ```CoreDataMapperProtocol``` for more details.
-     *    - sortDescriptor: Descriptor to sort fetched objects.
+     *    - filter: NSPredicate of the subset of objects to access. By default `nil` (all objects).
+     *    - sortDescriptor: Descriptor to sort fetched objects. By default `nil`.
      */
 
     public init(databaseService: CoreDataServiceProtocol,
                 mapper: AnyCoreDataMapper<T, U>,
-                domain: String = "default",
+                filter: NSPredicate? = nil,
                 sortDescriptor: NSSortDescriptor? = nil) {
 
         self.databaseService = databaseService
         self.dataMapper = mapper
-        self.domain = domain
+        self.filter = filter
         self.sortDescriptor = sortDescriptor
     }
 
@@ -75,11 +73,14 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
         try models.forEach { (model) in
             let entityName = String(describing: U.self)
             let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-            let predicate = NSPredicate(format: "(%K == %@) AND (%K == %@)",
+            var predicate = NSPredicate(format: "%K == %@",
                                         dataMapper.entityIdentifierFieldName,
-                                        model.identifier,
-                                        dataMapper.entityDomainFieldName,
-                                        domain)
+                                        model.identifier)
+
+            if let filter = filter {
+                predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filter, predicate])
+            }
+
             fetchRequest.predicate = predicate
 
             var optionalEntitity = try context.fetch(fetchRequest).first
@@ -87,7 +88,6 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
             if optionalEntitity == nil {
                 optionalEntitity = NSEntityDescription.insertNewObject(forEntityName: entityName,
                                                                        into: context) as? U
-                optionalEntitity?.setValue(domain, forKey: dataMapper.entityDomainFieldName)
             }
 
             guard let entity = optionalEntitity else {
@@ -102,11 +102,13 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
         try modelIds.forEach { (modelId) in
             let entityName = String(describing: U.self)
             let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-            let predicate = NSPredicate(format: "(%K == %@) AND (%K == %@)",
+            var predicate = NSPredicate(format: "%K == %@",
                                         dataMapper.entityIdentifierFieldName,
-                                        modelId,
-                                        dataMapper.entityDomainFieldName,
-                                        domain)
+                                        modelId)
+
+            if let filter = filter {
+                predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filter, predicate])
+            }
 
             fetchRequest.predicate = predicate
 
@@ -149,11 +151,13 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
                 do {
                     let entityName = String(describing: U.self)
                     let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-                    let predicate = NSPredicate(format: "(%K == %@) AND (%K == %@)",
+                    var predicate = NSPredicate(format: "%K == %@",
                                                 strongSelf.dataMapper.entityIdentifierFieldName,
-                                                modelId,
-                                                strongSelf.dataMapper.entityDomainFieldName,
-                                                strongSelf.domain)
+                                                modelId)
+
+                    if let filter = strongSelf.filter {
+                        predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filter, predicate])
+                    }
 
                     fetchRequest.predicate = predicate
 
@@ -187,10 +191,7 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
                 do {
                     let entityName = String(describing: U.self)
                     let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-                    let predicate = NSPredicate(format: "%K == %@",
-                                                strongSelf.dataMapper.entityDomainFieldName,
-                                                strongSelf.domain)
-                    fetchRequest.predicate = predicate
+                    fetchRequest.predicate = strongSelf.filter
 
                     if let sortDescriptor = strongSelf.sortDescriptor {
                         fetchRequest.sortDescriptors = [sortDescriptor]
@@ -221,10 +222,7 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
                 do {
                     let entityName = String(describing: U.self)
                     let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-                    let predicate = NSPredicate(format: "%K == %@",
-                                                strongSelf.dataMapper.entityDomainFieldName,
-                                                strongSelf.domain)
-                    fetchRequest.predicate = predicate
+                    fetchRequest.predicate = strongSelf.filter
                     fetchRequest.fetchOffset = offset
                     fetchRequest.fetchLimit = count
 
@@ -281,15 +279,16 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
 
     public func deleteAll(runCompletionIn queue: DispatchQueue?,
                           executing block: @escaping (Error?) -> Void) {
-        databaseService.performAsync { (optionalContext, optionalError) in
+        databaseService.performAsync { [weak self] (optionalContext, optionalError) in
+            guard let strongSelf = self else {
+                return
+            }
+
             if let context = optionalContext {
                 do {
                     let entityName = String(describing: U.self)
                     let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-                    let predicate = NSPredicate(format: "%K == %@",
-                                                self.dataMapper.entityDomainFieldName,
-                                                self.domain)
-                    fetchRequest.predicate = predicate
+                    fetchRequest.predicate = strongSelf.filter
 
                     let entities = try context.fetch(fetchRequest)
 
@@ -299,15 +298,15 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
 
                     try context.save()
 
-                    self.call(block: block, error: nil, queue: queue)
+                    strongSelf.call(block: block, error: nil, queue: queue)
 
                 } catch {
                     context.rollback()
 
-                    self.call(block: block, error: error, queue: queue)
+                    strongSelf.call(block: block, error: error, queue: queue)
                 }
             } else {
-                self.call(block: block, error: optionalError, queue: queue)
+                strongSelf.call(block: block, error: optionalError, queue: queue)
             }
         }
     }

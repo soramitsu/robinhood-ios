@@ -12,7 +12,7 @@ class ListDifferenceCalculatorTests: XCTestCase {
     }
 
     func testInitial() {
-        let objects = (0..<10).map({ _ in createRandomFeed() }).sorted(by: sortBlock)
+        let objects = (0..<10).map({ _ in createRandomFeed(in: .default) }).sorted(by: sortBlock)
 
         let diffCalculator = ListDifferenceCalculator(initialItems: objects, sortBlock: sortBlock)
 
@@ -22,7 +22,7 @@ class ListDifferenceCalculatorTests: XCTestCase {
 
     func testUpdateOnly() {
         // given
-        var objects = (0..<10).map({ _ in createRandomFeed() }).sorted(by: sortBlock)
+        var objects = (0..<10).map({ _ in createRandomFeed(in: .default) }).sorted(by: sortBlock)
         let diffCalculator = ListDifferenceCalculator(initialItems: objects, sortBlock: sortBlock)
 
         var updatedIndexes: [Int] = []
@@ -59,7 +59,7 @@ class ListDifferenceCalculatorTests: XCTestCase {
 
     func testDeleteOnly() {
         // given
-        let objects = (0..<10).map({ _ in createRandomFeed() }).sorted(by: sortBlock)
+        let objects = (0..<10).map({ _ in createRandomFeed(in: .default) }).sorted(by: sortBlock)
         let diffCalculator = ListDifferenceCalculator(initialItems: objects, sortBlock: sortBlock)
 
         var deletedIndexes: [Int] = []
@@ -93,10 +93,10 @@ class ListDifferenceCalculatorTests: XCTestCase {
 
     func testInsertOnly() {
         // given
-        let objects = (0..<10).map({ _ in createRandomFeed() }).sorted(by: sortBlock)
+        let objects = (0..<10).map({ _ in createRandomFeed(in: .default) }).sorted(by: sortBlock)
         let diffCalculator = ListDifferenceCalculator(initialItems: objects, sortBlock: sortBlock)
 
-        let insertedItems = (0..<5).map { _ in createRandomFeed() }
+        let insertedItems = (0..<5).map { _ in createRandomFeed(in: .default) }
         let changes: [DataProviderChange<FeedData>] = insertedItems.map { return .insert(newItem: $0) }
 
         // when
