@@ -30,7 +30,7 @@ public enum CoreDataRepositoryError: Error {
  *  initialization and saves Core Data entity through context. And vice versa, repository converts
  *  NSManagedObject, fetched from the context, to swift model and returns to the client.
  *  Additionally, repository allows filtering and sorting fetched entities using ```NSPredicate``` and
- *  ```NSSortDescriptor``` provided during initialization.
+ *  list of ```NSSortDescriptor``` provided during initialization.
  */
 
 public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
@@ -45,8 +45,8 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
     /// Predicate to access only subset of objects.
     public let filter: NSPredicate?
 
-    /// Descriptor that sorts fetched NSManagedObject list.
-    public let sortDescriptor: NSSortDescriptor?
+    /// Descriptors to sort fetched NSManagedObject list.
+    public let sortDescriptors: [NSSortDescriptor]
 
     /**
      *  Creates new Core Data repository object.
@@ -61,12 +61,12 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
     public init(databaseService: CoreDataServiceProtocol,
                 mapper: AnyCoreDataMapper<T, U>,
                 filter: NSPredicate? = nil,
-                sortDescriptor: NSSortDescriptor? = nil) {
+                sortDescriptors: [NSSortDescriptor] = []) {
 
         self.databaseService = databaseService
         self.dataMapper = mapper
         self.filter = filter
-        self.sortDescriptor = sortDescriptor
+        self.sortDescriptors = sortDescriptors
     }
 
     private func save(models: [Model], in context: NSManagedObjectContext) throws {
@@ -193,8 +193,8 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
                     let fetchRequest = NSFetchRequest<U>(entityName: entityName)
                     fetchRequest.predicate = strongSelf.filter
 
-                    if let sortDescriptor = strongSelf.sortDescriptor {
-                        fetchRequest.sortDescriptors = [sortDescriptor]
+                    if !strongSelf.sortDescriptors.isEmpty {
+                        fetchRequest.sortDescriptors = strongSelf.sortDescriptors
                     }
 
                     let entities = try context.fetch(fetchRequest)
@@ -226,14 +226,16 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
                     fetchRequest.fetchOffset = offset
                     fetchRequest.fetchLimit = count
 
-                    var sortDescriptor = strongSelf.sortDescriptor
+                    var sortDescriptors = strongSelf.sortDescriptors
 
                     if reversed {
-                        sortDescriptor = sortDescriptor?.reversedSortDescriptor as? NSSortDescriptor
+                        sortDescriptors = sortDescriptors.compactMap {
+                            $0.reversedSortDescriptor as? NSSortDescriptor
+                        }
                     }
 
-                    if let currentSortDescriptor = sortDescriptor {
-                        fetchRequest.sortDescriptors = [currentSortDescriptor]
+                    if !sortDescriptors.isEmpty {
+                        fetchRequest.sortDescriptors = sortDescriptors
                     }
 
                     let entities = try context.fetch(fetchRequest)

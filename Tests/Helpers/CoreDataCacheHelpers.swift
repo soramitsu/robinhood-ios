@@ -23,14 +23,14 @@ final class CoreDataRepositoryFacade {
     }
 
     func createCoreDataRepository<T, U>(filter: NSPredicate? = nil,
-                                        sortDescriptor: NSSortDescriptor? = nil) -> CoreDataRepository<T, U>
+                                        sortDescriptors: [NSSortDescriptor] = []) -> CoreDataRepository<T, U>
         where T: Identifiable & Codable, U: NSManagedObject & CoreDataCodable  {
 
             let mapper = AnyCoreDataMapper(CodableCoreDataMapper<T, U>())
             return CoreDataRepository(databaseService: databaseService,
                                       mapper: mapper,
                                       filter: filter,
-                                      sortDescriptor: sortDescriptor)
+                                      sortDescriptors: sortDescriptors)
     }
 
     func clearDatabase() throws {

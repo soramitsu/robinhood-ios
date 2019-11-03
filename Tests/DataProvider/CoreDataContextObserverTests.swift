@@ -10,7 +10,7 @@ import CoreData
 class CoreDataContextObserverTests: XCTestCase {
     let repository: CoreDataRepository<FeedData, CDFeed> = {
         let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
-        return CoreDataRepositoryFacade.shared.createCoreDataRepository(sortDescriptor: sortDescriptor)
+        return CoreDataRepositoryFacade.shared.createCoreDataRepository(sortDescriptors: [sortDescriptor])
     }()
 
     let operationQueue: OperationQueue = OperationQueue()

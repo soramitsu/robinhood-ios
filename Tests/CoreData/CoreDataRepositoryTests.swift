@@ -53,7 +53,7 @@ class CoreDataRepositoryTests: XCTestCase {
     func testSaveFetchSorted() {
         let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
         let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared
-            .createCoreDataRepository(sortDescriptor: sortDescriptor)
+            .createCoreDataRepository(sortDescriptors: [sortDescriptor])
         let operationQueue = OperationQueue()
 
         let sourceObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
@@ -309,7 +309,7 @@ class CoreDataRepositoryTests: XCTestCase {
     private func performTestSaveFetch(offset: Int, count: Int, reversed: Bool, objectsCount: Int = 10) {
         let sortDescriptor = NSSortDescriptor(key: #keyPath(CDFeed.name), ascending: false)
         let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared
-            .createCoreDataRepository(sortDescriptor: sortDescriptor)
+            .createCoreDataRepository(sortDescriptors: [sortDescriptor])
         let operationQueue = OperationQueue()
 
         let sourceObjects = (0..<objectsCount).map { _ in createRandomFeed(in: .default) }
