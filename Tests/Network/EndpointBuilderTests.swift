@@ -35,7 +35,7 @@ class EndpointBuilderTests: XCTestCase {
         let enpointBuilder = EndpointBuilder(urlTemplate: template)
 
         do {
-            let feed = createRandomFeed()
+            let feed = createRandomFeed(in: .default)
             let url = try enpointBuilder.buildURL(with: feed)
 
             let expectedUrl = URL(string: "https://feed.test-1.sora.soramitsu.co.jp/feed/\(feed.identifier)/like?\(feed.likesCount)")
@@ -88,7 +88,7 @@ class EndpointBuilderTests: XCTestCase {
         let enpointBuilder = EndpointBuilder(urlTemplate: template).withUrlEncoding(allowedCharset: .alphanumerics)
 
         do {
-            var feed = createRandomFeed()
+            var feed = createRandomFeed(in: .default)
             feed.identifier = "user#id"
             let url = try enpointBuilder.buildURL(with: feed)
 

@@ -10,9 +10,15 @@ enum FeedDataStatus: String, Codable {
     case hidden = "HIDDEN"
 }
 
+enum Domain: String, Codable {
+    case `default` = "default"
+    case favorites = "favorites"
+}
+
 struct FeedData: Equatable, Codable {
     enum CodingKeys: String, CodingKey {
         case identifier = "id"
+        case domain
         case favorite
         case favoriteCount
         case name
@@ -23,6 +29,7 @@ struct FeedData: Equatable, Codable {
     }
 
     var identifier: String
+    var domain: Domain
     var favorite: Bool
     var favoriteCount: UInt
     var name: String

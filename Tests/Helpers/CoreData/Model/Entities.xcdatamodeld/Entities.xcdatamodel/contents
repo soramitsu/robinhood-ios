@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18D109" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15508" systemVersion="19B88" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CDChat" representedClassName="CDChat" syncable="YES" codeGenerationType="class">
+        <attribute name="identifier" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="messages" toMany="YES" deletionRule="Cascade" destinationEntity="CDMessage" inverseName="chat" inverseEntity="CDMessage"/>
+    </entity>
     <entity name="CDFeed" representedClassName="CDFeed" syncable="YES" codeGenerationType="class">
-        <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="domain" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="favorite" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="favoriteCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="identifier" attributeType="String" minValueString="0" syncable="YES"/>
-        <attribute name="imageLink" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="likesCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="name" attributeType="String" minValueString="0" syncable="YES"/>
-        <attribute name="status" attributeType="String" minValueString="0" syncable="YES"/>
+        <attribute name="details" optional="YES" attributeType="String"/>
+        <attribute name="domain" optional="YES" attributeType="String"/>
+        <attribute name="favorite" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="favoriteCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="identifier" attributeType="String" minValueString="0"/>
+        <attribute name="imageLink" optional="YES" attributeType="String"/>
+        <attribute name="likesCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String" minValueString="0"/>
+        <attribute name="status" attributeType="String" minValueString="0"/>
+    </entity>
+    <entity name="CDMessage" representedClassName="CDMessage" syncable="YES" codeGenerationType="class">
+        <attribute name="domain" optional="YES" attributeType="String"/>
+        <attribute name="identifier" optional="YES" attributeType="String"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="chat" maxCount="1" deletionRule="Nullify" destinationEntity="CDChat" inverseName="messages" inverseEntity="CDChat"/>
     </entity>
     <entity name="CDSingleValue" representedClassName="CDSingleValue" syncable="YES" codeGenerationType="class">
-        <attribute name="domain" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="identifier" attributeType="String" syncable="YES"/>
-        <attribute name="payload" attributeType="Binary" syncable="YES"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="payload" attributeType="Binary"/>
     </entity>
     <elements>
+        <element name="CDChat" positionX="-54" positionY="63" width="128" height="88"/>
         <element name="CDFeed" positionX="-63" positionY="-18" width="128" height="180"/>
-        <element name="CDSingleValue" positionX="-63" positionY="54" width="128" height="90"/>
+        <element name="CDMessage" positionX="-63" positionY="54" width="128" height="103"/>
+        <element name="CDSingleValue" positionX="-63" positionY="54" width="128" height="73"/>
     </elements>
 </model>

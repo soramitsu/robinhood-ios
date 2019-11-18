@@ -19,7 +19,7 @@ class DataProviderTests: DataProviderBaseTests {
 
     func testSynchronizationOnInit() {
         // given
-        let objects = (0..<10).map { _ in createRandomFeed() }
+        let objects = (0..<10).map { _ in createRandomFeed(in: .default) }
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createDataSourceMock(returns: objects)
         let dataProvider = DataProvider<FeedData>(source: source,
@@ -69,7 +69,7 @@ class DataProviderTests: DataProviderBaseTests {
 
     func testSynchronizationOnObserverAdd() {
         // given
-        let projects = (0..<10).map { _ in createRandomFeed() }
+        let projects = (0..<10).map { _ in createRandomFeed(in: .default) }
         let trigger = DataProviderEventTrigger.onAddObserver
         let source = createDataSourceMock(returns: projects)
         let dataProvider = DataProvider<FeedData>(source: source,
@@ -122,7 +122,7 @@ class DataProviderTests: DataProviderBaseTests {
 
     func testFetchByIdFromRepository() {
         // given
-        let projects = (0..<10).map { _ in createRandomFeed() }
+        let projects = (0..<10).map { _ in createRandomFeed(in: .default) }
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createDataSourceMock(returns: projects)
         let dataProvider = DataProvider<FeedData>(source: source,
@@ -182,7 +182,7 @@ class DataProviderTests: DataProviderBaseTests {
         // when
         let saveExpectation = XCTestExpectation()
 
-        let projects = (0..<10).map { _ in createRandomFeed() }
+        let projects = (0..<10).map { _ in createRandomFeed(in: .default) }
         repository.save(updating:projects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
@@ -205,7 +205,7 @@ class DataProviderTests: DataProviderBaseTests {
     }
 
     func testManualSynchronization() {
-        let objects = (0..<10).map { _ in createRandomFeed() }
+        let objects = (0..<10).map { _ in createRandomFeed(in: .default) }
         let trigger = DataProviderEventTrigger.onNone
         let source = createDataSourceMock(returns: objects)
         let dataProvider = DataProvider<FeedData>(source: source,
@@ -262,7 +262,7 @@ class DataProviderTests: DataProviderBaseTests {
         // given
         let saveExpectation = XCTestExpectation()
 
-        var objects = (0..<10).map { _ in createRandomFeed() }
+        var objects = (0..<10).map { _ in createRandomFeed(in: .default) }
         repository.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
@@ -275,7 +275,7 @@ class DataProviderTests: DataProviderBaseTests {
         objects[0].name = UUID().uuidString
         let updatedObject = objects[0]
 
-        let insertedObject = createRandomFeed()
+        let insertedObject = createRandomFeed(in: .default)
         objects.append(insertedObject)
 
         // when
@@ -336,7 +336,7 @@ class DataProviderTests: DataProviderBaseTests {
         // given
         let saveExpectation = XCTestExpectation()
 
-        let objects = (0..<10).map { _ in createRandomFeed() }
+        let objects = (0..<10).map { _ in createRandomFeed(in: .default) }
         repository.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
@@ -398,7 +398,7 @@ class DataProviderTests: DataProviderBaseTests {
 
         let saveExpectation = XCTestExpectation()
 
-        let objects = (0..<10).map { _ in createRandomFeed() }
+        let objects = (0..<10).map { _ in createRandomFeed(in: .default) }
         repository.save(updating: objects, deleting: [], runCompletionIn: .main) { _ in
             saveExpectation.fulfill()
         }
@@ -469,7 +469,7 @@ class DataProviderTests: DataProviderBaseTests {
 
     func testAddObserverWithoutWaitingSynchronization() {
         // given
-        let objects = (0..<10).map { _ in createRandomFeed() }
+        let objects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let trigger = DataProviderEventTrigger.onNone
         let source = createDataSourceMock(returns: objects, after: 0.01)

@@ -19,7 +19,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testSynchronizationOnInit() {
         // given
-        let object = createRandomFeed()
+        let object = createRandomFeed(in: .default)
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createSingleValueSourceMock(returns: object)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
@@ -66,7 +66,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testSynchronizationOnObserverAdd() {
         // given
-        let object = createRandomFeed()
+        let object = createRandomFeed(in: .default)
         let trigger = DataProviderEventTrigger.onAddObserver
         let source = createSingleValueSourceMock(returns: object)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
@@ -123,7 +123,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testFetchFromRepository() {
         // given
-        let object = createRandomFeed()
+        let object = createRandomFeed(in: .default)
         let trigger = DataProviderEventTrigger.onInitialization
         let source = createSingleValueSourceMock(returns: object)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
@@ -163,7 +163,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
     }
 
     func testManualSynchronization() {
-        let object = createRandomFeed()
+        let object = createRandomFeed(in: .default)
         let trigger = DataProviderEventTrigger.onNone
         let source = createSingleValueSourceMock(returns: object)
         let dataProvider = SingleValueProvider<FeedData>(targetIdentifier: "co.jp.sora.project1",
@@ -222,7 +222,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testDeleteOnSynchronization() {
         // given
-        let object = createRandomFeed()
+        let object = createRandomFeed(in: .default)
 
         guard let payload = try? JSONEncoder().encode(object) else {
             XCTFail()
@@ -296,7 +296,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testDataProviderSuccessWithAlwaysNotifyOption() {
         // given
-        let object = createRandomFeed()
+        let object = createRandomFeed(in: .default)
 
         guard let payload = try? JSONEncoder().encode(object) else {
             XCTFail()
@@ -372,7 +372,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testDataProviderFailWithAlwaysNotifyOption() {
         // given
-        let object = createRandomFeed()
+        let object = createRandomFeed(in: .default)
 
         guard let payload = try? JSONEncoder().encode(object) else {
             XCTFail()
@@ -449,7 +449,7 @@ class SingleValueProviderInterfaceTests: SingleValueProviderBaseTests {
 
     func testAddObserverWithoutWaitingSynchronization() {
         // given
-        let object = createRandomFeed()
+        let object = createRandomFeed(in: .default)
 
         let trigger = DataProviderEventTrigger.onNone
         let source = createSingleValueSourceMock(returns: object)

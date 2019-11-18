@@ -19,7 +19,7 @@ class CoreDataRepositoryTests: XCTestCase {
         let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
         let operationQueue = OperationQueue()
 
-        let sourceObjects = (0..<10).map { _ in createRandomFeed() }
+        let sourceObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
@@ -53,10 +53,10 @@ class CoreDataRepositoryTests: XCTestCase {
     func testSaveFetchSorted() {
         let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
         let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared
-            .createCoreDataRepository(sortDescriptor: sortDescriptor)
+            .createCoreDataRepository(sortDescriptors: [sortDescriptor])
         let operationQueue = OperationQueue()
 
-        let sourceObjects = (0..<10).map { _ in createRandomFeed() }
+        let sourceObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
@@ -86,20 +86,48 @@ class CoreDataRepositoryTests: XCTestCase {
     }
 
     func testSaveFetchSlice() {
-        performTestSaveFetch(offset: 0, count: 10, reversed: false, objectsCount: 10)
-        performTestSaveFetch(offset: 0, count: 10, reversed: true, objectsCount: 10)
-        performTestSaveFetch(offset: 0, count: 5, reversed: false, objectsCount: 10)
-        performTestSaveFetch(offset: 5, count: 5, reversed: false, objectsCount: 10)
-        performTestSaveFetch(offset: 5, count: 5, reversed: true, objectsCount: 10)
-        performTestSaveFetch(offset: 5, count: 10, reversed: true, objectsCount: 10)
-        performTestSaveFetch(offset: 0, count: 1, reversed: false, objectsCount: 0)
+        var tests: [() -> Void] = []
+
+        tests.append {
+            self.performTestSaveFetch(offset: 0, count: 10, reversed: false, objectsCount: 10)
+        }
+
+        tests.append {
+            self.performTestSaveFetch(offset: 0, count: 10, reversed: true, objectsCount: 10)
+        }
+
+        tests.append {
+            self.performTestSaveFetch(offset: 0, count: 5, reversed: false, objectsCount: 10)
+        }
+
+        tests.append {
+            self.performTestSaveFetch(offset: 5, count: 5, reversed: false, objectsCount: 10)
+        }
+
+        tests.append {
+            self.performTestSaveFetch(offset: 5, count: 5, reversed: true, objectsCount: 10)
+        }
+
+        tests.append {
+            self.performTestSaveFetch(offset: 5, count: 10, reversed: true, objectsCount: 10)
+        }
+
+        tests.append {
+            self.performTestSaveFetch(offset: 0, count: 1, reversed: false, objectsCount: 0)
+        }
+
+        tests.forEach { test in
+            test()
+
+            try! CoreDataRepositoryFacade.shared.clearDatabase()
+        }
     }
 
     func testSaveFetchById() {
         let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
         let operationQueue = OperationQueue()
 
-        let sourceObjects = (0..<10).map { _ in createRandomFeed() }
+        let sourceObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
@@ -134,7 +162,7 @@ class CoreDataRepositoryTests: XCTestCase {
         let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
         let operationQueue = OperationQueue()
 
-        var sourceObjects = (0..<10).map { _ in createRandomFeed() }
+        var sourceObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
@@ -186,7 +214,7 @@ class CoreDataRepositoryTests: XCTestCase {
         let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
         let operationQueue = OperationQueue()
 
-        var sourceObjects = (0..<10).map { _ in createRandomFeed() }
+        var sourceObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
@@ -244,7 +272,7 @@ class CoreDataRepositoryTests: XCTestCase {
         let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
         let operationQueue = OperationQueue()
 
-        let sourceObjects = (0..<10).map { _ in createRandomFeed() }
+        let sourceObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
@@ -279,12 +307,12 @@ class CoreDataRepositoryTests: XCTestCase {
     // MARK: Private
 
     private func performTestSaveFetch(offset: Int, count: Int, reversed: Bool, objectsCount: Int = 10) {
-        let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(CDFeed.name), ascending: false)
         let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared
-            .createCoreDataRepository(sortDescriptor: sortDescriptor)
+            .createCoreDataRepository(sortDescriptors: [sortDescriptor])
         let operationQueue = OperationQueue()
 
-        let sourceObjects = (0..<objectsCount).map { _ in createRandomFeed() }
+        let sourceObjects = (0..<objectsCount).map { _ in createRandomFeed(in: .default) }
 
         let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 

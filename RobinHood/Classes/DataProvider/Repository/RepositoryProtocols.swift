@@ -8,20 +8,15 @@ import Foundation
 /**
  *  Protocol is designed to interface access to local persistent storage and provides
  *  necessary CRUD operations to manage single entity type (```Model```).
- *  It is assumed that objects are identifiable and can be grouped by ```domain```.
  *  All methods of the implementation must return an operation and a client is responsible
- *  for it execution to receive result.
+ *  for its execution to receive result.
  */
 
 public protocol DataProviderRepositoryProtocol {
     associatedtype Model: Identifiable
 
-    /// Identifier that allows to access subset of objects belonging to certain ```Model```.
-
-    var domain: String { get }
-
     /**
-     *  Creates operation which fetches object by identifier in current domain.
+     *  Creates operation which fetches object by identifier.
      *
      *  - parameters:
      *    - modelId: Identifier of the object to fetch.
@@ -32,7 +27,7 @@ public protocol DataProviderRepositoryProtocol {
     func fetchOperation(by modelId: String) -> BaseOperation<Model?>
 
     /**
-     *  Creates operation which fetches all objects in current domain.
+     *  Creates operation which fetches all objects.
      *
      *  - returns: Operation that results in a list of objects.
      */
@@ -40,7 +35,7 @@ public protocol DataProviderRepositoryProtocol {
     func fetchAllOperation() -> BaseOperation<[Model]>
 
     /**
-     *  Creates operation which fetches subset of objects in current domain.
+     *  Creates operation which fetches subset of objects.
      *
      *  - parameters:
      *      - offset: An offset to fetch objects from.
@@ -53,7 +48,7 @@ public protocol DataProviderRepositoryProtocol {
     func fetchOperation(by offset: Int, count: Int, reversed: Bool) -> BaseOperation<[Model]>
 
     /**
-     *  Creates operation which persists changes to the list of objects in current domain.
+     *  Creates operation which persists changes to the list of objects.
      *
      *  - parameters:
      *    - updateModelsBlocks: Closure which returns list of objects to create or update.
@@ -65,7 +60,7 @@ public protocol DataProviderRepositoryProtocol {
                        _ deleteIdsBlock: @escaping () throws -> [String]) -> BaseOperation<Void>
 
     /**
-     *  Creates operation which removes all objects in current domain.s
+     *  Creates operation which removes all objects.
      *
      *  - returns: Operation which returns nothing.
      */

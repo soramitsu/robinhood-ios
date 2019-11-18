@@ -10,7 +10,7 @@ import CoreData
 class CoreDataContextObserverTests: XCTestCase {
     let repository: CoreDataRepository<FeedData, CDFeed> = {
         let sortDescriptor = NSSortDescriptor(key: FeedData.CodingKeys.name.rawValue, ascending: false)
-        return CoreDataRepositoryFacade.shared.createCoreDataRepository(sortDescriptor: sortDescriptor)
+        return CoreDataRepositoryFacade.shared.createCoreDataRepository(sortDescriptors: [sortDescriptor])
     }()
 
     let operationQueue: OperationQueue = OperationQueue()
@@ -24,7 +24,7 @@ class CoreDataContextObserverTests: XCTestCase {
     }
 
     func testInsertionWhenListEmpty() {
-        let sourceObjects = (0..<10).map { _ in createRandomFeed() }
+        let sourceObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let validationBlock: ([DataProviderChange<FeedData>]) -> Bool = { (changes) in
             for change in changes {
@@ -45,10 +45,10 @@ class CoreDataContextObserverTests: XCTestCase {
     }
 
     func testInsertionWhenListNotEmpty() {
-        let initialObjects = (0..<15).map { _ in createRandomFeed() }
+        let initialObjects = (0..<15).map { _ in createRandomFeed(in: .default) }
         performSaveOperation(with: initialObjects, deletedIds: [])
 
-        let sourceObjects = (0..<10).map { _ in createRandomFeed() }
+        let sourceObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let validationBlock: ([DataProviderChange<FeedData>]) -> Bool = { (changes) in
             for change in changes {
@@ -69,7 +69,7 @@ class CoreDataContextObserverTests: XCTestCase {
     }
 
     func testUpdateObjects() {
-        let initialObjects = (0..<15).map { _ in createRandomFeed() }
+        let initialObjects = (0..<15).map { _ in createRandomFeed(in: .default) }
         performSaveOperation(with: initialObjects, deletedIds: [])
 
         let updateObjects: [FeedData] = initialObjects.suffix(5).map { (object) in
@@ -98,7 +98,7 @@ class CoreDataContextObserverTests: XCTestCase {
     }
 
     func testDeleteObjects() {
-        let initialObjects = (0..<15).map { _ in createRandomFeed() }
+        let initialObjects = (0..<15).map { _ in createRandomFeed(in: .default) }
         performSaveOperation(with: initialObjects, deletedIds: [])
 
         let deletingIds: [String] = initialObjects.suffix(5).map { $0.identifier }
@@ -122,7 +122,7 @@ class CoreDataContextObserverTests: XCTestCase {
     }
 
     func testInsertUpdateDeleteAtOnce() {
-        let initialObjects = (0..<15).map { _ in createRandomFeed() }
+        let initialObjects = (0..<15).map { _ in createRandomFeed(in: .default) }
         performSaveOperation(with: initialObjects, deletedIds: [])
 
         let updatingObjects: [FeedData] = initialObjects.suffix(5).map { (object) in
@@ -133,7 +133,7 @@ class CoreDataContextObserverTests: XCTestCase {
 
         let deletingIds: [String] = initialObjects.prefix(5).map { $0.identifier }
 
-        let insertingObjects = (0..<10).map { _ in createRandomFeed() }
+        let insertingObjects = (0..<10).map { _ in createRandomFeed(in: .default) }
 
         let validationBlock: ([DataProviderChange<FeedData>]) -> Bool = { (changes) in
             var insertedCount = 0

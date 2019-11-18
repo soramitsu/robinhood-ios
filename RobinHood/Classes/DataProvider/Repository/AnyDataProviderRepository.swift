@@ -12,8 +12,6 @@ import Foundation
 public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepositoryProtocol {
     public typealias Model = T
 
-    public let domain: String
-
     private let _fetchByModelId: (String) -> BaseOperation<Model?>
     private let _fetchAll: () -> BaseOperation<[Model]>
     private let _fetchByOffsetCount: (Int, Int, Bool) -> BaseOperation<[Model]>
@@ -28,7 +26,6 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
      */
 
     public init<U: DataProviderRepositoryProtocol>(_ repository: U) where U.Model == Model {
-        domain = repository.domain
         _fetchByModelId = repository.fetchOperation
         _fetchAll = repository.fetchAllOperation
         _fetchByOffsetCount = repository.fetchOperation

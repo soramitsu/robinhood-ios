@@ -7,11 +7,15 @@ import XCTest
 @testable import RobinHood
 
 class CoreDataRepositoryDomainTests: XCTestCase {
-    var defaultDomainRepository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared
-        .createCoreDataRepository(domain: "defaults")
+    var defaultDomainRepository: CoreDataRepository<FeedData, CDFeed> = {
+        let filter = NSPredicate(format: "%K == %@", #keyPath(CDFeed.domain), Domain.default.rawValue)
+        return CoreDataRepositoryFacade.shared.createCoreDataRepository(filter: filter)
+    }()
 
-    var favoriteDomainRepository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared
-        .createCoreDataRepository(domain: "favorite")
+    var favoriteDomainRepository: CoreDataRepository<FeedData, CDFeed> = {
+        let filter = NSPredicate(format: "%K == %@", #keyPath(CDFeed.domain), Domain.favorites.rawValue)
+        return CoreDataRepositoryFacade.shared.createCoreDataRepository(filter: filter)
+    }()
 
     var operationQueue = OperationQueue()
 
@@ -24,10 +28,10 @@ class CoreDataRepositoryDomainTests: XCTestCase {
     }
 
     func testSaveAndFetch() {
-        let defaultObjects = (0..<10).map { _ in return createRandomFeed() }
+        let defaultObjects = (0..<10).map { _ in return createRandomFeed(in: .default) }
         XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainRepository))
 
-        let favoriteObjects = (0..<15).map { _ in return createRandomFeed() }
+        let favoriteObjects = (0..<15).map { _ in return createRandomFeed(in: .favorites) }
         XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainRepository))
 
         let optionalFetchedDefaultObjects = fetchAll(from: defaultDomainRepository)
@@ -50,10 +54,10 @@ class CoreDataRepositoryDomainTests: XCTestCase {
     }
 
     func testSaveDeleteFetch() {
-        let defaultObjects = (0..<10).map { _ in return createRandomFeed() }
+        let defaultObjects = (0..<10).map { _ in return createRandomFeed(in: .default) }
         XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainRepository))
 
-        let favoriteObjects = (0..<15).map { _ in return createRandomFeed() }
+        let favoriteObjects = (0..<15).map { _ in return createRandomFeed(in: .favorites) }
         XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainRepository))
 
         XCTAssertTrue(deleteAll(in: favoriteDomainRepository))
@@ -78,10 +82,10 @@ class CoreDataRepositoryDomainTests: XCTestCase {
     }
 
     func testFetchByIdInDomain() {
-        let defaultObjects = (0..<10).map { _ in return createRandomFeed() }
+        let defaultObjects = (0..<10).map { _ in return createRandomFeed(in: .default) }
         XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainRepository))
 
-        let favoriteObjects = (0..<15).map { _ in return createRandomFeed() }
+        let favoriteObjects = (0..<15).map { _ in return createRandomFeed(in: .favorites) }
         XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainRepository))
 
         var object = fetchById(defaultObjects[0].identifier, repository: defaultDomainRepository)
@@ -92,10 +96,10 @@ class CoreDataRepositoryDomainTests: XCTestCase {
     }
 
     func testDeleteByIdentifier() {
-        let defaultObjects = (0..<10).map { _ in return createRandomFeed() }
+        let defaultObjects = (0..<10).map { _ in return createRandomFeed(in: .default) }
         XCTAssertTrue(save(objects: defaultObjects, in: defaultDomainRepository))
 
-        let favoriteObjects = (0..<15).map { _ in return createRandomFeed() }
+        let favoriteObjects = (0..<15).map { _ in return createRandomFeed(in: .favorites) }
         XCTAssertTrue(save(objects: favoriteObjects, in: favoriteDomainRepository))
 
         XCTAssertTrue(delete(objectIds: defaultObjects[0..<5].map { return $0.identifier }, in: defaultDomainRepository))
