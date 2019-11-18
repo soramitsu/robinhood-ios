@@ -54,8 +54,18 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
     @objc private func didReceive(notification: Notification) {
         var changes: [DataProviderChange<T>] = []
 
-        if let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? Set<U> {
-            let matchingChanges: [DataProviderChange<T>] = updatedObjects
+        let translationClosure: (Any) -> U? = { object in
+            if let object = object as? U {
+                return object
+            } else {
+                return nil
+            }
+        }
+
+        if let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? NSSet {
+
+            let matchingChanges: [DataProviderChange<T>] = updatedObjects.allObjects
+                .compactMap(translationClosure)
                 .filter(predicate)
                 .compactMap({ try? mapper.transform(entity: $0) })
                 .map({ DataProviderChange.update(newItem: $0) })
@@ -63,8 +73,9 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
             changes.append(contentsOf: matchingChanges)
         }
 
-        if let deletedObjects = notification.userInfo?[NSDeletedObjectsKey] as? Set<U> {
-            let matchingChanges: [DataProviderChange<T>] = deletedObjects
+        if let deletedObjects = notification.userInfo?[NSDeletedObjectsKey] as? NSSet {
+            let matchingChanges: [DataProviderChange<T>] = deletedObjects.allObjects
+                .compactMap(translationClosure)
                 .filter(predicate)
                 .compactMap({ try? mapper.transform(entity: $0) })
                 .map({ DataProviderChange.delete(deletedIdentifier: $0.identifier) })
@@ -72,8 +83,9 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
             changes.append(contentsOf: matchingChanges)
         }
 
-        if let insertedObjects = notification.userInfo?[NSInsertedObjectsKey] as? Set<U> {
-            let matchingChanges: [DataProviderChange<T>] = insertedObjects
+        if let insertedObjects = notification.userInfo?[NSInsertedObjectsKey] as? NSSet {
+            let matchingChanges: [DataProviderChange<T>] = insertedObjects.allObjects
+                .compactMap(translationClosure)
                 .filter(predicate)
                 .compactMap({ try? mapper.transform(entity: $0) })
                 .map({ DataProviderChange.insert(newItem: $0) })
