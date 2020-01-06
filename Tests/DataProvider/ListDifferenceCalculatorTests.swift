@@ -115,4 +115,56 @@ class ListDifferenceCalculatorTests: XCTestCase {
             }
         }
     }
+
+    func testOrderIsKeptAfterUpdate() {
+        // given
+        let count = 10
+        var objects = (0..<count).map({ _ in createRandomFeed(in: .default) }).sorted(by: sortBlock)
+        let diffCalculator = ListDifferenceCalculator(initialItems: objects, sortBlock: sortBlock)
+
+        // when
+
+        let firstName = objects[0].name
+        objects[0].name = objects[count - 1].name
+        objects[count - 1].name = firstName
+
+        let changes: [DataProviderChange<FeedData>] = [
+            .update(newItem: objects[0]),
+            .update(newItem: objects[count - 1])]
+
+        diffCalculator.apply(changes: changes)
+
+        // then
+
+        guard diffCalculator.lastDifferences.count == 4 else {
+            XCTFail("Unexpected changes")
+            return
+        }
+
+        for change in diffCalculator.lastDifferences {
+            switch change {
+            case .insert(let index, let newData):
+                guard
+                    (index == 0 && newData.identifier == objects[count - 1].identifier) ||
+                    (index == count - 1 && newData.identifier == objects[0].identifier) else {
+                        XCTFail("Unexpected insert at \(index)")
+                        return
+                }
+            case .delete(let index, let oldData):
+                guard
+                    (index == 0 && oldData.identifier == objects[0].identifier) ||
+                    (index == count - 1 && oldData.identifier == objects[count - 1].identifier) else {
+                        XCTFail("Unexpected delete at \(index)")
+                        return
+
+                }
+            case .update(let index, _, _):
+                XCTFail("Unexpected update at \(index)")
+                return
+            }
+        }
+
+        objects = objects.sorted(by: sortBlock)
+        XCTAssertEqual(diffCalculator.allItems, objects)
+    }
 }

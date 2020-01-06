@@ -107,32 +107,34 @@ public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalc
     public func apply(changes: [DataProviderChange<T>]) {
         lastDifferences.removeAll()
 
-        let updateItems: [Model] = changes.compactMap { (change) in
-            if case .update(let item) = change {
-                return item
-            } else {
-                return nil
-            }
-        }
+        var deleteIdentifiers = Set<String>()
 
-        let deleteIdentifiers: [String] = changes.compactMap { (change) in
-            if case .delete(let identifier) = change {
-                return identifier
-            } else {
-                return nil
-            }
-        }
+        var insertItems = [String: Model]()
 
-        let insertItems: [Model] = changes.compactMap { (change) in
-            if case .insert(let item) = change {
-                return item
-            } else {
-                return nil
-            }
-        }
+        // If updated value changes order than replace update with delete + insert
 
-        if updateItems.count > 0 {
-            update(items: updateItems)
+        for change in changes {
+            switch change {
+            case .insert(let newItem):
+                insertItems[newItem.identifier] = newItem
+            case .update(let newItem):
+                guard let oldItemIndex = allItems.firstIndex(where: { $0.identifier == newItem.identifier }) else {
+                    break
+                }
+
+                if sortBlock(newItem, allItems[oldItemIndex]) == sortBlock(allItems[oldItemIndex], newItem) {
+                    lastDifferences.append(.update(index: oldItemIndex,
+                                                   old: allItems[oldItemIndex],
+                                                   new: newItem))
+                    allItems[oldItemIndex] = newItem
+                } else {
+                    deleteIdentifiers.insert(newItem.identifier)
+                    insertItems[newItem.identifier] = newItem
+                }
+
+            case .delete(let deletedIdentifier):
+                deleteIdentifiers.insert(deletedIdentifier)
+            }
         }
 
         if deleteIdentifiers.count > 0 {
@@ -140,20 +142,11 @@ public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalc
         }
 
         if insertItems.count > 0 {
-            insert(items: insertItems)
+            insert(items: Array(insertItems.values))
         }
     }
 
-    private func update(items: [T]) {
-        for (index, oldItem) in allItems.enumerated() {
-            if let newItem = items.first(where: { $0.identifier == oldItem.identifier }) {
-                lastDifferences.append(.update(index: index, old: oldItem, new: newItem))
-                allItems[index] = newItem
-            }
-        }
-    }
-
-    private func delete(identifiers: [String]) {
+    private func delete(identifiers: Set<String>) {
         for (index, oldItem) in allItems.enumerated() {
             if identifiers.contains(oldItem.identifier) {
                 lastDifferences.append(.delete(index: index, old: oldItem))
