@@ -80,11 +80,21 @@ class ListDifferenceCalculatorTests: XCTestCase {
         XCTAssertEqual(changes.count, diffCalculator.lastDifferences.count)
         XCTAssertEqual(objects.count - deletedIndexes.count, diffCalculator.allItems.count)
 
+        var prevIndex: Int?
+
         for diff in diffCalculator.lastDifferences {
             switch diff {
             case .delete(let index, let old):
                 XCTAssertTrue(deletedIndexes.contains(index))
                 XCTAssertEqual(objects[index], old)
+
+                if let oldIndex = prevIndex {
+                    // insure that delete updates are sorted desc
+                    XCTAssertTrue(oldIndex > index)
+                }
+
+                prevIndex = index
+
             default:
                 XCTFail()
             }
@@ -106,10 +116,20 @@ class ListDifferenceCalculatorTests: XCTestCase {
         XCTAssertEqual(changes.count, diffCalculator.lastDifferences.count)
         XCTAssertEqual(objects.count + changes.count, diffCalculator.allItems.count)
 
+        var prevIndex: Int?
+
         for diff in diffCalculator.lastDifferences {
             switch diff {
-            case .insert(_, let new):
+            case .insert(let index, let new):
                 XCTAssertTrue(insertedItems.contains(new))
+
+                if let oldIndex = prevIndex {
+                    // insure that delete updates are sorted asc
+                    XCTAssertTrue(oldIndex < index)
+                }
+
+                prevIndex = index
+
             default:
                 XCTFail()
             }
