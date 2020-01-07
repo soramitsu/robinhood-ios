@@ -150,7 +150,7 @@ public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalc
     }
 
     private func delete(identifiers: Set<String>) {
-        // delete change should be sorted by index desc
+        // delete changes should be sorted by index desc
 
         for (index, oldItem) in allItems.enumerated().reversed() {
             if identifiers.contains(oldItem.identifier) {
@@ -167,7 +167,7 @@ public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalc
         allItems.append(contentsOf: items)
         allItems.sort(by: sortBlock)
 
-        // insert change should be sorted by index desc
+        // insert changes should be sorted by index asc
 
         for (index, item) in allItems.enumerated() {
             if items.contains(where: { $0.identifier == item.identifier }) {
