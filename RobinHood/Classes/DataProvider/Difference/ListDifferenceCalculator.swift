@@ -30,8 +30,11 @@ public enum ListDifference<Model> {
  *  Implementation of the protocol should find how current list will change
  *  when changes described as a list of ```DataProviderChange``` items are applied and
  *  return list of ```ListDifference``` items as a result. List of last difference can be
- *  accessed via ```lastDifferences``` property. Also the client doesn't need
- *  to store list of objects separately as it should be available via ```allItems``` property.
+ *  accessed via ```lastDifferences``` property. Changes in the ```lastDifferences``` are sorted
+ *  by type first: update, delete, insert. Inside groups delete changes are sorted
+ *  desc by index and insert change asc. Update changes are not sorted.
+ *  Also the client doesn't need to store list of objects separately
+ *  as it should be available via ```allItems``` property.
  */
 
 public protocol ListDifferenceCalculatorProtocol {
@@ -147,7 +150,9 @@ public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalc
     }
 
     private func delete(identifiers: Set<String>) {
-        for (index, oldItem) in allItems.enumerated() {
+        // delete change should be sorted by index desc
+
+        for (index, oldItem) in allItems.enumerated().reversed() {
             if identifiers.contains(oldItem.identifier) {
                 lastDifferences.append(.delete(index: index, old: oldItem))
             }
@@ -161,6 +166,8 @@ public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalc
     private func insert(items: [T]) {
         allItems.append(contentsOf: items)
         allItems.sort(by: sortBlock)
+
+        // insert change should be sorted by index desc
 
         for (index, item) in allItems.enumerated() {
             if items.contains(where: { $0.identifier == item.identifier }) {
