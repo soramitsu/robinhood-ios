@@ -53,9 +53,8 @@ public class CoreDataService {
         self.configuration = configuration
     }
 
-    var context: NSManagedObjectContext!
-    var setupState: SetupState = .initial
-    var pendingInvocations = [CoreDataContextInvocationBlock]()
+    var context: NSManagedObjectContext?
+    private let lock = NSLock()
 
     func databaseURL(with fileManager: FileManager) -> URL? {
         guard case .persistent(let settings) = configuration.storageType else {
@@ -85,23 +84,6 @@ public class CoreDataService {
 
 // MARK: Internal Invocations logic
 extension CoreDataService {
-    func queueInvocation(block: @escaping CoreDataContextInvocationBlock) {
-        pendingInvocations.append(block)
-    }
-
-    func flushInvocations(with error: Error?) {
-        let copiedInvocations = pendingInvocations
-        pendingInvocations.removeAll()
-
-        for block in copiedInvocations {
-            if error == nil {
-                invoke(block: block, in: context)
-            } else {
-                block(nil, error)
-            }
-        }
-    }
-
     func invoke(block: @escaping CoreDataContextInvocationBlock, in context: NSManagedObjectContext) {
         context.perform {
             block(context, nil)
@@ -111,46 +93,25 @@ extension CoreDataService {
 
 // MARK: Internal Setup Logic
 extension CoreDataService {
-    func setup() {
-        setupState = .inprogress
-
-        setup { (error) in
-            if error == nil {
-                self.setupState = .completed
-            } else {
-                self.setupState = .initial
-            }
-
-            self.flushInvocations(with: error)
-        }
-    }
-
-    func setup(withCompletion block: @escaping (Error?) -> Void) {
+    func setup() throws -> NSManagedObjectContext {
         let fileManager = FileManager.default
         let optionalDatabaseURL = self.databaseURL(with: fileManager)
         let storageType: String
 
         guard let model = NSManagedObjectModel(contentsOf: configuration.modelURL) else {
-            block(CoreDataServiceError.modelInitializationFailed)
-            return
+            throw CoreDataServiceError.modelInitializationFailed
         }
 
         switch configuration.storageType {
         case .persistent(let settings):
             guard let databaseURL = optionalDatabaseURL  else {
-                block(CoreDataServiceError.databaseURLInvalid)
-                return
+                throw CoreDataServiceError.databaseURLInvalid
             }
 
             if settings.incompatibleModelStrategy != .ignore &&
                 !checkCompatibility(of: model, with: databaseURL, using: fileManager) {
 
-                do {
-                    try fileManager.removeItem(at: databaseURL)
-                } catch {
-                    block(CoreDataServiceError.incompatibleModelRemoveFailed)
-                    return
-                }
+                try fileManager.removeItem(at: databaseURL)
             }
 
             storageType = NSSQLiteStoreType
@@ -160,29 +121,19 @@ extension CoreDataService {
 
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
 
-        context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.persistentStoreCoordinator = coordinator
 
-        let queue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
-        queue.async {
-            do {
-                try coordinator.addPersistentStore(
-                    ofType: storageType,
-                    configurationName: nil,
-                    at: optionalDatabaseURL,
-                    options: nil
-                )
+        try coordinator.addPersistentStore(
+            ofType: storageType,
+            configurationName: nil,
+            at: optionalDatabaseURL,
+            options: nil
+        )
 
-                DispatchQueue.main.async {
-                    block(nil)
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    block(error)
-                }
-            }
-        }
+        self.context = context
 
+        return context
     }
 }
 
@@ -208,40 +159,29 @@ extension CoreDataService {
 
 extension CoreDataService: CoreDataServiceProtocol {
     public func performAsync(block: @escaping CoreDataContextInvocationBlock) {
-        if !Thread.isMainThread {
-            DispatchQueue.main.sync {
-                self._performAsync(block: block)
-            }
-        } else {
-            self._performAsync(block: block)
-        }
-    }
+        lock.lock()
 
-    private func _performAsync(block: @escaping CoreDataContextInvocationBlock) {
-        switch self.setupState {
-        case .completed:
-            self.invoke(block: block, in: self.context)
-        case .initial:
-            self.queueInvocation(block: block)
-            self.setup()
-        case .inprogress:
-            self.queueInvocation(block: block)
+        do {
+            if let context = context {
+                invoke(block: block, in: context)
+            } else {
+                let context = try setup()
+                invoke(block: block, in: context)
+            }
+
+            lock.unlock()
+        } catch {
+            lock.unlock()
+
+            block(nil, error)
         }
     }
 
     public func close() throws {
-        if !Thread.isMainThread {
-            try DispatchQueue.main.sync {
-                try self._close()
-            }
-        } else {
-            try self._close()
-        }
-    }
+        lock.lock()
 
-    private func _close() throws {
-        if case .inprogress = setupState {
-            throw CoreDataServiceError.unexpectedCloseDuringSetup
+        defer {
+            lock.unlock()
         }
 
         context?.performAndWait {
@@ -254,22 +194,17 @@ extension CoreDataService: CoreDataServiceProtocol {
             }
 
             self.context = nil
-            self.setupState = .initial
         }
     }
 
     public func drop() throws {
-        if !Thread.isMainThread {
-            try DispatchQueue.main.sync {
-                try self._drop()
-            }
-        } else {
-            try self._drop()
-        }
-    }
+        lock.lock()
 
-    private func _drop() throws {
-        guard case .initial = setupState else {
+        defer {
+            lock.unlock()
+        }
+
+        guard context == nil else {
             throw CoreDataServiceError.unexpectedDropWhenOpen
         }
 
