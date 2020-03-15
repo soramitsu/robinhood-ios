@@ -1,7 +1,12 @@
+/**
+* Copyright Soramitsu Co., Ltd. All Rights Reserved.
+* SPDX-License-Identifier: GPL-3.0
+*/
+
 import Foundation
 
-extension BaseOperation {
-    public func extractResultData(throwing noResultError: Error) throws -> ResultType {
+public extension BaseOperation {
+    func extractResultData(throwing noResultError: Error) throws -> ResultType {
         if let result = try extractResultData() {
             return result
         } else {
@@ -9,7 +14,7 @@ extension BaseOperation {
         }
     }
 
-    public func extractResultData() throws -> ResultType? {
+    func extractResultData() throws -> ResultType? {
         guard let result = self.result else {
             return nil
         }
