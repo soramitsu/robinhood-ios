@@ -6,8 +6,8 @@
 import Foundation
 
 /**
- *  Protocol is designed to provide an access to locally persistent list of objects that get updated by
- *  streaming changes from the remote. Clients can fetch object and suscribe for changes using methods described below.
+ *  Protocol is designed to provide an access to locally persistent list of objects that gets updated by
+ *  streaming changes from the remote. Clients can fetch objects and suscribe for changes using methods described below.
  *
  *  Due to the nature of streaming it is convienent that source implementation will directly save changes to
  *  repository. Provider in this case is expected to trigger history fetch from data source and deliver
@@ -18,11 +18,20 @@ public protocol StreamableProviderProtocol {
     associatedtype Model: Identifiable
 
     /**
+     *  Triggers data source to start refreshing. Also provider make sure that all observers
+     *  are always notified when refresh completes in case
+     *  of ```alwaysNotifyOnRefresh``` flag provided in options.
+     */
+
+    func refresh()
+
+    /**
      *  Returns list of objects from local store or fetches from remote store if it is not enough.
      *
      *  - parameters:
      *    - offset: `Int` offset to fetch objects from.
      *    - count: `Int` number of objects to fetch.
+     *    - synchronized: `Bool` whether to request pessimistic access to read from local storage.
      *    - completionBlock: Block to call on completion. `Result` value is passed as a parameter.
      *    Note that remote objects may not be delivered in the completion closure and the client needs to add
      *    an observer to receive remained part of the list.
@@ -30,7 +39,9 @@ public protocol StreamableProviderProtocol {
      *  **Don't try** to override operation's completion block but provide completion block to the function instead.
      */
 
-    func fetch(offset: Int, count: Int,
+    func fetch(offset: Int,
+               count: Int,
+               synchronized: Bool,
                with completionBlock: @escaping (Result<[Model], Error>?) -> Void) -> BaseOperation<[Model]>
 
     /**
@@ -54,14 +65,14 @@ public protocol StreamableProviderProtocol {
      *      `alwaysNotifyOnRefresh` in options.
      *    - failureBlock: Closure to call in case data provider failed to add the observer. It is also called
      *      after failed synchronization but only if `alwaysNotifyOnRefresh` flag is set in options.
-     *    - options: Controls a way of how and when observer is notified.
+     *    - options: Controls a way of how and when observer is handled.
      */
 
     func addObserver(_ observer: AnyObject,
                      deliverOn queue: DispatchQueue,
                      executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
                      failing failureBlock: @escaping (Error) -> Void,
-                     options: DataProviderObserverOptions)
+                     options: StreamableProviderObserverOptions)
 
     /**
      *  Removes an observer from the list of observers.
@@ -110,7 +121,7 @@ public extension StreamableProviderProtocol {
                     deliverOn: queue,
                     executing: updateBlock,
                     failing: failureBlock,
-                    options: DataProviderObserverOptions())
+                    options: StreamableProviderObserverOptions())
     }
 }
 
@@ -125,18 +136,35 @@ public protocol StreamableSourceProtocol {
     associatedtype Model: Identifiable
 
     /**
-     *  Fetches history based on offset and count and saves objects to the repository.
+     *  Fetches more data based on the repository and saves objects to the repository.
      *
      *  - parameters:
-     *    - offset: Offset in the history list.
-     *    - count: Number of objects to fetch.
      *    - queue: Dispatch queue to execute completion closure in. By default is ```nil```
      *    meaning that completion closure will be executed in the internal queueu.
      *    - commitNotificationBlock: Optional closure to execute on completion. Swift result
      *    passed as closure parameter contains either number of saved objects or an error
      *    in case of failure.
+     *
+     *  - note: Implementation of the method must call completion with ```nil``` in case history
+     *    fetching already in progress.
      */
 
-    func fetchHistory(offset: Int, count: Int, runningIn queue: DispatchQueue?,
+    func fetchHistory(runningIn queue: DispatchQueue?,
                       commitNotificationBlock: ((Result<Int, Error>?) -> Void)?)
+
+    /**
+     *  Fetches actual data from remote and replaces local ones.
+     *
+     *  - parameters:
+     *    - queue: Dispatch queue to execute completion closure in. By default is ```nil```
+     *      meaning that completion closure will be executed in the internal queueu.
+     *    - commitNotificationBlock: Optional closure to execute on completion. Swift result
+     *      passed as closure parameter contains either total number of changes or an error
+     *      in case of failure.
+     *
+     *  - note: Implementation of the method must cancel any pending history fetch request and
+     *    must call completion with ```nil``` in case refreshing already in progress.
+     */
+    func refresh(runningIn queue: DispatchQueue?,
+                 commitNotificationBlock: ((Result<Int, Error>?) -> Void)?)
 }

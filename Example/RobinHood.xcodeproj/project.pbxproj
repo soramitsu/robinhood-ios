@@ -50,6 +50,7 @@
 		8483004E235D051E00D787C4 /* NestedEntitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8483004D235D051E00D787C4 /* NestedEntitiesTests.swift */; };
 		84AC1E7D235CF833000FB90A /* MessageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AC1E79235CF79F000FB90A /* MessageData.swift */; };
 		84AC1E7E235CF837000FB90A /* ChatData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AC1E7B235CF7EE000FB90A /* ChatData.swift */; };
+		84B1DEF6241CD397005EB822 /* OperationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B1DEF4241CD362005EB822 /* OperationManagerTests.swift */; };
 		84E3D6D22285B298004DB81A /* StreamableDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E3D6D12285B298004DB81A /* StreamableDataProviderTests.swift */; };
 		8C0E5A83A2D6EF35E91102D5 /* Pods_RobinHood_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC38D3F4098DAF6CD20A60DC /* Pods_RobinHood_Tests.framework */; };
 /* End PBXBuildFile section */
@@ -113,6 +114,7 @@
 		8483004D235D051E00D787C4 /* NestedEntitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedEntitiesTests.swift; sourceTree = "<group>"; };
 		84AC1E79235CF79F000FB90A /* MessageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageData.swift; sourceTree = "<group>"; };
 		84AC1E7B235CF7EE000FB90A /* ChatData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatData.swift; sourceTree = "<group>"; };
+		84B1DEF4241CD362005EB822 /* OperationManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperationManagerTests.swift; sourceTree = "<group>"; };
 		84E3D6D12285B298004DB81A /* StreamableDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamableDataProviderTests.swift; sourceTree = "<group>"; };
 		93ABF305D0D497A47793E0DC /* Pods-RobinHood_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RobinHood_Tests.release.xcconfig"; path = "Target Support Files/Pods-RobinHood_Tests/Pods-RobinHood_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		A8231B45763F01E6592A4E4B /* Pods-RobinHood_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RobinHood_Example.debug.xcconfig"; path = "Target Support Files/Pods-RobinHood_Example/Pods-RobinHood_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -288,6 +290,7 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				84B1DEF3241CD362005EB822 /* Operation */,
 				32384BFF2236F73A00346C90 /* Helpers */,
 				32384BE52236F3D000346C90 /* CoreData */,
 				32384BDE2236F3D000346C90 /* DataProvider */,
@@ -333,6 +336,15 @@
 				84427D7E223F6D8500AA721B /* emptyResponse.json */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		84B1DEF3241CD362005EB822 /* Operation */ = {
+			isa = PBXGroup;
+			children = (
+				84B1DEF4241CD362005EB822 /* OperationManagerTests.swift */,
+			);
+			name = Operation;
+			path = ../../Tests/Operation;
 			sourceTree = "<group>";
 		};
 		9515CDC5A3DB83F020BDB384 /* Pods */ = {
@@ -597,6 +609,7 @@
 				84530A56223D94D000AD7598 /* DataProviderGenerator.swift in Sources */,
 				84530A5D223D976E00AD7598 /* NetworkMockManager.swift in Sources */,
 				3213A31A22385EB6001BE041 /* CoreDataCacheHelpers.swift in Sources */,
+				84B1DEF6241CD397005EB822 /* OperationManagerTests.swift in Sources */,
 				8425364322857D410044032B /* CoreDataContextObserverTests.swift in Sources */,
 				32384BF82236F3D000346C90 /* CoreDataRepositoryTests.swift in Sources */,
 				8483004C235D016A00D787C4 /* MessageDataGenerator.swift in Sources */,

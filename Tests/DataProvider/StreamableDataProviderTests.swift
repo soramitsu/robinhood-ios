@@ -33,19 +33,23 @@ class StreamableDataProviderTests: XCTestCase {
             return items.isEmpty
         }
 
-        let updateValidator: ([DataProviderChange<FeedData>]) -> Bool = { (changes) in
-            for change in changes {
-                switch change {
-                case .insert(let newItem):
-                    if !sourceObjects.contains(newItem) {
+        let updateValidator: ([DataProviderChange<FeedData>], Int) -> Bool = { (changes, index) in
+            if index == 0 {
+                return changes.count == 0
+            } else {
+                for change in changes {
+                    switch change {
+                    case .insert(let newItem):
+                        if !sourceObjects.contains(newItem) {
+                            return false
+                        }
+                    default:
                         return false
                     }
-                default:
-                    return false
                 }
-            }
 
-            return sourceObjects.count == changes.count
+                return sourceObjects.count == changes.count
+            }
         }
 
         performSingleChangeTest(with: source,
@@ -67,11 +71,12 @@ class StreamableDataProviderTests: XCTestCase {
             return initialObjects == items
         }
 
-        let updateValidator: ([DataProviderChange<FeedData>]) -> Bool = { (changes) in
+        let updateValidator: ([DataProviderChange<FeedData>], Int) -> Bool = { (changes, index) in
+            let targetObjects = index == 0 ? initialObjects : newObjects
             for change in changes {
                 switch change {
                 case .insert(let newItem):
-                    if !newObjects.contains(newItem) {
+                    if !targetObjects.contains(newItem) {
                         return false
                     }
                 default:
@@ -79,7 +84,7 @@ class StreamableDataProviderTests: XCTestCase {
                 }
             }
 
-            return newObjects.count == changes.count
+            return targetObjects.count == changes.count
         }
 
         performSingleChangeTest(with: source,
@@ -98,14 +103,14 @@ class StreamableDataProviderTests: XCTestCase {
             return items.isEmpty
         }
 
-        let updateValidator: ([DataProviderChange<FeedData>]) -> Bool = { (changes) in
+        let updateValidator: ([DataProviderChange<FeedData>], Int) -> Bool = { (changes, index) in
             return changes.isEmpty
         }
 
         performSingleChangeTest(with: source,
                                 fetchValidator: fetchValidator,
                                 updateValidator: updateValidator,
-                                options: DataProviderObserverOptions(alwaysNotifyOnRefresh: true))
+                                options: StreamableProviderObserverOptions(alwaysNotifyOnRefresh: true))
     }
 
     func testErrorDispatchWhenFetch() {
@@ -115,17 +120,19 @@ class StreamableDataProviderTests: XCTestCase {
                                                    mapper: repository.dataMapper,
                                                    predicate: { _ in return true })
 
-        observable.start { _ in }
-
         let dataProvider = StreamableProvider(source: source,
                                               repository: AnyDataProviderRepository(repository),
-                                              observable: AnyDataProviderRepositoryObservable(observable),
-                                              operationQueue: operationQueue)
+                                              observable: AnyDataProviderRepositoryObservable(observable))
+
+        observable.start { _ in }
 
         let failExpectation = XCTestExpectation()
 
+        let initialExpectation = XCTestExpectation()
+        initialExpectation.assertForOverFulfill = true
+
         let updateBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
-            XCTFail()
+            initialExpectation.fulfill()
         }
 
         let failBlock: (Error) -> Void = { (error) in
@@ -144,9 +151,11 @@ class StreamableDataProviderTests: XCTestCase {
         dataProvider.addObserver(self,
                                  deliverOn: .main, executing: updateBlock,
                                  failing: failBlock,
-                                 options: DataProviderObserverOptions(alwaysNotifyOnRefresh: true))
+                                 options: StreamableProviderObserverOptions(alwaysNotifyOnRefresh: true))
 
-        _ = dataProvider.fetch(offset: 0, count: 10) { (optionalResult) in
+        wait(for: [initialExpectation], timeout: Constants.expectationDuration)
+
+        _ = dataProvider.fetch(offset: 0, count: 10, synchronized: true) { (optionalResult) in
             defer {
                 fetchExpectation.fulfill()
             }
@@ -166,31 +175,41 @@ class StreamableDataProviderTests: XCTestCase {
 
     private func performSingleChangeTest(with source: AnyStreamableSource<FeedData>,
                                          fetchValidator: @escaping ([FeedData]) -> Bool,
-                                         updateValidator: @escaping ([DataProviderChange<FeedData>]) -> Bool,
+                                         updateValidator: @escaping ([DataProviderChange<FeedData>], Int) -> Bool,
                                          fetchOffset: Int = 0,
                                          fetchCount: Int = 10,
-                                         options: DataProviderObserverOptions? = nil) {
+                                         options: StreamableProviderObserverOptions? = nil) {
         let observable = CoreDataContextObservable(service: repository.databaseService,
                                                    mapper: repository.dataMapper,
                                                    predicate: { _ in return true })
 
-        observable.start { _ in }
-
         let dataProvider = StreamableProvider(source: source,
                                               repository: AnyDataProviderRepository(repository),
-                                              observable: AnyDataProviderRepositoryObservable(observable),
-                                              operationQueue: operationQueue)
+                                              observable: AnyDataProviderRepositoryObservable(observable))
+
+        observable.start { _ in }
+
+        let initialExpectation = XCTestExpectation()
 
         let updateExpectation = XCTestExpectation()
+        updateExpectation.assertForOverFulfill = true
+
+        var updateCallIndex = 0
 
         let updateBlock: ([DataProviderChange<FeedData>]) -> Void = { (changes) in
             defer {
-                updateExpectation.fulfill()
+                if updateCallIndex == 1 {
+                    initialExpectation.fulfill()
+                } else {
+                    updateExpectation.fulfill()
+                }
             }
 
-            if !updateValidator(changes) {
+            if !updateValidator(changes, updateCallIndex) {
                 XCTFail()
             }
+
+            updateCallIndex += 1
         }
 
         let failBlock: (Error) -> Void = { _ in
@@ -199,14 +218,16 @@ class StreamableDataProviderTests: XCTestCase {
 
         let fetchExpectation = XCTestExpectation()
 
-        let dataProviderOptions = options ?? DataProviderObserverOptions(alwaysNotifyOnRefresh: false)
+        let dataProviderOptions = options ?? StreamableProviderObserverOptions(alwaysNotifyOnRefresh: false)
 
         dataProvider.addObserver(self,
                                  deliverOn: .main, executing: updateBlock,
                                  failing: failBlock,
                                  options: dataProviderOptions)
 
-        _ = dataProvider.fetch(offset: fetchOffset, count: fetchCount) { (optionalResult) in
+        wait(for: [initialExpectation], timeout: Constants.expectationDuration)
+
+        _ = dataProvider.fetch(offset: fetchOffset, count: fetchCount, synchronized: true) { (optionalResult) in
             defer {
                 fetchExpectation.fulfill()
             }

@@ -18,6 +18,7 @@ class CoreDataServiceTests: XCTestCase {
 
     override func tearDown() {
         try! databaseService.close()
+        try! databaseService.drop()
 
         super.tearDown()
     }

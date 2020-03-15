@@ -5,18 +5,18 @@
 
 import Foundation
 
-public struct DataProviderObserver<T> {
+public struct DataProviderObserver<T, P> {
     public private(set) weak var observer: AnyObject?
     public private(set) var queue: DispatchQueue?
     public private(set) var updateBlock: ([DataProviderChange<T>]) -> Void
     public private(set) var failureBlock: (Error) -> Void
-    public private(set) var options: DataProviderObserverOptions
+    public private(set) var options: P
 
     public init(observer: AnyObject,
                 queue: DispatchQueue?,
                 updateBlock: @escaping ([DataProviderChange<T>]) -> Void,
                 failureBlock: @escaping (Error) -> Void,
-                options: DataProviderObserverOptions) {
+                options: P) {
 
         self.observer = observer
         self.options = options
