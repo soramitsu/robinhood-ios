@@ -94,7 +94,7 @@ extension StreamableProvider: StreamableProviderProtocol {
     public typealias Model = T
 
     public func refresh() {
-        source.fetchHistory(runningIn: processingQueue) { [weak self] result in
+        source.refresh(runningIn: processingQueue) { [weak self] result in
             if let result = result {
                 self?.notifyObservers(with: result)
             }

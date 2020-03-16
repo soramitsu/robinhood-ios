@@ -68,13 +68,18 @@ func createSingleValueSourceMock<T>(returns error: Error) -> AnySingleValueProvi
 }
 
 func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(repository: CoreDataRepository<T, U>,
-                                                                     operationQueue: OperationQueue,
-                                                                     returns items: [T]) -> AnyStreamableSource<T> {
+                                                                     returns items: [T],
+                                                                     enqueueClosure: OperationEnqueuClosure? = nil)
+    -> AnyStreamableSource<T> {
 
     let historyClosure: AnyStreamableSourceFetchBlock = { (queue, completionBlock) in
         let saveOperation = repository.saveOperation( { items }, { [] })
 
-        operationQueue.addOperation(saveOperation)
+        if let enqueueClosure = enqueueClosure {
+            enqueueClosure([saveOperation])
+        } else {
+            OperationQueue().addOperation(saveOperation)
+        }
 
         dispatchInQueueWhenPossible(queue) {
             completionBlock?(.success(items.count))
@@ -92,7 +97,8 @@ func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(repository:
         saveOperation.completionBlock = {
             do {
                 let count = try totalCountOperation
-                    .extractResultData(throwing: BaseOperationError.parentOperationCancelled).count
+                    .extractResultData(throwing: BaseOperationError.parentOperationCancelled).count +
+                items.count
 
                 dispatchInQueueWhenPossible(queue) {
                     completionBlock?(.success(count))
@@ -104,7 +110,14 @@ func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(repository:
             }
         }
 
-        operationQueue.addOperations([deleteAllOperation, saveOperation], waitUntilFinished: false)
+        let operations = [totalCountOperation, deleteAllOperation, saveOperation]
+
+        if let enqueueClosure = enqueueClosure {
+            enqueueClosure(operations)
+        } else {
+            OperationQueue().addOperations([totalCountOperation, deleteAllOperation, saveOperation],
+                                           waitUntilFinished: false)
+        }
     }
 
     let source: AnyStreamableSource<T> = AnyStreamableSource(fetchHistory: historyClosure,

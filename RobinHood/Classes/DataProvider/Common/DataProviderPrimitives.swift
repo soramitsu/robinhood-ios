@@ -99,6 +99,7 @@ public struct StreamableProviderObserverOptions {
 
     /// Number of items to fetch from local store and return in update block call after
     /// observer successfully added.
+    /// Bu default the value is ```0```.
     /// - note: If the value is less or equal to zero than all existing objects are fetched.
     public var initialSize: Int
 
