@@ -98,10 +98,26 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
         }
     }
 
+    private func create(models: [Model], in context: NSManagedObjectContext) throws {
+        try models.forEach { (model) in
+            let entityName = String(describing: U.self)
+
+            guard
+                let entity = NSEntityDescription.insertNewObject(forEntityName: entityName,
+                                                                 into: context) as? U else {
+                throw CoreDataRepositoryError.creationFailed
+            }
+
+            try dataMapper.populate(entity: entity, from: model, using: context)
+        }
+    }
+
     private func delete(modelIds: [String], in context: NSManagedObjectContext) throws {
         try modelIds.forEach { (modelId) in
             let entityName = String(describing: U.self)
             let fetchRequest = NSFetchRequest<U>(entityName: entityName)
+            fetchRequest.includesPropertyValues = false
+
             var predicate = NSPredicate(format: "%K == %@",
                                         dataMapper.entityIdentifierFieldName,
                                         modelId)
@@ -115,6 +131,19 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
             if let entity = try context.fetch(fetchRequest).first {
                 context.delete(entity)
             }
+        }
+    }
+
+    private func deleteAll(in context: NSManagedObjectContext) throws {
+        let entityName = String(describing: U.self)
+        let fetchRequest = NSFetchRequest<U>(entityName: entityName)
+        fetchRequest.includesPropertyValues = false
+        fetchRequest.predicate = filter
+
+        let entities = try context.fetch(fetchRequest)
+
+        for entity in entities {
+            context.delete(entity)
         }
     }
 
@@ -137,7 +166,9 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
             block(error)
         }
     }
+}
 
+extension CoreDataRepository {
     public func fetch(by modelId: String,
                       runCompletionIn queue: DispatchQueue?,
                       executing block: @escaping (Model?, Error?) -> Void) {
@@ -279,8 +310,32 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
         }
     }
 
-    public func deleteAll(runCompletionIn queue: DispatchQueue?,
-                          executing block: @escaping (Error?) -> Void) {
+    public func replace(with newModels: [Model],
+                        runCompletionIn queue: DispatchQueue?,
+                        executing block: @escaping (Error?) -> Void) {
+        databaseService.performAsync { (optionalContext, optionalError) in
+            if let context = optionalContext {
+                do {
+                    try self.deleteAll(in: context)
+                    try self.create(models: newModels, in: context)
+
+                    try context.save()
+
+                    self.call(block: block, error: nil, queue: queue)
+
+                } catch {
+                    context.rollback()
+
+                    self.call(block: block, error: error, queue: queue)
+                }
+            } else {
+                self.call(block: block, error: optionalError, queue: queue)
+            }
+        }
+    }
+
+    public func fetchCount(runCompletionIn queue: DispatchQueue?,
+                           executing block: @escaping (Int?, Error?) -> Void) {
         databaseService.performAsync { [weak self] (optionalContext, optionalError) in
             guard let strongSelf = self else {
                 return
@@ -292,11 +347,31 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
                     let fetchRequest = NSFetchRequest<U>(entityName: entityName)
                     fetchRequest.predicate = strongSelf.filter
 
-                    let entities = try context.fetch(fetchRequest)
+                    let count = try context.count(for: fetchRequest)
 
-                    for entity in entities {
-                        context.delete(entity)
-                    }
+                    strongSelf.call(block: block, model: count, error: nil, queue: queue)
+
+                } catch {
+                    context.rollback()
+
+                    strongSelf.call(block: block, model: nil, error: error, queue: queue)
+                }
+            } else {
+                strongSelf.call(block: block, model: nil, error: optionalError, queue: queue)
+            }
+        }
+    }
+
+    public func deleteAll(runCompletionIn queue: DispatchQueue?,
+                          executing block: @escaping (Error?) -> Void) {
+        databaseService.performAsync { [weak self] (optionalContext, optionalError) in
+            guard let strongSelf = self else {
+                return
+            }
+
+            if let context = optionalContext {
+                do {
+                    try strongSelf.deleteAll(in: context)
 
                     try context.save()
 

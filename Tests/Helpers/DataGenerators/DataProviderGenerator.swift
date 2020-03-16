@@ -87,17 +87,15 @@ func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(repository:
     }
 
     let refreshClosure: AnyStreamableSourceFetchBlock = { (queue, completionBlock) in
-        let totalCountOperation = repository.fetchAllOperation()
-        let deleteAllOperation = repository.deleteAllOperation()
-        let saveOperation = repository.saveOperation( { items }, { [] })
+        let totalCountOperation = repository.fetchCountOperation()
+        let replaceOperation = repository.replaceOperation( { items })
 
-        deleteAllOperation.addDependency(totalCountOperation)
-        saveOperation.addDependency(deleteAllOperation)
+        replaceOperation.addDependency(totalCountOperation)
 
-        saveOperation.completionBlock = {
+        replaceOperation.completionBlock = {
             do {
                 let count = try totalCountOperation
-                    .extractResultData(throwing: BaseOperationError.parentOperationCancelled).count +
+                    .extractResultData(throwing: BaseOperationError.parentOperationCancelled) +
                 items.count
 
                 dispatchInQueueWhenPossible(queue) {
@@ -110,12 +108,12 @@ func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(repository:
             }
         }
 
-        let operations = [totalCountOperation, deleteAllOperation, saveOperation]
+        let operations = [totalCountOperation, replaceOperation]
 
         if let enqueueClosure = enqueueClosure {
             enqueueClosure(operations)
         } else {
-            OperationQueue().addOperations([totalCountOperation, deleteAllOperation, saveOperation],
+            OperationQueue().addOperations([totalCountOperation, replaceOperation],
                                            waitUntilFinished: false)
         }
     }

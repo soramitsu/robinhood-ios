@@ -77,8 +77,8 @@ final public class CoreDataContextObservable<T: Identifiable, U: NSManagedObject
             let matchingChanges: [DataProviderChange<T>] = deletedObjects.allObjects
                 .compactMap(translationClosure)
                 .filter(predicate)
-                .compactMap({ try? mapper.transform(entity: $0) })
-                .map({ DataProviderChange.delete(deletedIdentifier: $0.identifier) })
+                .compactMap({ $0.value(forKey: mapper.entityIdentifierFieldName) as? String })
+                .map({ DataProviderChange.delete(deletedIdentifier: $0) })
 
             changes.append(contentsOf: matchingChanges)
         }

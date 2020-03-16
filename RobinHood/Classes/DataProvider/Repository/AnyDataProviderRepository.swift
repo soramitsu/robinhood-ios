@@ -16,7 +16,9 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
     private let _fetchAll: () -> BaseOperation<[Model]>
     private let _fetchByOffsetCount: (Int, Int, Bool) -> BaseOperation<[Model]>
     private let _save: (@escaping () throws -> [Model], @escaping () throws -> [String]) -> BaseOperation<Void>
+    private let _replace: (@escaping () throws -> [Model]) -> BaseOperation<Void>
     private let _deleteAll: () -> BaseOperation<Void>
+    private let _fetchCount: () -> BaseOperation<Int>
 
     /**
      *  Initializes type erasure wrapper for repository implementation.
@@ -30,7 +32,9 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
         _fetchAll = repository.fetchAllOperation
         _fetchByOffsetCount = repository.fetchOperation
         _save = repository.saveOperation
+        _replace = repository.replaceOperation
         _deleteAll = repository.deleteAllOperation
+        _fetchCount = repository.fetchCountOperation
     }
 
     public func fetchOperation(by modelId: String) -> BaseOperation<T?> {
@@ -50,7 +54,15 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
         return _save(updateModelsBlock, deleteIdsBlock)
     }
 
+    public func replaceOperation(_ newModelsBlock: @escaping () throws -> [T]) -> BaseOperation<Void> {
+        return _replace(newModelsBlock)
+    }
+
     public func deleteAllOperation() -> BaseOperation<Void> {
         return _deleteAll()
+    }
+
+    public func fetchCountOperation() -> BaseOperation<Int> {
+        return _fetchCount()
     }
 }

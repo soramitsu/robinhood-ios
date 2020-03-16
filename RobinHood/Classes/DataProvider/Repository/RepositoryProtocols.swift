@@ -60,6 +60,24 @@ public protocol DataProviderRepositoryProtocol {
                        _ deleteIdsBlock: @escaping () throws -> [String]) -> BaseOperation<Void>
 
     /**
+     *  Creates operation which that replaces persisted list of objects.
+     *
+     *  - parameters:
+     *    - newModelsBlocks: Closure which returns list of objects to replace old one.
+     *  - returns: Operation that returns nothing.
+     */
+
+    func replaceOperation(_ newModelsBlock: @escaping () throws -> [Model]) -> BaseOperation<Void>
+
+    /**
+     *  Creates operation which calculates number of objects in the repository.
+     *
+     *  - returns: Operations that results in a number of object in the repository.
+     */
+
+    func fetchCountOperation() -> BaseOperation<Int>
+
+    /**
      *  Creates operation which removes all objects.
      *
      *  - returns: Operation which returns nothing.
