@@ -124,3 +124,49 @@ public struct StreamableProviderObserverOptions {
         self.initialSize = initialSize
     }
 }
+
+/**
+ *  Struct is designed to store options applied for fetch request from a repository.
+ */
+
+public struct RepositoryFetchOptions {
+    /**
+     *  If ```false``` properties are fetched when they are directly accessed
+     *  (for example, when an entity is transformed to app model), otherwise all
+     *  properties are fetched and cached. By default ```true```.
+     */
+    let includesProperties: Bool
+
+    /**
+     *  If ```false``` subentities are fetched when they are directly accessed
+     *  (for example, when an entity is transformed to app model), otherwise all
+     *  subentities are fetched and cached. By default ```true```.
+     */
+    let includesSubentities: Bool
+
+    public init(includesProperties: Bool = true, includesSubentities: Bool = true) {
+        self.includesProperties = includesProperties
+        self.includesSubentities = includesSubentities
+    }
+}
+
+/**
+ *  Struct is designed to request part of the list of objects from repository.
+ */
+
+public struct RepositorySliceRequest {
+    /**
+     *  Offset of the slice the list of objects
+     */
+    let offset: Int
+
+    /**
+     *  Maximum number of objects to fetch
+     */
+    let count: Int
+
+    /**
+     *  If ```true``` the objects in the slice is in reversed order.
+     */
+    let reversed: Bool
+}

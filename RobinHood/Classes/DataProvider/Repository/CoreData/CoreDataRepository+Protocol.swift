@@ -6,7 +6,8 @@
 import Foundation
 
 extension CoreDataRepository: DataProviderRepositoryProtocol {
-    public func fetchOperation(by modelId: String) -> BaseOperation<Model?> {
+    public func fetchOperation(by modelId: String,
+                               options: RepositoryFetchOptions) -> BaseOperation<Model?> {
         ClosureOperation {
             var model: Model?
             var error: Error?
@@ -14,6 +15,7 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
             let semaphore = DispatchSemaphore(value: 0)
 
             self.fetch(by: modelId,
+                       options: options,
                        runCompletionIn: nil) { (optionalModel, optionalError) in
                         model = optionalModel
                         error = optionalError
@@ -35,14 +37,15 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
         }
     }
 
-    public func fetchAllOperation() -> BaseOperation<[Model]> {
+    public func fetchAllOperation(with options: RepositoryFetchOptions) -> BaseOperation<[Model]> {
         ClosureOperation {
             var models: [Model]?
             var error: Error?
 
             let semaphore = DispatchSemaphore(value: 0)
 
-            self.fetchAll(runCompletionIn: nil) { (optionalModels, optionalError) in
+            self.fetchAll(with: options,
+                          runCompletionIn: nil) { (optionalModels, optionalError) in
                 models = optionalModels
                 error = optionalError
 
@@ -63,15 +66,17 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
         }
     }
 
-    public func fetchOperation(by offset: Int, count: Int, reversed: Bool) -> BaseOperation<[Model]> {
+    public func fetchOperation(by request: RepositorySliceRequest,
+                               options: RepositoryFetchOptions) -> BaseOperation<[Model]> {
         ClosureOperation {
             var models: [Model]?
             var error: Error?
 
             let semaphore = DispatchSemaphore(value: 0)
 
-            self.fetch(offset: offset, count: count,
-                       reversed: reversed, runCompletionIn: nil) { (optionalModels, optionalError) in
+            self.fetch(request: request,
+                       options: options,
+                       runCompletionIn: nil) { (optionalModels, optionalError) in
                         models = optionalModels
                         error = optionalError
 

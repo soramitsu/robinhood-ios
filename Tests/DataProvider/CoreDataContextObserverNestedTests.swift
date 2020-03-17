@@ -4,7 +4,7 @@
 */
 
 import XCTest
-import RobinHood
+@testable import RobinHood
 
 class CoreDataContextObserverNestedTests: XCTestCase {
     func testNotificationDeliveredWhenSeveralItemsUpdated() {

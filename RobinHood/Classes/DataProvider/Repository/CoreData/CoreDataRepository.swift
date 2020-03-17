@@ -69,7 +69,7 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
         self.sortDescriptors = sortDescriptors
     }
 
-    private func save(models: [Model], in context: NSManagedObjectContext) throws {
+    func save(models: [Model], in context: NSManagedObjectContext) throws {
         try models.forEach { (model) in
             let entityName = String(describing: U.self)
             let fetchRequest = NSFetchRequest<U>(entityName: entityName)
@@ -82,6 +82,7 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
             }
 
             fetchRequest.predicate = predicate
+            fetchRequest.includesPropertyValues = false
 
             var optionalEntitity = try context.fetch(fetchRequest).first
 
@@ -98,7 +99,7 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
         }
     }
 
-    private func create(models: [Model], in context: NSManagedObjectContext) throws {
+    func create(models: [Model], in context: NSManagedObjectContext) throws {
         try models.forEach { (model) in
             let entityName = String(describing: U.self)
 
@@ -112,7 +113,7 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
         }
     }
 
-    private func delete(modelIds: [String], in context: NSManagedObjectContext) throws {
+    func delete(modelIds: [String], in context: NSManagedObjectContext) throws {
         try modelIds.forEach { (modelId) in
             let entityName = String(describing: U.self)
             let fetchRequest = NSFetchRequest<U>(entityName: entityName)
@@ -134,7 +135,7 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
         }
     }
 
-    private func deleteAll(in context: NSManagedObjectContext) throws {
+    func deleteAll(in context: NSManagedObjectContext) throws {
         let entityName = String(describing: U.self)
         let fetchRequest = NSFetchRequest<U>(entityName: entityName)
         fetchRequest.includesPropertyValues = false
@@ -147,7 +148,7 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
         }
     }
 
-    private func call<T>(block: @escaping (T, Error?) -> Void, model: T, error: Error?, queue: DispatchQueue?) {
+    func call<T>(block: @escaping (T, Error?) -> Void, model: T, error: Error?, queue: DispatchQueue?) {
         if let queue = queue {
             queue.async {
                 block(model, error)
@@ -157,234 +158,13 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
         }
     }
 
-    private func call(block: @escaping (Error?) -> Void, error: Error?, queue: DispatchQueue?) {
+    func call(block: @escaping (Error?) -> Void, error: Error?, queue: DispatchQueue?) {
         if let queue = queue {
             queue.async {
                 block(error)
             }
         } else {
             block(error)
-        }
-    }
-}
-
-extension CoreDataRepository {
-    public func fetch(by modelId: String,
-                      runCompletionIn queue: DispatchQueue?,
-                      executing block: @escaping (Model?, Error?) -> Void) {
-
-        databaseService.performAsync { [weak self] (optionalContext, optionalError) in
-            guard let strongSelf = self else {
-                return
-            }
-
-            if let context = optionalContext {
-                do {
-                    let entityName = String(describing: U.self)
-                    let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-                    var predicate = NSPredicate(format: "%K == %@",
-                                                strongSelf.dataMapper.entityIdentifierFieldName,
-                                                modelId)
-
-                    if let filter = strongSelf.filter {
-                        predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filter, predicate])
-                    }
-
-                    fetchRequest.predicate = predicate
-
-                    let entities = try context.fetch(fetchRequest)
-
-                    if let entity = entities.first {
-                        let model = try strongSelf.dataMapper.transform(entity: entity)
-
-                        strongSelf.call(block: block, model: model, error: nil, queue: queue)
-                    } else {
-                        strongSelf.call(block: block, model: nil, error: nil, queue: queue)
-                    }
-                } catch {
-                    strongSelf.call(block: block, model: nil, error: error, queue: queue)
-                }
-            } else {
-                strongSelf.call(block: block, model: nil, error: optionalError, queue: queue)
-            }
-        }
-    }
-
-    public func fetchAll(runCompletionIn queue: DispatchQueue?,
-                         executing block: @escaping ([Model]?, Error?) -> Void) {
-
-        databaseService.performAsync { [weak self] (optionalContext, optionalError) in
-            guard let strongSelf = self else {
-                return
-            }
-
-            if let context = optionalContext {
-                do {
-                    let entityName = String(describing: U.self)
-                    let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-                    fetchRequest.predicate = strongSelf.filter
-
-                    if !strongSelf.sortDescriptors.isEmpty {
-                        fetchRequest.sortDescriptors = strongSelf.sortDescriptors
-                    }
-
-                    let entities = try context.fetch(fetchRequest)
-                    let models = try entities.map { try strongSelf.dataMapper.transform(entity: $0) }
-
-                    strongSelf.call(block: block, model: models, error: nil, queue: queue)
-
-                } catch {
-                    strongSelf.call(block: block, model: nil, error: error, queue: queue)
-                }
-            } else {
-                strongSelf.call(block: block, model: nil, error: optionalError, queue: queue)
-            }
-        }
-    }
-
-    public func fetch(offset: Int, count: Int, reversed: Bool,
-                      runCompletionIn queue: DispatchQueue?, executing block: @escaping ([Model]?, Error?) -> Void) {
-        databaseService.performAsync { [weak self] (optionalContext, optionalError) in
-            guard let strongSelf = self else {
-                return
-            }
-
-            if let context = optionalContext {
-                do {
-                    let entityName = String(describing: U.self)
-                    let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-                    fetchRequest.predicate = strongSelf.filter
-                    fetchRequest.fetchOffset = offset
-                    fetchRequest.fetchLimit = count
-
-                    var sortDescriptors = strongSelf.sortDescriptors
-
-                    if reversed {
-                        sortDescriptors = sortDescriptors.compactMap {
-                            $0.reversedSortDescriptor as? NSSortDescriptor
-                        }
-                    }
-
-                    if !sortDescriptors.isEmpty {
-                        fetchRequest.sortDescriptors = sortDescriptors
-                    }
-
-                    let entities = try context.fetch(fetchRequest)
-                    let models = try entities.map { try strongSelf.dataMapper.transform(entity: $0) }
-
-                    strongSelf.call(block: block, model: models, error: nil, queue: queue)
-
-                } catch {
-                    strongSelf.call(block: block, model: nil, error: error, queue: queue)
-                }
-            } else {
-                strongSelf.call(block: block, model: nil, error: optionalError, queue: queue)
-            }
-        }
-    }
-
-    public func save(updating updatedModels: [Model], deleting deletedIds: [String],
-                     runCompletionIn queue: DispatchQueue?,
-                     executing block: @escaping (Error?) -> Void) {
-
-        databaseService.performAsync { (optionalContext, optionalError) in
-
-            if let context = optionalContext {
-                do {
-                    try self.save(models: updatedModels, in: context)
-
-                    try self.delete(modelIds: deletedIds, in: context)
-
-                    try context.save()
-
-                    self.call(block: block, error: nil, queue: queue)
-
-                } catch {
-                    context.rollback()
-
-                    self.call(block: block, error: error, queue: queue)
-                }
-            } else {
-                self.call(block: block, error: optionalError, queue: queue)
-            }
-        }
-    }
-
-    public func replace(with newModels: [Model],
-                        runCompletionIn queue: DispatchQueue?,
-                        executing block: @escaping (Error?) -> Void) {
-        databaseService.performAsync { (optionalContext, optionalError) in
-            if let context = optionalContext {
-                do {
-                    try self.deleteAll(in: context)
-                    try self.create(models: newModels, in: context)
-
-                    try context.save()
-
-                    self.call(block: block, error: nil, queue: queue)
-
-                } catch {
-                    context.rollback()
-
-                    self.call(block: block, error: error, queue: queue)
-                }
-            } else {
-                self.call(block: block, error: optionalError, queue: queue)
-            }
-        }
-    }
-
-    public func fetchCount(runCompletionIn queue: DispatchQueue?,
-                           executing block: @escaping (Int?, Error?) -> Void) {
-        databaseService.performAsync { [weak self] (optionalContext, optionalError) in
-            guard let strongSelf = self else {
-                return
-            }
-
-            if let context = optionalContext {
-                do {
-                    let entityName = String(describing: U.self)
-                    let fetchRequest = NSFetchRequest<U>(entityName: entityName)
-                    fetchRequest.predicate = strongSelf.filter
-
-                    let count = try context.count(for: fetchRequest)
-
-                    strongSelf.call(block: block, model: count, error: nil, queue: queue)
-
-                } catch {
-                    context.rollback()
-
-                    strongSelf.call(block: block, model: nil, error: error, queue: queue)
-                }
-            } else {
-                strongSelf.call(block: block, model: nil, error: optionalError, queue: queue)
-            }
-        }
-    }
-
-    public func deleteAll(runCompletionIn queue: DispatchQueue?,
-                          executing block: @escaping (Error?) -> Void) {
-        databaseService.performAsync { [weak self] (optionalContext, optionalError) in
-            guard let strongSelf = self else {
-                return
-            }
-
-            if let context = optionalContext {
-                do {
-                    try strongSelf.deleteAll(in: context)
-
-                    try context.save()
-
-                    strongSelf.call(block: block, error: nil, queue: queue)
-
-                } catch {
-                    context.rollback()
-
-                    strongSelf.call(block: block, error: error, queue: queue)
-                }
-            } else {
-                strongSelf.call(block: block, error: optionalError, queue: queue)
-            }
         }
     }
 }

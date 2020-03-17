@@ -105,7 +105,8 @@ extension StreamableProvider: StreamableProviderProtocol {
                       count: Int,
                       synchronized: Bool,
                       with completionBlock: @escaping (Result<[Model], Error>?) -> Void) -> BaseOperation<[Model]> {
-        let operation = repository.fetchOperation(by: offset, count: count, reversed: false)
+        let sliceRequest = RepositorySliceRequest(offset: offset, count: count, reversed: false)
+        let operation = repository.fetchOperation(by: sliceRequest)
 
         operation.completionBlock = { [weak self] in
             if let result = operation.result,
@@ -142,7 +143,10 @@ extension StreamableProvider: StreamableProviderProtocol {
             let operation: BaseOperation<[Model]>
 
             if options.initialSize > 0 {
-                operation = self.repository.fetchOperation(by: 0, count: options.initialSize, reversed: false)
+                let sliceRequest = RepositorySliceRequest(offset: 0, count: options.initialSize,
+                                                          reversed: false)
+
+                operation = self.repository.fetchOperation(by: sliceRequest)
             } else {
                 operation = self.repository.fetchAllOperation()
             }

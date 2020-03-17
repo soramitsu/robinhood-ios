@@ -365,7 +365,8 @@ class CoreDataRepositoryTests: XCTestCase {
 
         let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
-        let fetchOperation = repository.fetchOperation(by: offset, count: count, reversed: reversed)
+        let sliceRequest = RepositorySliceRequest(offset: offset, count: count, reversed: reversed)
+        let fetchOperation = repository.fetchOperation(by: sliceRequest)
 
         fetchOperation.addDependency(saveOperation)
 

@@ -12,9 +12,10 @@ import Foundation
 public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepositoryProtocol {
     public typealias Model = T
 
-    private let _fetchByModelId: (String) -> BaseOperation<Model?>
-    private let _fetchAll: () -> BaseOperation<[Model]>
-    private let _fetchByOffsetCount: (Int, Int, Bool) -> BaseOperation<[Model]>
+    private let _fetchByModelId: (String, RepositoryFetchOptions) -> BaseOperation<Model?>
+    private let _fetchAll: (RepositoryFetchOptions) -> BaseOperation<[Model]>
+    private let _fetchByOffsetCount: (RepositorySliceRequest, RepositoryFetchOptions)
+    -> BaseOperation<[Model]>
     private let _save: (@escaping () throws -> [Model], @escaping () throws -> [String]) -> BaseOperation<Void>
     private let _replace: (@escaping () throws -> [Model]) -> BaseOperation<Void>
     private let _deleteAll: () -> BaseOperation<Void>
@@ -37,16 +38,18 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
         _fetchCount = repository.fetchCountOperation
     }
 
-    public func fetchOperation(by modelId: String) -> BaseOperation<T?> {
-        return _fetchByModelId(modelId)
+    public func fetchOperation(by modelId: String,
+                               options: RepositoryFetchOptions) -> BaseOperation<T?> {
+        return _fetchByModelId(modelId, options)
     }
 
-    public func fetchOperation(by offset: Int, count: Int, reversed: Bool) -> BaseOperation<[T]> {
-        return _fetchByOffsetCount(offset, count, reversed)
+    public func fetchOperation(by request: RepositorySliceRequest,
+                               options: RepositoryFetchOptions) -> BaseOperation<[T]> {
+        return _fetchByOffsetCount(request, options)
     }
 
-    public func fetchAllOperation() -> BaseOperation<[T]> {
-        return _fetchAll()
+    public func fetchAllOperation(with options: RepositoryFetchOptions) -> BaseOperation<[T]> {
+        return _fetchAll(options)
     }
 
     public func saveOperation(_ updateModelsBlock: @escaping () throws -> [T],

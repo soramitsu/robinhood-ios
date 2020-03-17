@@ -20,32 +20,35 @@ public protocol DataProviderRepositoryProtocol {
      *
      *  - parameters:
      *    - modelId: Identifier of the object to fetch.
+     *    - options: Options to define fetch logic and caching policy.
      *  - returns: Operation that results in an object or nil if there is
      *  no object with specified identifier.
      */
 
-    func fetchOperation(by modelId: String) -> BaseOperation<Model?>
+    func fetchOperation(by modelId: String,
+                        options: RepositoryFetchOptions) -> BaseOperation<Model?>
 
     /**
      *  Creates operation which fetches all objects.
      *
+     *  - parameters:
+     *    - options: Options to define fetch logic and caching policy.
      *  - returns: Operation that results in a list of objects.
      */
 
-    func fetchAllOperation() -> BaseOperation<[Model]>
+    func fetchAllOperation(with options: RepositoryFetchOptions) -> BaseOperation<[Model]>
 
     /**
      *  Creates operation which fetches subset of objects.
      *
      *  - parameters:
-     *      - offset: An offset to fetch objects from.
-     *      - count: Maximum amount of objects to fetch.
-     *      - reversed: Pass true if offset and count should be applied to the reversed list
-     *      of objects.
+     *      - request: Defines which slice to pick from the list of objects.
+     *      - options: Options to define fetch logic and caching policy.
      *  - returns: Operation that results in a list of objects.
      */
 
-    func fetchOperation(by offset: Int, count: Int, reversed: Bool) -> BaseOperation<[Model]>
+    func fetchOperation(by request: RepositorySliceRequest,
+                        options: RepositoryFetchOptions) -> BaseOperation<[Model]>
 
     /**
      *  Creates operation which persists changes to the list of objects.
@@ -84,6 +87,43 @@ public protocol DataProviderRepositoryProtocol {
      */
 
     func deleteAllOperation() -> BaseOperation<Void>
+}
+
+extension DataProviderRepositoryProtocol {
+    /**
+     *  Creates operation which fetches object by identifier.
+     *
+     *  - parameters:
+     *    - modelId: Identifier of the object to fetch.
+     *  - returns: Operation that results in an object or nil if there is
+     *  no object with specified identifier.
+     */
+
+    func fetchOperation(by modelId: String) -> BaseOperation<Model?> {
+        fetchOperation(by: modelId, options: RepositoryFetchOptions())
+    }
+
+    /**
+     *  Creates operation which fetches all objects.
+     *
+     *  - returns: Operation that results in a list of objects.
+     */
+
+    func fetchAllOperation() -> BaseOperation<[Model]> {
+        fetchAllOperation(with: RepositoryFetchOptions())
+    }
+
+    /**
+     *  Creates operation which fetches subset of objects.
+     *
+     *  - parameters:
+     *     - request: Defines which slice to pick from the list of objects.
+     *  - returns: Operation that results in a list of objects.
+     */
+
+    func fetchOperation(by request: RepositorySliceRequest) -> BaseOperation<[Model]> {
+        fetchOperation(by: request, options: RepositoryFetchOptions())
+    }
 }
 
 /**
