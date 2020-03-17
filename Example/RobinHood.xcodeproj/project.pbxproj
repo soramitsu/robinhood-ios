@@ -55,6 +55,7 @@
 		849E9C302420B5DE007FBA34 /* StreamableDataProviderObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849E9C2F2420B5DE007FBA34 /* StreamableDataProviderObserverTests.swift */; };
 		849E9C332420C895007FBA34 /* DataProviderObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849E9C322420C895007FBA34 /* DataProviderObserverTests.swift */; };
 		849E9C362420CB15007FBA34 /* SingleValueProviderObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849E9C352420CB15007FBA34 /* SingleValueProviderObserverTests.swift */; };
+		849E9C39242119D0007FBA34 /* ListDifferenceLimitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849E9C38242119D0007FBA34 /* ListDifferenceLimitTests.swift */; };
 		84AC1E7D235CF833000FB90A /* MessageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AC1E79235CF79F000FB90A /* MessageData.swift */; };
 		84AC1E7E235CF837000FB90A /* ChatData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AC1E7B235CF7EE000FB90A /* ChatData.swift */; };
 		84B1DEF6241CD397005EB822 /* OperationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B1DEF4241CD362005EB822 /* OperationManagerTests.swift */; };
@@ -125,6 +126,7 @@
 		849E9C2F2420B5DE007FBA34 /* StreamableDataProviderObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamableDataProviderObserverTests.swift; sourceTree = "<group>"; };
 		849E9C322420C895007FBA34 /* DataProviderObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviderObserverTests.swift; sourceTree = "<group>"; };
 		849E9C352420CB15007FBA34 /* SingleValueProviderObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleValueProviderObserverTests.swift; sourceTree = "<group>"; };
+		849E9C38242119D0007FBA34 /* ListDifferenceLimitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListDifferenceLimitTests.swift; sourceTree = "<group>"; };
 		84AC1E79235CF79F000FB90A /* MessageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageData.swift; sourceTree = "<group>"; };
 		84AC1E7B235CF7EE000FB90A /* ChatData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatData.swift; sourceTree = "<group>"; };
 		84B1DEF4241CD362005EB822 /* OperationManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperationManagerTests.swift; sourceTree = "<group>"; };
@@ -182,10 +184,10 @@
 		32384BDE2236F3D000346C90 /* DataProvider */ = {
 			isa = PBXGroup;
 			children = (
+				849E9C37242118D3007FBA34 /* ListDifferenceCalculator */,
 				849E9C342420CAE9007FBA34 /* SingleDataProvider */,
 				849E9C312420C874007FBA34 /* DataProvider */,
 				849E9C26241F65CA007FBA34 /* StreamableDataProvider */,
-				32384BE02236F3D000346C90 /* ListDifferenceCalculatorTests.swift */,
 				8425364122857D2E0044032B /* CoreDataContextObserverTests.swift */,
 				845238EE2382B49B00CEC1E5 /* CoreDataContextObserverNestedTests.swift */,
 			);
@@ -378,6 +380,15 @@
 				849E9C352420CB15007FBA34 /* SingleValueProviderObserverTests.swift */,
 			);
 			path = SingleDataProvider;
+			sourceTree = "<group>";
+		};
+		849E9C37242118D3007FBA34 /* ListDifferenceCalculator */ = {
+			isa = PBXGroup;
+			children = (
+				32384BE02236F3D000346C90 /* ListDifferenceCalculatorTests.swift */,
+				849E9C38242119D0007FBA34 /* ListDifferenceLimitTests.swift */,
+			);
+			path = ListDifferenceCalculator;
 			sourceTree = "<group>";
 		};
 		84B1DEF3241CD362005EB822 /* Operation */ = {
@@ -645,6 +656,7 @@
 				32384BF22236F3D000346C90 /* DataProviderInterfaceTests.swift in Sources */,
 				84014FA72243A73A00C35EFD /* CoreDataCompatibilityTests.swift in Sources */,
 				84830048235CF86B00D787C4 /* CDMessage+CoreDataDecodable.swift in Sources */,
+				849E9C39242119D0007FBA34 /* ListDifferenceLimitTests.swift in Sources */,
 				849E9C302420B5DE007FBA34 /* StreamableDataProviderObserverTests.swift in Sources */,
 				8483004E235D051E00D787C4 /* NestedEntitiesTests.swift in Sources */,
 				32384BFB2236F3D000346C90 /* NetworkOperationTests.swift in Sources */,
