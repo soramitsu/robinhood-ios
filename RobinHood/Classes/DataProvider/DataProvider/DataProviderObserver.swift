@@ -25,3 +25,13 @@ public struct DataProviderObserver<T, P> {
         self.failureBlock = failureBlock
     }
 }
+
+struct DataProviderPendingObserver<T> {
+    private(set) weak var observer: AnyObject?
+    private(set) var operation: BaseOperation<T>?
+
+    init(observer: AnyObject, operation: BaseOperation<T>) {
+        self.observer = observer
+        self.operation = operation
+    }
+}

@@ -33,6 +33,7 @@ public final class DataProvider<T: Identifiable & Equatable> {
     public private(set) var syncQueue: DispatchQueue
 
     var observers: [DataProviderObserver<T, DataProviderObserverOptions>] = []
+    var pendingObservers: [DataProviderPendingObserver<[T]>] = []
     var lastSyncOperation: Operation?
     var repositoryUpdateOperation: Operation?
 

@@ -5,6 +5,58 @@
 
 import Foundation
 
+extension SingleValueProvider {
+    func isAlreadyAdded(observer: AnyObject) -> Bool {
+        pendingObservers.contains(where: { $0.observer === observer}) ||
+        observers.contains(where: { $0.observer === observer })
+    }
+
+    private func completeAdd(observer: AnyObject,
+                             deliverOn queue: DispatchQueue?,
+                             executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
+                             failing failureBlock: @escaping (Error) -> Void,
+                             options: DataProviderObserverOptions) {
+        guard
+            let pending = pendingObservers.first(where: { $0.observer === observer }),
+            let result = pending.operation?.result else {
+            dispatchInQueueWhenPossible(queue) {
+                failureBlock(DataProviderError.dependencyCancelled)
+            }
+
+            return
+        }
+
+        pendingObservers = pendingObservers.filter { $0.observer != nil && $0.observer !== observer }
+
+        switch result {
+        case .success(let optionalEntity):
+            let repositoryObserver = DataProviderObserver(observer: observer,
+                                                          queue: queue,
+                                                          updateBlock: updateBlock,
+                                                          failureBlock: failureBlock,
+                                                          options: options)
+            self.observers.append(repositoryObserver)
+
+            self.updateTrigger.receive(event: .addObserver(observer))
+
+            var updates: [DataProviderChange<T>] = []
+
+            if let entity = optionalEntity,
+                let model = try? self.decoder.decode(T.self, from: entity.payload) {
+                updates.append(DataProviderChange.insert(newItem: model))
+            }
+
+            dispatchInQueueWhenPossible(queue) {
+                updateBlock(updates)
+            }
+        case .failure(let error):
+            dispatchInQueueWhenPossible(queue) {
+                failureBlock(error)
+            }
+        }
+    }
+}
+
 extension SingleValueProvider: SingleValueProviderProtocol {
     public func fetch(with completionBlock: ((Result<T?, Error>?) -> Void)?) -> BaseOperation<T?> {
         let repositoryOperation = repository.fetchOperation(by: targetIdentifier)
@@ -52,44 +104,26 @@ extension SingleValueProvider: SingleValueProviderProtocol {
         syncQueue.async {
             self.observers = self.observers.filter { $0.observer != nil }
 
+            if self.isAlreadyAdded(observer: observer) {
+                dispatchInQueueWhenPossible(queue) {
+                    failureBlock(DataProviderError.observerAlreadyAdded)
+                }
+                return
+            }
+
             let repositoryOperation = self.repository.fetchOperation(by: self.targetIdentifier)
 
+            let pending = DataProviderPendingObserver(observer: observer,
+                                                      operation: repositoryOperation)
+            self.pendingObservers.append(pending)
+
             repositoryOperation.completionBlock = {
-                guard let result = repositoryOperation.result else {
-                    dispatchInQueueWhenPossible(queue) {
-                        failureBlock(DataProviderError.dependencyCancelled)
-                    }
-
-                    return
-                }
-
-                switch result {
-                case .success(let optionalEntity):
-                    self.syncQueue.async {
-                        let repositoryObserver = DataProviderObserver(observer: observer,
-                                                                      queue: queue,
-                                                                      updateBlock: updateBlock,
-                                                                      failureBlock: failureBlock,
-                                                                      options: options)
-                        self.observers.append(repositoryObserver)
-
-                        self.updateTrigger.receive(event: .addObserver(observer))
-
-                        var updates: [DataProviderChange<T>] = []
-
-                        if let entity = optionalEntity,
-                            let model = try? self.decoder.decode(T.self, from: entity.payload) {
-                            updates.append(DataProviderChange.insert(newItem: model))
-                        }
-
-                        dispatchInQueueWhenPossible(queue) {
-                            updateBlock(updates)
-                        }
-                    }
-                case .failure(let error):
-                    dispatchInQueueWhenPossible(queue) {
-                        failureBlock(error)
-                    }
+                self.syncQueue.async {
+                    self.completeAdd(observer: observer,
+                                     deliverOn: queue,
+                                     executing: updateBlock,
+                                     failing: failureBlock,
+                                     options: options)
                 }
             }
 
@@ -107,6 +141,13 @@ extension SingleValueProvider: SingleValueProviderProtocol {
 
     public func removeObserver(_ observer: AnyObject) {
         syncQueue.async {
+            if let pending = self.pendingObservers.first(where: { $0.observer === observer }) {
+                pending.operation?.cancel()
+            }
+
+            self.pendingObservers = self.pendingObservers
+                .filter { $0.observer != nil && $0.observer !== observer }
+
             self.observers = self.observers.filter { $0.observer !== observer && $0.observer != nil}
 
             self.updateTrigger.receive(event: .removeObserver(observer))
