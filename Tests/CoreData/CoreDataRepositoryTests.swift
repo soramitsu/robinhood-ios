@@ -304,6 +304,55 @@ class CoreDataRepositoryTests: XCTestCase {
         XCTAssertTrue(fetchedObjects.isEmpty)
     }
 
+    func testCountFetch() throws {
+        let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
+        let operationQueue = OperationQueue()
+
+        let expectedCount = 10
+        let sourceObjects = (0..<expectedCount).map { _ in createRandomFeed(in: .default) }
+
+        let saveOperation = repository.saveOperation( { sourceObjects }, { [] })
+        let totalCountOperation = repository.fetchCountOperation()
+
+        totalCountOperation.addDependency(saveOperation)
+
+        operationQueue.addOperations([saveOperation, totalCountOperation], waitUntilFinished: true)
+
+        let count = try totalCountOperation
+            .extractResultData(throwing: BaseOperationError.parentOperationCancelled)
+
+        XCTAssertEqual(expectedCount, count)
+    }
+
+    func testReplace() throws {
+        let repository: CoreDataRepository<FeedData, CDFeed> = CoreDataRepositoryFacade.shared.createCoreDataRepository()
+        let operationQueue = OperationQueue()
+
+        let expectedCount = 10
+        let initialObjects = (0..<expectedCount).map { _ in createRandomFeed(in: .default) }
+
+        let saveOperation = repository.saveOperation({ initialObjects }, { [] })
+
+        operationQueue.addOperations([saveOperation], waitUntilFinished: true)
+
+        let replacedObjects = (0..<expectedCount)
+            .map { _ in createRandomFeed(in: .default) }
+            .sorted { $0.name > $1.name }
+
+        let replaceOperation = repository.replaceOperation({ replacedObjects })
+
+        operationQueue.addOperations([replaceOperation], waitUntilFinished: true)
+
+        let fetchAllOperation = repository.fetchAllOperation()
+        operationQueue.addOperations([fetchAllOperation], waitUntilFinished: true)
+
+        let resultObjects = try fetchAllOperation
+            .extractResultData(throwing: BaseOperationError.parentOperationCancelled)
+            .sorted { $0.name > $1.name }
+
+        XCTAssertEqual(replacedObjects, resultObjects)
+    }
+
     // MARK: Private
 
     private func performTestSaveFetch(offset: Int, count: Int, reversed: Bool, objectsCount: Int = 10) {
@@ -316,7 +365,8 @@ class CoreDataRepositoryTests: XCTestCase {
 
         let saveOperation = repository.saveOperation({ sourceObjects }, { [] })
 
-        let fetchOperation = repository.fetchOperation(by: offset, count: count, reversed: reversed)
+        let sliceRequest = RepositorySliceRequest(offset: offset, count: count, reversed: reversed)
+        let fetchOperation = repository.fetchOperation(by: sliceRequest)
 
         fetchOperation.addDependency(saveOperation)
 

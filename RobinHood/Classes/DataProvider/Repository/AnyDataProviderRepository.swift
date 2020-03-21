@@ -12,11 +12,14 @@ import Foundation
 public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepositoryProtocol {
     public typealias Model = T
 
-    private let _fetchByModelId: (String) -> BaseOperation<Model?>
-    private let _fetchAll: () -> BaseOperation<[Model]>
-    private let _fetchByOffsetCount: (Int, Int, Bool) -> BaseOperation<[Model]>
+    private let _fetchByModelId: (String, RepositoryFetchOptions) -> BaseOperation<Model?>
+    private let _fetchAll: (RepositoryFetchOptions) -> BaseOperation<[Model]>
+    private let _fetchByOffsetCount: (RepositorySliceRequest, RepositoryFetchOptions)
+    -> BaseOperation<[Model]>
     private let _save: (@escaping () throws -> [Model], @escaping () throws -> [String]) -> BaseOperation<Void>
+    private let _replace: (@escaping () throws -> [Model]) -> BaseOperation<Void>
     private let _deleteAll: () -> BaseOperation<Void>
+    private let _fetchCount: () -> BaseOperation<Int>
 
     /**
      *  Initializes type erasure wrapper for repository implementation.
@@ -30,19 +33,23 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
         _fetchAll = repository.fetchAllOperation
         _fetchByOffsetCount = repository.fetchOperation
         _save = repository.saveOperation
+        _replace = repository.replaceOperation
         _deleteAll = repository.deleteAllOperation
+        _fetchCount = repository.fetchCountOperation
     }
 
-    public func fetchOperation(by modelId: String) -> BaseOperation<T?> {
-        return _fetchByModelId(modelId)
+    public func fetchOperation(by modelId: String,
+                               options: RepositoryFetchOptions) -> BaseOperation<T?> {
+        return _fetchByModelId(modelId, options)
     }
 
-    public func fetchOperation(by offset: Int, count: Int, reversed: Bool) -> BaseOperation<[T]> {
-        return _fetchByOffsetCount(offset, count, reversed)
+    public func fetchOperation(by request: RepositorySliceRequest,
+                               options: RepositoryFetchOptions) -> BaseOperation<[T]> {
+        return _fetchByOffsetCount(request, options)
     }
 
-    public func fetchAllOperation() -> BaseOperation<[T]> {
-        return _fetchAll()
+    public func fetchAllOperation(with options: RepositoryFetchOptions) -> BaseOperation<[T]> {
+        return _fetchAll(options)
     }
 
     public func saveOperation(_ updateModelsBlock: @escaping () throws -> [T],
@@ -50,7 +57,15 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
         return _save(updateModelsBlock, deleteIdsBlock)
     }
 
+    public func replaceOperation(_ newModelsBlock: @escaping () throws -> [T]) -> BaseOperation<Void> {
+        return _replace(newModelsBlock)
+    }
+
     public func deleteAllOperation() -> BaseOperation<Void> {
         return _deleteAll()
+    }
+
+    public func fetchCountOperation() -> BaseOperation<Int> {
+        return _fetchCount()
     }
 }

@@ -78,3 +78,95 @@ public struct DataProviderObserverOptions {
         self.waitsInProgressSyncOnAdd = waitsInProgressSyncOnAdd
     }
 }
+
+/**
+ *  Struct designed to store options needed to describe how an observer should be handled by streamable
+ *  data provider.
+ */
+
+public struct StreamableProviderObserverOptions {
+    /// Asks data provider to notify observer in any case after synchronization completes.
+    /// If this value is `false` (default value) then observer is only notified when
+    /// there are changes after synchronization.
+    public var alwaysNotifyOnRefresh: Bool
+
+    /// Asks data provider to wait until any in progress synchronization completes before adding the observer.
+    /// By default the value is `true`.
+    /// - note: Passing `false` may significantly improve performance however may also introduce inconsitency
+    /// between observer's local data and persistent data if a repository
+    /// doesn't have any synchronization mechanism.
+    public var waitsInProgressSyncOnAdd: Bool
+
+    /// Number of items to fetch from local store and return in update block call after
+    /// observer successfully added.
+    /// Bu default the value is ```0```.
+    /// - note: If the value is less or equal to zero than all existing objects are fetched.
+    public var initialSize: Int
+
+    /// - parameters:
+    ///    - alwaysNotifyOnRefresh: Asks data provider to notify observer in any case after synchronization completes.
+    ///    Default value is `false`.
+    ///
+    ///    - waitsInProgressSyncOnAdd: Asks data provider to wait until any in progress synchronization
+    ///    completes before adding the observer. Default value is `true`. Passing `false` may significantly
+    ///    improve performance however may also introduce inconsitency between observer's local data and
+    ///    persistent data if a repository doesn't have any synchronization mechanism.
+    ///
+    ///    - initialSize: Number of items to fetch from local store and return in update block call after
+    ///     observer successfully added. If the value is less or equal to zero than all
+    ///     existing objects are fetched.
+
+    public init(alwaysNotifyOnRefresh: Bool = false,
+                waitsInProgressSyncOnAdd: Bool = true,
+                initialSize: Int = 0) {
+        self.alwaysNotifyOnRefresh = alwaysNotifyOnRefresh
+        self.waitsInProgressSyncOnAdd = waitsInProgressSyncOnAdd
+        self.initialSize = initialSize
+    }
+}
+
+/**
+ *  Struct is designed to store options applied for fetch request from a repository.
+ */
+
+public struct RepositoryFetchOptions {
+    /**
+     *  If ```false``` properties are fetched when they are directly accessed
+     *  (for example, when an entity is transformed to app model), otherwise all
+     *  properties are fetched and cached. By default ```true```.
+     */
+    let includesProperties: Bool
+
+    /**
+     *  If ```false``` subentities are fetched when they are directly accessed
+     *  (for example, when an entity is transformed to app model), otherwise all
+     *  subentities are fetched and cached. By default ```true```.
+     */
+    let includesSubentities: Bool
+
+    public init(includesProperties: Bool = true, includesSubentities: Bool = true) {
+        self.includesProperties = includesProperties
+        self.includesSubentities = includesSubentities
+    }
+}
+
+/**
+ *  Struct is designed to request part of the list of objects from repository.
+ */
+
+public struct RepositorySliceRequest {
+    /**
+     *  Offset of the slice the list of objects
+     */
+    let offset: Int
+
+    /**
+     *  Maximum number of objects to fetch
+     */
+    let count: Int
+
+    /**
+     *  If ```true``` the objects in the slice is in reversed order.
+     */
+    let reversed: Bool
+}

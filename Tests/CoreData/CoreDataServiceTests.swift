@@ -18,6 +18,7 @@ class CoreDataServiceTests: XCTestCase {
 
     override func tearDown() {
         try! databaseService.close()
+        try! databaseService.drop()
 
         super.tearDown()
     }
@@ -30,7 +31,7 @@ class CoreDataServiceTests: XCTestCase {
         let expectation = XCTestExpectation()
         expectation.expectedFulfillmentCount = invocationsCount
 
-        guard case .initial = databaseService.setupState else {
+        guard databaseService.context == nil else {
             XCTFail()
             return
         }
@@ -43,17 +44,11 @@ class CoreDataServiceTests: XCTestCase {
             }
         }
 
-        guard case .inprogress = databaseService.setupState else {
-            XCTFail()
-            return
-        }
-
         // then
-        XCTAssertEqual(databaseService.pendingInvocations.count, invocationsCount)
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        guard case .completed = databaseService.setupState else {
+        guard databaseService.context != nil else {
             XCTFail()
             return
         }
@@ -82,7 +77,7 @@ class CoreDataServiceTests: XCTestCase {
         // then
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        guard case .completed = databaseService.setupState else {
+        guard databaseService.context != nil else {
             XCTFail()
             return
         }
@@ -116,7 +111,6 @@ class CoreDataServiceTests: XCTestCase {
         }
 
         // then
-        XCTAssertEqual(databaseService.pendingInvocations.count, 0)
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
     }
@@ -140,11 +134,6 @@ class CoreDataServiceTests: XCTestCase {
 
         // then
         XCTAssertNil(databaseService.context)
-
-        guard case .initial = databaseService.setupState else {
-            XCTFail()
-            return
-        }
     }
 
     func testCloseOnSetup() {
@@ -156,14 +145,11 @@ class CoreDataServiceTests: XCTestCase {
             expectation.fulfill()
         }
 
-        guard case .inprogress = databaseService.setupState else {
-            XCTFail()
-            return
-        }
-
-        XCTAssertThrowsError(try databaseService.close())
+        XCTAssertNoThrow(try databaseService.close())
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
+
+        XCTAssertNil(databaseService.context)
     }
 
     func testSuccessfullDrop() {

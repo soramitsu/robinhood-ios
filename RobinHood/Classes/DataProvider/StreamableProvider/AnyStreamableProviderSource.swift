@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// Closure to receive history request callback from streamable data source.
-public typealias AnyStreamableFetchHistoryBlock = (Int, Int, DispatchQueue?, ((Result<Int, Error>?) -> Void)?) -> Void
+/// Closure to execute history fetch request
+public typealias AnyStreamableSourceFetchBlock = (DispatchQueue?, ((Result<Int, Error>?) -> Void)?) -> Void
 
 /**
  *  Type erasure implementation of `StreamableSourceProtocol` protocol. It should be used
@@ -17,7 +17,8 @@ public typealias AnyStreamableFetchHistoryBlock = (Int, Int, DispatchQueue?, ((R
 public final class AnyStreamableSource<T: Identifiable>: StreamableSourceProtocol {
     public typealias Model = T
 
-    private let _fetchHistory: AnyStreamableFetchHistoryBlock
+    private let _fetchHistory: AnyStreamableSourceFetchBlock
+    private let _refresh: AnyStreamableSourceFetchBlock
 
     /**
      *  Initializes type erasure wrapper for streamable source implementation.
@@ -28,6 +29,7 @@ public final class AnyStreamableSource<T: Identifiable>: StreamableSourceProtoco
 
     public init<U: StreamableSourceProtocol>(_ source: U) where U.Model == Model {
         _fetchHistory = source.fetchHistory
+        _refresh = source.refresh
     }
 
     /**
@@ -35,14 +37,22 @@ public final class AnyStreamableSource<T: Identifiable>: StreamableSourceProtoco
      *
      *  - parameters:
      *    - fetchHistory: Closure to request history from streamable remote source.
+     *    - refresh: Closure to request refresh operation from streamable remote source.
      */
 
-    public init(fetchHistory: @escaping AnyStreamableFetchHistoryBlock) {
+    public init(fetchHistory: @escaping AnyStreamableSourceFetchBlock,
+                refresh: @escaping AnyStreamableSourceFetchBlock) {
         _fetchHistory = fetchHistory
+        _refresh = refresh
     }
 
-    public func fetchHistory(offset: Int, count: Int, runningIn queue: DispatchQueue?,
+    public func fetchHistory(runningIn queue: DispatchQueue?,
                              commitNotificationBlock: ((Result<Int, Error>?) -> Void)?) {
-        _fetchHistory(offset, count, queue, commitNotificationBlock)
+        _fetchHistory(queue, commitNotificationBlock)
+    }
+
+    public func refresh(runningIn queue: DispatchQueue?,
+                        commitNotificationBlock: ((Result<Int, Error>?) -> Void)?) {
+        _refresh(queue, commitNotificationBlock)
     }
 }

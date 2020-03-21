@@ -11,25 +11,21 @@ public final class StreamableProvider<T: Identifiable> {
     let source: AnyStreamableSource<T>
     let repository: AnyDataProviderRepository<T>
     let observable: AnyDataProviderRepositoryObservable<T>
-    let operationQueue: OperationQueue
+    let operationManager: OperationManagerProtocol
     let processingQueue: DispatchQueue
 
-    var observers: [DataProviderObserver<T>] = []
+    var observers: [DataProviderObserver<T, StreamableProviderObserverOptions>] = []
+    var pendingObservers: [DataProviderPendingObserver<[T]>] = []
 
     public init(source: AnyStreamableSource<T>,
                 repository: AnyDataProviderRepository<T>,
                 observable: AnyDataProviderRepositoryObservable<T>,
-                operationQueue: OperationQueue? = nil,
+                operationManager: OperationManagerProtocol,
                 serialQueue: DispatchQueue? = nil) {
         self.source = source
         self.repository = repository
         self.observable = observable
-
-        if let currentExecutionQueue = operationQueue {
-            self.operationQueue = currentExecutionQueue
-        } else {
-            self.operationQueue = OperationQueue()
-        }
+        self.operationManager = operationManager
 
         if let currentProcessingQueue = serialQueue {
             self.processingQueue = currentProcessingQueue
@@ -50,10 +46,8 @@ public final class StreamableProvider<T: Identifiable> {
         observable.removeObserver(self)
     }
 
-    private func fetchHistory(offset: Int, count: Int, completionBlock: ((Result<Int, Error>?) -> Void)?) {
-        source.fetchHistory(offset: offset,
-                            count: count,
-                            runningIn: processingQueue,
+    private func fetchHistory(completionBlock: ((Result<Int, Error>?) -> Void)?) {
+        source.fetchHistory(runningIn: processingQueue,
                             commitNotificationBlock: completionBlock)
     }
 
@@ -95,14 +89,77 @@ public final class StreamableProvider<T: Identifiable> {
             }
         }
     }
+
+    private func isAlreadyAdded(observer: AnyObject) -> Bool {
+        pendingObservers.contains(where: { $0.observer === observer}) ||
+        observers.contains(where: { $0.observer === observer })
+    }
+
+    private func completeAdd(observer: AnyObject,
+                             deliverOn queue: DispatchQueue,
+                             executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
+                             failing failureBlock: @escaping (Error) -> Void,
+                             options: StreamableProviderObserverOptions) {
+        guard
+            let pending = pendingObservers.first(where: { $0.observer === observer }),
+            let result = pending.operation?.result else {
+            dispatchInQueueWhenPossible(queue) {
+                failureBlock(DataProviderError.dependencyCancelled)
+            }
+
+            return
+        }
+
+        pendingObservers = self.pendingObservers
+            .filter { $0.observer != nil && $0.observer !== observer}
+
+        switch result {
+        case .success(let items):
+            let shouldObserveSource = self.observers.isEmpty
+
+            self.observers = self.observers.filter { $0.observer != nil }
+
+            let repositoryObserver = DataProviderObserver(observer: observer,
+                                                          queue: queue,
+                                                          updateBlock: updateBlock,
+                                                          failureBlock: failureBlock,
+                                                          options: options)
+            self.observers.append(repositoryObserver)
+
+            let updates = items.map { DataProviderChange<T>.insert(newItem: $0) }
+
+            dispatchInQueueWhenPossible(queue) {
+                updateBlock(updates)
+            }
+
+            if shouldObserveSource {
+                self.startObservingSource()
+            }
+        case .failure(let error):
+            dispatchInQueueWhenPossible(queue) {
+                failureBlock(error)
+            }
+        }
+    }
 }
 
 extension StreamableProvider: StreamableProviderProtocol {
     public typealias Model = T
 
-    public func fetch(offset: Int, count: Int,
+    public func refresh() {
+        source.refresh(runningIn: processingQueue) { [weak self] result in
+            if let result = result {
+                self?.notifyObservers(with: result)
+            }
+        }
+    }
+
+    public func fetch(offset: Int,
+                      count: Int,
+                      synchronized: Bool,
                       with completionBlock: @escaping (Result<[Model], Error>?) -> Void) -> BaseOperation<[Model]> {
-        let operation = repository.fetchOperation(by: offset, count: count, reversed: false)
+        let sliceRequest = RepositorySliceRequest(offset: offset, count: count, reversed: false)
+        let operation = repository.fetchOperation(by: sliceRequest)
 
         operation.completionBlock = { [weak self] in
             if let result = operation.result,
@@ -115,15 +172,17 @@ extension StreamableProvider: StreamableProviderProtocol {
                     }
                 }
 
-                self?.fetchHistory(offset: offset + models.count,
-                                   count: count - models.count,
-                                   completionBlock: completionBlock)
+                self?.fetchHistory(completionBlock: completionBlock)
             }
 
             completionBlock(operation.result)
         }
 
-        operationQueue.addOperation(operation)
+        if synchronized {
+            operationManager.enqueue(operations: [operation], in: .sync)
+        } else {
+            operationManager.enqueue(operations: [operation], in: .transient)
+        }
 
         return operation
     }
@@ -132,30 +191,62 @@ extension StreamableProvider: StreamableProviderProtocol {
                             deliverOn queue: DispatchQueue,
                             executing updateBlock: @escaping ([DataProviderChange<Model>]) -> Void,
                             failing failureBlock: @escaping (Error) -> Void,
-                            options: DataProviderObserverOptions) {
+                            options: StreamableProviderObserverOptions) {
         processingQueue.async {
-            let shouldObserveSource = self.observers.isEmpty
-
             self.observers = self.observers.filter { $0.observer != nil }
 
-            if !self.observers.contains(where: { $0.observer === observer }) {
-                let observerWrapper = DataProviderObserver(observer: observer,
-                                                           queue: queue,
-                                                           updateBlock: updateBlock,
-                                                           failureBlock: failureBlock,
-                                                           options: options)
-                self.observers.append(observerWrapper)
+            if self.isAlreadyAdded(observer: observer) {
+                dispatchInQueueWhenPossible(queue) {
+                    failureBlock(DataProviderError.observerAlreadyAdded)
+                }
+
+                return
             }
 
-            if shouldObserveSource {
-                self.startObservingSource()
+            let operation: BaseOperation<[Model]>
+
+            if options.initialSize > 0 {
+                let sliceRequest = RepositorySliceRequest(offset: 0, count: options.initialSize,
+                                                          reversed: false)
+
+                operation = self.repository.fetchOperation(by: sliceRequest)
+            } else {
+                operation = self.repository.fetchAllOperation()
+            }
+
+            let pending = DataProviderPendingObserver(observer: observer,
+                                                      operation: operation)
+            self.pendingObservers.append(pending)
+
+            operation.completionBlock = {
+                self.processingQueue.async {
+                    self.completeAdd(observer: observer,
+                                     deliverOn: queue,
+                                     executing: updateBlock,
+                                     failing: failureBlock,
+                                     options: options)
+                }
+            }
+
+            if options.waitsInProgressSyncOnAdd {
+                self.operationManager.enqueue(operations: [operation], in: .sync)
+            } else {
+                self.operationManager.enqueue(operations: [operation], in: .transient)
             }
         }
     }
 
     public func removeObserver(_ observer: AnyObject) {
         processingQueue.async {
-            let wasObservingSource = self.observers.count > 0
+
+            if let pending = self.pendingObservers.first(where: { $0.observer === observer }) {
+                pending.operation?.cancel()
+            }
+
+            self.pendingObservers = self.pendingObservers
+                .filter { $0.observer != nil && $0.observer !== observer }
+
+            let wasObservingSource = !self.observers.isEmpty
             self.observers = self.observers.filter { $0.observer != nil && $0.observer !== observer }
 
             if wasObservingSource, self.observers.isEmpty {

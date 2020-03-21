@@ -6,14 +6,16 @@
 import Foundation
 
 extension CoreDataRepository: DataProviderRepositoryProtocol {
-    public func fetchOperation(by modelId: String) -> BaseOperation<Model?> {
-        return ClosureOperation {
+    public func fetchOperation(by modelId: String,
+                               options: RepositoryFetchOptions) -> BaseOperation<Model?> {
+        ClosureOperation {
             var model: Model?
             var error: Error?
 
             let semaphore = DispatchSemaphore(value: 0)
 
             self.fetch(by: modelId,
+                       options: options,
                        runCompletionIn: nil) { (optionalModel, optionalError) in
                         model = optionalModel
                         error = optionalError
@@ -35,14 +37,15 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
         }
     }
 
-    public func fetchAllOperation() -> BaseOperation<[Model]> {
-        return ClosureOperation {
+    public func fetchAllOperation(with options: RepositoryFetchOptions) -> BaseOperation<[Model]> {
+        ClosureOperation {
             var models: [Model]?
             var error: Error?
 
             let semaphore = DispatchSemaphore(value: 0)
 
-            self.fetchAll(runCompletionIn: nil) { (optionalModels, optionalError) in
+            self.fetchAll(with: options,
+                          runCompletionIn: nil) { (optionalModels, optionalError) in
                 models = optionalModels
                 error = optionalError
 
@@ -63,15 +66,17 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
         }
     }
 
-    public func fetchOperation(by offset: Int, count: Int, reversed: Bool) -> BaseOperation<[Model]> {
-        return ClosureOperation {
+    public func fetchOperation(by request: RepositorySliceRequest,
+                               options: RepositoryFetchOptions) -> BaseOperation<[Model]> {
+        ClosureOperation {
             var models: [Model]?
             var error: Error?
 
             let semaphore = DispatchSemaphore(value: 0)
 
-            self.fetch(offset: offset, count: count,
-                       reversed: reversed, runCompletionIn: nil) { (optionalModels, optionalError) in
+            self.fetch(request: request,
+                       options: options,
+                       runCompletionIn: nil) { (optionalModels, optionalError) in
                         models = optionalModels
                         error = optionalError
 
@@ -94,7 +99,7 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
 
     public func saveOperation(_ updateModelsBlock: @escaping () throws -> [Model],
                               _ deleteIdsBlock: @escaping () throws -> [String]) -> BaseOperation<Void> {
-        return ClosureOperation {
+        ClosureOperation {
             var error: Error?
 
             let updatedModels = try updateModelsBlock()
@@ -121,8 +126,59 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
         }
     }
 
+    public func replaceOperation(_ newModelsBlock: @escaping () throws -> [Model])
+        -> BaseOperation<Void> {
+        ClosureOperation {
+            var error: Error?
+
+            let models = try newModelsBlock()
+
+            let semaphore = DispatchSemaphore(value: 0)
+
+            self.replace(with: models, runCompletionIn: nil) { optionalError in
+                error = optionalError
+
+                semaphore.signal()
+            }
+
+            semaphore.wait()
+
+            if let existingError = error {
+                throw existingError
+            }
+        }
+    }
+
+    public func fetchCountOperation() -> BaseOperation<Int> {
+        ClosureOperation {
+            var count: Int?
+            var error: Error?
+
+            let semaphore = DispatchSemaphore(value: 0)
+
+            self.fetchCount(runCompletionIn: nil) { (optionalCount, optionalError) in
+                count = optionalCount
+                error = optionalError
+
+                semaphore.signal()
+            }
+
+            semaphore.wait()
+
+            if let count = count {
+                return count
+            }
+
+            if let existingError = error {
+                throw existingError
+            } else {
+                throw CoreDataRepositoryError.undefined
+            }
+        }
+    }
+
     public func deleteAllOperation() -> BaseOperation<Void> {
-        return ClosureOperation {
+        ClosureOperation {
             var error: Error?
 
             let semaphore = DispatchSemaphore(value: 0)

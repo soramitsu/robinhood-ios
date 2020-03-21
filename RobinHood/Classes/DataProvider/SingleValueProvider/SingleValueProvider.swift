@@ -49,7 +49,8 @@ public final class SingleValueProvider<T: Codable & Equatable> {
     /// Identifier of the object to manage.
     public private(set) var targetIdentifier: String
 
-    var observers: [DataProviderObserver<T>] = []
+    var observers: [DataProviderObserver<T, DataProviderObserverOptions>] = []
+    var pendingObservers: [DataProviderPendingObserver<SingleValueProviderObject?>] = []
     var lastSyncOperation: Operation?
     var repositoryUpdateOperation: Operation?
 

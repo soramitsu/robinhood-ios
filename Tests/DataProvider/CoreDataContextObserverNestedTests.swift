@@ -1,5 +1,10 @@
+/**
+* Copyright Soramitsu Co., Ltd. All Rights Reserved.
+* SPDX-License-Identifier: GPL 3.0
+*/
+
 import XCTest
-import RobinHood
+@testable import RobinHood
 
 class CoreDataContextObserverNestedTests: XCTestCase {
     func testNotificationDeliveredWhenSeveralItemsUpdated() {

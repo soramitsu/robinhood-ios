@@ -44,6 +44,16 @@ public protocol ListDifferenceCalculatorProtocol {
     typealias ListDifferenceSortBlock = (Model, Model) -> Bool
 
     /**
+     *  Maximum number of objects that the calculator must maintain. If this value
+     *  is zero than no constraints are applied.
+     *
+     *  - note: For objects which are exlicitly removed due to the constraint
+     *    corresponding diff events must be generated.
+    */
+
+    var limit: Int { get set }
+
+    /**
      *  Current objects list.
      *
      *  The property should always be modified after ```apply(changes:)``` call.
@@ -84,6 +94,9 @@ public protocol ListDifferenceCalculatorProtocol {
  *
  *  This implementation is aimed to connect data provider with user interface providing all
  *  necessary information to animate changes in ```UITableView``` or ```UICollectionView```.
+ *
+ *  Use ```limit``` property to control maximum number of items in the list. But note that changing
+ *  the value in runtime might implicitly clear ```lastDifferences``` list.
  */
 
 public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalculatorProtocol {
@@ -93,18 +106,27 @@ public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalc
     public private(set) var lastDifferences: [ListDifference<T>] = []
     public private(set) var sortBlock: ListDifferenceSortBlock
 
+    public var limit: Int {
+        didSet {
+            handleLimitChanges()
+        }
+    }
+
     /**
      *  Creates difference calculator object.
      *
      *  - parameters:
      *    - initialItems: List of items to start with. It is assumed that the list is
      *    already sorted according to sortition closure.
+     *    - limit: Maximum number of objects that calculator must maintain. Pass zero to prevent
+     *      any restriction. By default is zero.
      *    - sortBlock: Sortition closure that define order in the list.
      */
 
-    public init(initialItems: [T], sortBlock: @escaping ListDifferenceSortBlock) {
+    public init(initialItems: [T], limit: Int = 0, sortBlock: @escaping ListDifferenceSortBlock) {
         self.allItems = initialItems
         self.sortBlock = sortBlock
+        self.limit = limit
     }
 
     public func apply(changes: [DataProviderChange<T>]) {
@@ -140,38 +162,93 @@ public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalc
             }
         }
 
+        applyConstraints(insertItems: &insertItems, deleteIdentifiers: &deleteIdentifiers)
+
         if deleteIdentifiers.count > 0 {
-            delete(identifiers: deleteIdentifiers)
+            delete(identifiers: deleteIdentifiers,
+                   targetList: &allItems,
+                   diffList: &lastDifferences)
         }
 
         if insertItems.count > 0 {
-            insert(items: Array(insertItems.values))
+            insert(items: Array(insertItems.values),
+                   targetList: &allItems,
+                   diffList: &lastDifferences)
         }
     }
 
-    private func delete(identifiers: Set<String>) {
+    private func applyConstraints(insertItems: inout [String: Model],
+                                  deleteIdentifiers: inout Set<String>) {
+        guard limit > 0 else {
+            return
+        }
+
+        var targetList = allItems
+        var diffList: [ListDifference<Model>] = []
+
+        if deleteIdentifiers.count > 0 {
+            delete(identifiers: deleteIdentifiers,
+                   targetList: &targetList,
+                   diffList: &diffList)
+        }
+
+        if insertItems.count > 0 {
+            insert(items: Array(insertItems.values),
+                   targetList: &targetList,
+                   diffList: &diffList)
+        }
+
+        if targetList.count > limit {
+            let implicitDeleteIdentifiers = targetList[limit..<targetList.count]
+                .reduce(into: Set(), { $0.insert($1.identifier) })
+            deleteIdentifiers.formUnion(implicitDeleteIdentifiers)
+
+            insertItems = insertItems.filter { !implicitDeleteIdentifiers.contains($0.value.identifier) }
+        }
+    }
+
+    private func handleLimitChanges() {
+        guard allItems.count > limit else {
+            return
+        }
+
+        lastDifferences.removeAll()
+
+        let implicitDeleteIdentifiers = allItems[limit..<allItems.count]
+            .reduce(into: Set(), { $0.insert($1.identifier) })
+
+        delete(identifiers: implicitDeleteIdentifiers,
+               targetList: &allItems,
+               diffList: &lastDifferences)
+    }
+
+    private func delete(identifiers: Set<String>,
+                        targetList: inout [Model],
+                        diffList: inout [ListDifference<Model>]) {
         // delete changes should be sorted by index desc
 
-        for (index, oldItem) in allItems.enumerated().reversed() {
+        for (index, oldItem) in targetList.enumerated().reversed() {
             if identifiers.contains(oldItem.identifier) {
-                lastDifferences.append(.delete(index: index, old: oldItem))
+                diffList.append(.delete(index: index, old: oldItem))
             }
         }
 
-        allItems.removeAll { (item) in
+        targetList.removeAll { (item) in
             return identifiers.contains(item.identifier)
         }
     }
 
-    private func insert(items: [T]) {
-        allItems.append(contentsOf: items)
-        allItems.sort(by: sortBlock)
+    private func insert(items: [T],
+                        targetList: inout [Model],
+                        diffList: inout [ListDifference<Model>]) {
+        targetList.append(contentsOf: items)
+        targetList.sort(by: sortBlock)
 
         // insert changes should be sorted by index asc
 
-        for (index, item) in allItems.enumerated() {
+        for (index, item) in targetList.enumerated() {
             if items.contains(where: { $0.identifier == item.identifier }) {
-                lastDifferences.append(.insert(index: index, new: item))
+                diffList.append(.insert(index: index, new: item))
             }
         }
     }

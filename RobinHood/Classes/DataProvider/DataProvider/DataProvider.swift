@@ -32,7 +32,8 @@ public final class DataProvider<T: Identifiable & Equatable> {
     /// Serial dispatch queue to use as synchronization primitive internally.
     public private(set) var syncQueue: DispatchQueue
 
-    var observers: [DataProviderObserver<T>] = []
+    var observers: [DataProviderObserver<T, DataProviderObserverOptions>] = []
+    var pendingObservers: [DataProviderPendingObserver<[T]>] = []
     var lastSyncOperation: Operation?
     var repositoryUpdateOperation: Operation?
 

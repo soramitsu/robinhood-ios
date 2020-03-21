@@ -4,7 +4,7 @@
 */
 
 import Foundation
-import RobinHood
+@testable import RobinHood
 import CoreData
 
 func createDataSourceMock<T>(returns items: [T], after delay: TimeInterval = 0.0) -> AnyDataProviderSource<T> {
@@ -68,31 +68,71 @@ func createSingleValueSourceMock<T>(returns error: Error) -> AnySingleValueProvi
 }
 
 func createStreamableSourceMock<T: Identifiable, U: NSManagedObject>(repository: CoreDataRepository<T, U>,
-                                                                     operationQueue: OperationQueue,
-                                                                     returns items: [T]) -> AnyStreamableSource<T> {
-    let source: AnyStreamableSource<T> = AnyStreamableSource { (offset, count, queue, completionBlock) in
-        let dispatchQueue = queue ?? .main
+                                                                     returns items: [T],
+                                                                     enqueueClosure: OperationEnqueuClosure? = nil)
+    -> AnyStreamableSource<T> {
 
+    let historyClosure: AnyStreamableSourceFetchBlock = { (queue, completionBlock) in
         let saveOperation = repository.saveOperation( { items }, { [] })
 
-        operationQueue.addOperation(saveOperation)
+        if let enqueueClosure = enqueueClosure {
+            enqueueClosure([saveOperation])
+        } else {
+            OperationQueue().addOperation(saveOperation)
+        }
 
-        dispatchQueue.async {
+        dispatchInQueueWhenPossible(queue) {
             completionBlock?(.success(items.count))
         }
     }
+
+    let refreshClosure: AnyStreamableSourceFetchBlock = { (queue, completionBlock) in
+        let totalCountOperation = repository.fetchCountOperation()
+        let replaceOperation = repository.replaceOperation( { items })
+
+        replaceOperation.addDependency(totalCountOperation)
+
+        replaceOperation.completionBlock = {
+            do {
+                let count = try totalCountOperation
+                    .extractResultData(throwing: BaseOperationError.parentOperationCancelled) +
+                items.count
+
+                dispatchInQueueWhenPossible(queue) {
+                    completionBlock?(.success(count))
+                }
+            } catch {
+                dispatchInQueueWhenPossible(queue) {
+                    completionBlock?(.failure(error))
+                }
+            }
+        }
+
+        let operations = [totalCountOperation, replaceOperation]
+
+        if let enqueueClosure = enqueueClosure {
+            enqueueClosure(operations)
+        } else {
+            OperationQueue().addOperations([totalCountOperation, replaceOperation],
+                                           waitUntilFinished: false)
+        }
+    }
+
+    let source: AnyStreamableSource<T> = AnyStreamableSource(fetchHistory: historyClosure,
+                                                             refresh: refreshClosure)
 
     return source
 }
 
 func createStreamableSourceMock<T: Identifiable>(returns error: Error) -> AnyStreamableSource<T> {
-    let source: AnyStreamableSource<T> = AnyStreamableSource { (offset, count, queue, completionBlock) in
-        let dispatchQueue = queue ?? .main
-
-        dispatchQueue.async {
+    let closure: AnyStreamableSourceFetchBlock = { (queue, completionBlock) in
+        dispatchInQueueWhenPossible(queue) {
             completionBlock?(.failure(error))
         }
     }
+
+    let source: AnyStreamableSource<T> = AnyStreamableSource(fetchHistory: closure,
+                                                             refresh: closure)
 
     return source
 }
