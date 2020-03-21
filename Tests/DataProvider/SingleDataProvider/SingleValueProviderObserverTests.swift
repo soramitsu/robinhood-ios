@@ -16,15 +16,17 @@ class SingleValueProviderObserverTests: XCTestCase {
 
         // when
 
+        let addExpectation = XCTestExpectation()
+
         let addObserverWaitingOperation = ClosureOperation {
             while(dataProvider.observers.isEmpty) {
                 usleep(10000)
             }
         }
 
-        let addExpectation = XCTKVOExpectation(keyPath: #keyPath(Operation.isFinished),
-                                               object: addObserverWaitingOperation,
-                                               expectedValue: true)
+        addObserverWaitingOperation.completionBlock = {
+            addExpectation.fulfill()
+        }
 
         dataProvider.addObserver(self,
                                  deliverOn: .main,
@@ -46,9 +48,11 @@ class SingleValueProviderObserverTests: XCTestCase {
             }
         }
 
-        let removeExpectation = XCTKVOExpectation(keyPath: #keyPath(Operation.isFinished),
-                                                  object: removeObseverOperation,
-                                                  expectedValue: true)
+        let removeExpectation = XCTestExpectation()
+
+        removeObseverOperation.completionBlock = {
+            removeExpectation.fulfill()
+        }
 
         dataProvider.removeObserver(self)
 

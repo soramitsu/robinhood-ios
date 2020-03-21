@@ -22,9 +22,11 @@ class StreamableDataProviderObserverTests: XCTestCase {
             }
         }
 
-        let addExpectation = XCTKVOExpectation(keyPath: #keyPath(Operation.isFinished),
-                                               object: addObserverWaitingOperation,
-                                               expectedValue: true)
+        let addExpectation = XCTestExpectation()
+
+        addObserverWaitingOperation.completionBlock = {
+            addExpectation.fulfill()
+        }
 
         dataProvider.addObserver(self,
                                  deliverOn: .main,
@@ -46,9 +48,11 @@ class StreamableDataProviderObserverTests: XCTestCase {
             }
         }
 
-        let removeExpectation = XCTKVOExpectation(keyPath: #keyPath(Operation.isFinished),
-                                                  object: removeObseverOperation,
-                                                  expectedValue: true)
+        let removeExpectation = XCTestExpectation()
+
+        removeObseverOperation.completionBlock = {
+            removeExpectation.fulfill()
+        }
 
         dataProvider.removeObserver(self)
 

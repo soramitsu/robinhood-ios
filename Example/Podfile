@@ -10,3 +10,9 @@ target 'RobinHood_Example' do
     pod 'FireMock'
   end
 end
+
+post_install do |installer|
+  installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
+    configuration.build_settings['ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES'] = 'YES'
+  end
+end

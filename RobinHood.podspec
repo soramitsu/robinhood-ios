@@ -10,6 +10,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://github.com/soramitsu'
   s.license          = { :type => 'GPL 3.0', :file => 'LICENSE' }
   s.author           = { 'ERussel' => 'emkil.russel@gmail.com' }
+  s.documentation_url = 'https://github.com/soramitsu/robinhood-ios/wiki'
   s.source           = { :git => 'https://github.com/soramitsu/robinhood-ios.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '9.0'
