@@ -169,4 +169,10 @@ public struct RepositorySliceRequest {
      *  If ```true``` the objects in the slice is in reversed order.
      */
     let reversed: Bool
+
+    public init(offset: Int, count: Int, reversed: Bool) {
+        self.offset = offset
+        self.count = count
+        self.reversed = reversed
+    }
 }
