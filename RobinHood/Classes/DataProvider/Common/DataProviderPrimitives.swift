@@ -150,6 +150,22 @@ public struct RepositoryFetchOptions {
     }
 }
 
+public extension RepositoryFetchOptions {
+    /**
+     *  Creates options to prevent including both properties and subentities to the fetch request.
+     */
+    static var none: RepositoryFetchOptions {
+        RepositoryFetchOptions(includesProperties: false, includesSubentities: false)
+    }
+
+    /**
+    *  Creates options to prevent including subentities to the fetch request.
+    */
+    static var onlyProperties: RepositoryFetchOptions {
+        RepositoryFetchOptions(includesProperties: true, includesSubentities: false)
+    }
+}
+
 /**
  *  Struct is designed to request part of the list of objects from repository.
  */
