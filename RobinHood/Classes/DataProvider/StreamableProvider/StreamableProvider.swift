@@ -135,6 +135,11 @@ public final class StreamableProvider<T: Identifiable> {
             if shouldObserveSource {
                 self.startObservingSource()
             }
+
+            if updates.isEmpty, options.refreshWhenEmpty {
+                self.refresh()
+            }
+
         case .failure(let error):
             dispatchInQueueWhenPossible(queue) {
                 failureBlock(error)

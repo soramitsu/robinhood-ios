@@ -103,8 +103,13 @@ public struct StreamableProviderObserverOptions {
     /// - note: If the value is less or equal to zero than all existing objects are fetched.
     public var initialSize: Int
 
+    /// Refreshes list using data source when one from repository is empty.
+    /// By default ```true```.
+    public var refreshWhenEmpty: Bool
+
     /// - parameters:
-    ///    - alwaysNotifyOnRefresh: Asks data provider to notify observer in any case after synchronization completes.
+    ///    - alwaysNotifyOnRefresh: Asks data provider to notify observer in any case
+    ///    after synchronization completes.
     ///    Default value is `false`.
     ///
     ///    - waitsInProgressSyncOnAdd: Asks data provider to wait until any in progress synchronization
@@ -115,13 +120,18 @@ public struct StreamableProviderObserverOptions {
     ///    - initialSize: Number of items to fetch from local store and return in update block call after
     ///     observer successfully added. If the value is less or equal to zero than all
     ///     existing objects are fetched.
+    ///
+    ///    - refreshWhenEmpty: Calls refresh from data source when list fetched from repository is empty.
+    ///    Default value is ```true```.
 
     public init(alwaysNotifyOnRefresh: Bool = false,
                 waitsInProgressSyncOnAdd: Bool = true,
-                initialSize: Int = 0) {
+                initialSize: Int = 0,
+                refreshWhenEmpty: Bool = true) {
         self.alwaysNotifyOnRefresh = alwaysNotifyOnRefresh
         self.waitsInProgressSyncOnAdd = waitsInProgressSyncOnAdd
         self.initialSize = initialSize
+        self.refreshWhenEmpty = refreshWhenEmpty
     }
 }
 

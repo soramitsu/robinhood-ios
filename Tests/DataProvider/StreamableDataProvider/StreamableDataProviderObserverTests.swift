@@ -133,14 +133,67 @@ class StreamableDataProviderObserverTests: XCTestCase {
         }
     }
 
+    func testRefreshCalledOnAddObserver() {
+        // given
+
+        let sourceList = (0..<10).map { _ in createRandomFeed(in: .default) }
+
+        let dataProvider = prepareDataProvider(with: sourceList)
+
+        // when
+
+        let expectation = XCTestExpectation()
+        expectation.expectedFulfillmentCount = 2
+
+        var resultChanges: [[DataProviderChange<FeedData>]] = []
+
+        let updateClosure: ([DataProviderChange<FeedData>]) -> Void = { changes in
+            resultChanges.append(changes)
+
+            expectation.fulfill()
+        }
+
+        let failureClosure: (Error) -> Void = { error in
+            XCTFail("Unexpected error \(error)")
+
+            expectation.fulfill()
+        }
+
+        dataProvider.addObserver(self,
+                                 deliverOn: .main,
+                                 executing: updateClosure,
+                                 failing: failureClosure)
+
+        // then
+
+        wait(for: [expectation], timeout: Constants.networkRequestTimeout)
+
+        guard resultChanges.count == 2 else {
+            XCTFail("Unexpected number of changes")
+            return
+        }
+
+        XCTAssertTrue(resultChanges[0].isEmpty)
+
+        let resultItems = resultChanges[1].reduce(into: [FeedData]()) { (result, change) in
+            if case .insert(let item) = change {
+                result.append(item)
+            }
+        }.sorted { $0.name > $1.name }
+
+        let expectedItems = sourceList.sorted { $0.name > $1.name }
+
+        XCTAssertEqual(expectedItems, resultItems)
+    }
+
     // MARK: Private
 
-    private func prepareDataProvider() -> StreamableProvider<FeedData> {
+    private func prepareDataProvider(with sourceItems: [FeedData] = []) -> StreamableProvider<FeedData> {
         let repository: CoreDataRepository<FeedData, CDFeed> =
             CoreDataRepositoryFacade.shared.createCoreDataRepository()
 
         let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(repository: repository,
-                                                                               returns: [])
+                                                                               returns: sourceItems)
 
         let operationManager = OperationManager()
 
