@@ -136,25 +136,29 @@ public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalc
 
         var insertItems = [String: Model]()
 
-        // If updated value changes order than replace update with delete + insert
-
         for change in changes {
             switch change {
             case .insert(let newItem):
                 insertItems[newItem.identifier] = newItem
             case .update(let newItem):
-                guard let oldItemIndex = allItems.firstIndex(where: { $0.identifier == newItem.identifier }) else {
-                    break
-                }
+                if let oldItemIndex = allItems.firstIndex(where: { $0.identifier == newItem.identifier }) {
+                    // If updating value changes the order than replace update with delete + insert
 
-                if sortBlock(newItem, allItems[oldItemIndex]) == sortBlock(allItems[oldItemIndex], newItem) {
-                    lastDifferences.append(.update(index: oldItemIndex,
-                                                   old: allItems[oldItemIndex],
-                                                   new: newItem))
-                    allItems[oldItemIndex] = newItem
-                } else {
-                    deleteIdentifiers.insert(newItem.identifier)
-                    insertItems[newItem.identifier] = newItem
+                    if sortBlock(newItem, allItems[oldItemIndex]) == sortBlock(allItems[oldItemIndex], newItem) {
+                        lastDifferences.append(.update(index: oldItemIndex,
+                                                       old: allItems[oldItemIndex],
+                                                       new: newItem))
+                        allItems[oldItemIndex] = newItem
+                    } else {
+                        deleteIdentifiers.insert(newItem.identifier)
+                        insertItems[newItem.identifier] = newItem
+                    }
+                } else if limit > 0, allItems.count == limit {
+                    // it might be the case that updating item were out of bounds previously
+
+                    if sortBlock(newItem, allItems[allItems.count - 1]) {
+                        insertItems[newItem.identifier] = newItem
+                    }
                 }
 
             case .delete(let deletedIdentifier):
@@ -208,7 +212,7 @@ public final class ListDifferenceCalculator<T: Identifiable>: ListDifferenceCalc
     }
 
     private func handleLimitChanges() {
-        guard allItems.count > limit else {
+        guard limit > 0, allItems.count > limit else {
             return
         }
 

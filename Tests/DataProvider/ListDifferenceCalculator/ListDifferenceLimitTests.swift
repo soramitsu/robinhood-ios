@@ -154,4 +154,60 @@ class ListDifferenceLimitTests: XCTestCase {
 
         XCTAssertEqual(Set(expectedDeletedIdentifiers), deletedIdentifiers)
     }
+
+    func testWhenLimitedChangesToUnlimited() {
+        // given
+
+        let totalCount = 10
+        let objects = (0..<totalCount).map({ _ in createRandomFeed(in: .default) }).sorted(by: sortBlock)
+        let diffCalculator = ListDifferenceCalculator(initialItems: objects,
+                                                      limit: totalCount, sortBlock: sortBlock)
+
+        // when
+
+        diffCalculator.limit = 0
+
+        // then
+
+        XCTAssertEqual(diffCalculator.allItems, objects)
+    }
+
+    func testWhenOldItemOutOfBoundsButUpdatedOneNot() {
+        // given
+
+        let totalCount = 10
+        let objects = (0..<totalCount+1).map({ _ in createRandomFeed(in: .default) }).sorted(by: sortBlock)
+
+        let initialItems = Array(objects[0..<totalCount])
+        let diffCalculator = ListDifferenceCalculator(initialItems: initialItems,
+                                                      limit: totalCount, sortBlock: sortBlock)
+
+        // when
+
+        var expectedNewObject = objects.last!
+        expectedNewObject.name = initialItems[0].name
+
+        diffCalculator.apply(changes: [.update(newItem: expectedNewObject)])
+
+        // then
+
+        guard diffCalculator.lastDifferences.count == 2 else {
+            XCTFail()
+            return
+        }
+
+        guard
+            case .delete(_, let firstDiffItem) = diffCalculator.lastDifferences[0],
+            firstDiffItem.identifier == initialItems.last?.identifier else {
+                XCTFail()
+                return
+        }
+
+        guard
+            case .insert(_, let secondDiffItem) = diffCalculator.lastDifferences[1],
+            secondDiffItem.identifier == expectedNewObject.identifier else {
+                XCTFail()
+                return
+        }
+    }
 }
