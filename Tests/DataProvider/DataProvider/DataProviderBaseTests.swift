@@ -11,24 +11,24 @@ class DataProviderBaseTests: XCTestCase {
     func fetchById<T>(_ identifier: String, from dataProvider: DataProvider<T>) -> Result<T?, Error>? {
         let expectation = XCTestExpectation()
 
-        let fetchByIdOperation = dataProvider.fetch(by: identifier) { _ in
+        let fetchByIdWrapper = dataProvider.fetch(by: identifier) { _ in
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        return fetchByIdOperation.result
+        return fetchByIdWrapper.targetOperation.result
     }
 
     func fetch<T>(page: UInt, from dataProvider: DataProvider<T>) -> Result<[T], Error>? {
         let expectation = XCTestExpectation()
 
-        let fetchByPageOperation = dataProvider.fetch(page: page) { _ in
+        let fetchByPageWrapper = dataProvider.fetch(page: page) { _ in
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        return fetchByPageOperation.result
+        return fetchByPageWrapper.targetOperation.result
     }
 }

@@ -97,11 +97,11 @@ extension DataProvider {
             return
         }
 
-        let sourceOperation = source.fetchOperation(page: 0)
+        let sourceWrapper = source.fetchOperation(page: 0)
 
         let repositoryOperation = repository.fetchAllOperation()
 
-        let differenceOperation = createDifferenceOperation(dependingOn: sourceOperation,
+        let differenceOperation = createDifferenceOperation(dependingOn: sourceWrapper.targetOperation,
                                                             repositoryOperation: repositoryOperation)
 
         let saveOperation = createSaveRepositoryOperation(dependingOn: differenceOperation)
@@ -132,13 +132,13 @@ extension DataProvider {
         repositoryUpdateOperation = saveOperation
 
         if let syncOperation = lastSyncOperation, !syncOperation.isFinished {
-            sourceOperation.addDependency(syncOperation)
+            sourceWrapper.allOperations.forEach { $0.addDependency(syncOperation) }
             repositoryOperation.addDependency(syncOperation)
         }
 
         lastSyncOperation = saveOperation
 
-        let operations = [sourceOperation, repositoryOperation, differenceOperation, saveOperation]
+        let operations = sourceWrapper.allOperations + [repositoryOperation, differenceOperation, saveOperation]
 
         executionQueue.addOperations(operations, waitUntilFinished: false)
     }

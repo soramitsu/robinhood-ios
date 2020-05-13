@@ -36,11 +36,13 @@ public protocol DataProviderProtocol {
      *  - parameters:
      *    - modelId: Identifier of the object to fetch.
      *    - completionBlock: Block to call on completion. `Result` value is passed as a parameter.
-     *  - returns: Operation object to cancel if there is a need or to chain with other operations.
-     *  **Don't try** to override operation's completion block but provide completion block to the function instead.
+     *  - returns: Operations object wrapper to cancel if there is a need or to chain with other operations.
+     *  **Don't try** to override target operation's completion block but provide completion
+     *  block to the function instead.
      */
 
-    func fetch(by modelId: String, completionBlock: ((Result<Model?, Error>?) -> Void)?) -> BaseOperation<Model?>
+    func fetch(by modelId: String,
+               completionBlock: ((Result<Model?, Error>?) -> Void)?) -> CompoundOperationWrapper<Model?>
 
     /**
      *  Returns a concrete page of objects from local store or fetches from remote store in case it is absent locally.
@@ -54,11 +56,13 @@ public protocol DataProviderProtocol {
      *  - parameters:
      *    - page: `UInt` index of the page.
      *    - completionBlock: Block to call on completion. `Result` value is passed as a parameter.
-     *  - returns: Operation object to cancel if there is a need or to chain with other operations.
-     *  **Don't try** to override operation's completion block but provide completion block to the function instead.
+     *  - returns: Operations object wrapper to cancel if there is a need or to chain with other operations.
+     *  **Don't try** to override target operation's completion block but provide completion
+     *  block to the function instead.
      */
 
-    func fetch(page index: UInt, completionBlock: ((Result<[Model], Error>?) -> Void)?) -> BaseOperation<[Model]>
+    func fetch(page index: UInt,
+               completionBlock: ((Result<[Model], Error>?) -> Void)?) -> CompoundOperationWrapper<[Model]>
 
     /**
      *  Adds observer to notify when there are changes in local storage.
@@ -161,11 +165,11 @@ public protocol DataProviderSourceProtocol {
      *  - parameters:
      *    - modelId: String that unique identifies the object to fetch;
      *
-     *  - returns: Operation object to cancel if needed or chain with other
-     *  operations.
+     *  - returns: Operation object wrapper to cancel if there is needed or to
+     *   chain with other operations.
      */
 
-    func fetchOperation(by modelId: String) -> BaseOperation<Model?>
+    func fetchOperation(by modelId: String) -> CompoundOperationWrapper<Model?>
 
     /**
      *  Fetches a page of objects from remote source.
@@ -176,8 +180,8 @@ public protocol DataProviderSourceProtocol {
      *  - parameters:
      *    - page: `UInt` index of the page.
      *
-     *  - returns: Operation object to cancel if needed or chain with other
-     *  operations.
+     *  - returns: Operation object wrapper to cancel if there is needed or to
+     *   chain with other operations.
      */
-    func fetchOperation(page index: UInt) -> BaseOperation<[Model]>
+    func fetchOperation(page index: UInt) -> CompoundOperationWrapper<[Model]>
 }

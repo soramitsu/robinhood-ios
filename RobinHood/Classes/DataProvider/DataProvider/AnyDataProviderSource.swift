@@ -14,8 +14,8 @@ import Foundation
 public final class AnyDataProviderSource<T: Identifiable>: DataProviderSourceProtocol {
     public typealias Model = T
 
-    private let _fetchById: (String) -> BaseOperation<Model?>
-    private let _fetchByPage: (UInt) -> BaseOperation<[Model]>
+    private let _fetchById: (String) -> CompoundOperationWrapper<Model?>
+    private let _fetchByPage: (UInt) -> CompoundOperationWrapper<[Model]>
 
     /**
      *  Initializes type erasure object with implementation of source protocol.
@@ -39,17 +39,17 @@ public final class AnyDataProviderSource<T: Identifiable>: DataProviderSourcePro
      *    - fetchById: Closure to return object by id.
      */
 
-    public init(fetchByPage: @escaping (UInt) -> BaseOperation<[Model]>,
-                fetchById: @escaping (String) -> BaseOperation<Model?>) {
+    public init(fetchByPage: @escaping (UInt) -> CompoundOperationWrapper<[Model]>,
+                fetchById: @escaping (String) -> CompoundOperationWrapper<Model?>) {
         _fetchByPage = fetchByPage
         _fetchById = fetchById
     }
 
-    public func fetchOperation(by modelId: String) -> BaseOperation<T?> {
+    public func fetchOperation(by modelId: String) -> CompoundOperationWrapper<T?> {
         return _fetchById(modelId)
     }
 
-    public func fetchOperation(page index: UInt) -> BaseOperation<[T]> {
+    public func fetchOperation(page index: UInt) -> CompoundOperationWrapper<[T]> {
         return _fetchByPage(index)
     }
 }

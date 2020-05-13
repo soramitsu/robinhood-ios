@@ -58,42 +58,57 @@ extension SingleValueProvider {
 }
 
 extension SingleValueProvider: SingleValueProviderProtocol {
-    public func fetch(with completionBlock: ((Result<T?, Error>?) -> Void)?) -> BaseOperation<T?> {
+    public func fetch(with completionBlock: ((Result<T?, Error>?) -> Void)?) -> CompoundOperationWrapper<T?> {
         let repositoryOperation = repository.fetchOperation(by: targetIdentifier)
 
-        let sourceOperation = source.fetchOperation()
-        sourceOperation.configurationBlock = {
-            if sourceOperation.isCancelled {
-                return
-            }
+        let sourceWrapper = source.fetchOperation()
 
-            guard let result = repositoryOperation.result else {
-                sourceOperation.cancel()
-                return
-            }
-
-            switch result {
-            case .success(let optionalEntity):
-                if let entity = optionalEntity,
-                    let model = try? self.decoder.decode(T.self, from: entity.payload) {
-                    sourceOperation.result = .success(model)
-                }
-            case .failure(let error):
-                sourceOperation.result = .failure(error)
+        let sourceCancellationOperation = ClosureOperation<T?> {
+            if
+                let optionalEntity = try repositoryOperation.extractResultData(),
+                let entity = optionalEntity,
+                let model = try? self.decoder.decode(T.self, from: entity.payload) {
+                sourceWrapper.cancel()
+                return model
+            } else {
+                return nil
             }
         }
 
-        sourceOperation.addDependency(repositoryOperation)
+        sourceCancellationOperation.addDependency(repositoryOperation)
 
-        sourceOperation.completionBlock = {
-            completionBlock?(sourceOperation.result)
+        sourceWrapper.allOperations.forEach {
+            $0.addDependency(sourceCancellationOperation)
         }
 
-        executionQueue.addOperations([repositoryOperation, sourceOperation], waitUntilFinished: false)
+        let reduceOperation = ClosureOperation<T?> {
+            if let optionalModel = try sourceCancellationOperation.extractResultData(), let result = optionalModel {
+                return result
+            }
+
+            if let optionalModel = try sourceWrapper.targetOperation.extractResultData(), let result = optionalModel {
+                return result
+            }
+
+            throw BaseOperationError.parentOperationCancelled
+        }
+
+        reduceOperation.addDependency(sourceWrapper.targetOperation)
+
+        reduceOperation.completionBlock = {
+            completionBlock?(reduceOperation.result)
+        }
+
+        let dependencies = [repositoryOperation, sourceCancellationOperation] + sourceWrapper.allOperations
+
+        let wrapper = CompoundOperationWrapper(targetOperation: reduceOperation,
+                                               dependencies: dependencies)
+
+        executionQueue.addOperations(wrapper.allOperations, waitUntilFinished: false)
 
         updateTrigger.receive(event: .fetchById(targetIdentifier))
 
-        return sourceOperation
+        return wrapper
     }
 
     public func addObserver(_ observer: AnyObject,

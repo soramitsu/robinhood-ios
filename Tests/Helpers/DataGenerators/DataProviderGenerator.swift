@@ -8,18 +8,22 @@ import Foundation
 import CoreData
 
 func createDataSourceMock<T>(returns items: [T], after delay: TimeInterval = 0.0) -> AnyDataProviderSource<T> {
-    let fetchPageBlock: (UInt) -> BaseOperation<[T]> = { _ in
-        return ClosureOperation {
+    let fetchPageBlock: (UInt) -> CompoundOperationWrapper<[T]> = { _ in
+        let operation = ClosureOperation<[T]> {
             usleep(useconds_t(delay * 1e+6))
             return items
         }
+
+        return CompoundOperationWrapper(targetOperation: operation)
     }
 
-    let fetchByIdBlock: (String) -> BaseOperation<T?> = { _ in
-        return ClosureOperation {
+    let fetchByIdBlock: (String) -> CompoundOperationWrapper<T?> = { _ in
+        let operation = ClosureOperation<T?> {
             usleep(useconds_t(delay * 1e+6))
             return nil
         }
+
+        return CompoundOperationWrapper(targetOperation: operation)
     }
 
     return AnyDataProviderSource(fetchByPage: fetchPageBlock,
@@ -27,18 +31,18 @@ func createDataSourceMock<T>(returns items: [T], after delay: TimeInterval = 0.0
 }
 
 func createDataSourceMock<T>(returns error: Error) -> AnyDataProviderSource<T> {
-    let fetchPageBlock: (UInt) -> BaseOperation<[T]> = { _ in
+    let fetchPageBlock: (UInt) -> CompoundOperationWrapper<[T]> = { _ in
         let pageOperation = BaseOperation<[T]>()
         pageOperation.result = .failure(error)
 
-        return pageOperation
+        return CompoundOperationWrapper(targetOperation: pageOperation)
     }
 
-    let fetchByIdBlock: (String) -> BaseOperation<T?> = { _ in
+    let fetchByIdBlock: (String) -> CompoundOperationWrapper<T?> = { _ in
         let identifierOperation = BaseOperation<T?>()
         identifierOperation.result = .failure(error)
 
-        return identifierOperation
+        return CompoundOperationWrapper(targetOperation: identifierOperation)
     }
 
     return AnyDataProviderSource(fetchByPage: fetchPageBlock,
@@ -46,22 +50,24 @@ func createDataSourceMock<T>(returns error: Error) -> AnyDataProviderSource<T> {
 }
 
 func createSingleValueSourceMock<T>(returns item: T?, after delay: TimeInterval = 0.0) -> AnySingleValueProviderSource<T> {
-    let fetch: () -> BaseOperation<T?> = {
-        return ClosureOperation {
+    let fetch: () -> CompoundOperationWrapper<T?> = {
+        let operation = ClosureOperation<T?> {
             usleep(useconds_t(delay * 1e+6))
             return item
         }
+
+        return CompoundOperationWrapper(targetOperation: operation)
     }
 
     return AnySingleValueProviderSource(fetch: fetch)
 }
 
 func createSingleValueSourceMock<T>(returns error: Error) -> AnySingleValueProviderSource<T> {
-    let fetch: () -> BaseOperation<T?> = {
+    let fetch: () -> CompoundOperationWrapper<T?> = {
         let operation = BaseOperation<T?>()
         operation.result = .failure(error)
 
-        return operation
+        return CompoundOperationWrapper(targetOperation: operation)
     }
 
     return AnySingleValueProviderSource(fetch: fetch)

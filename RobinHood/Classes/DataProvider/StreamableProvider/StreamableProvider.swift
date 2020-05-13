@@ -162,7 +162,8 @@ extension StreamableProvider: StreamableProviderProtocol {
     public func fetch(offset: Int,
                       count: Int,
                       synchronized: Bool,
-                      with completionBlock: @escaping (Result<[Model], Error>?) -> Void) -> BaseOperation<[Model]> {
+                      with completionBlock: @escaping (Result<[Model], Error>?) -> Void)
+        -> CompoundOperationWrapper<[Model]> {
         let sliceRequest = RepositorySliceRequest(offset: offset, count: count, reversed: false)
         let operation = repository.fetchOperation(by: sliceRequest)
 
@@ -189,7 +190,7 @@ extension StreamableProvider: StreamableProviderProtocol {
             operationManager.enqueue(operations: [operation], in: .transient)
         }
 
-        return operation
+        return CompoundOperationWrapper(targetOperation: operation)
     }
 
     public func addObserver(_ observer: AnyObject,

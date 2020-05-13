@@ -11,7 +11,7 @@ import Foundation
  *  it depends on.
  */
 
-public struct CompoundOperationWrapper<ResultType> {
+public class CompoundOperationWrapper<ResultType> {
 
     /**
      *  Returns a list which consists of dependencies and target operation.
@@ -37,11 +37,9 @@ public struct CompoundOperationWrapper<ResultType> {
         self.targetOperation = targetOperation
         self.dependencies = dependencies
     }
+}
 
-    /**
-     *  Cancels all operations.
-     */
-
+extension CompoundOperationWrapper: CancellableCall {
     public func cancel() {
         allOperations.forEach { $0.cancel() }
     }
