@@ -85,7 +85,7 @@ extension DataProvider: DataProviderProtocol {
             throw BaseOperationError.parentOperationCancelled
         }
 
-        reduceOperation.addDependency(sourceCancellationOperation)
+        reduceOperation.addDependency(sourceWrapper.targetOperation)
 
         reduceOperation.completionBlock = {
             completionBlock?(reduceOperation.result)
@@ -140,7 +140,7 @@ extension DataProvider: DataProviderProtocol {
             }
 
             let reduceOperation = ClosureOperation<[T]> {
-                if let result = try repositoryOperation.extractResultData() {
+                if let result = try sourceCancellationOperation.extractResultData(), result.count > 0 {
                     return result
                 }
 
