@@ -10,12 +10,12 @@ class SingleValueProviderBaseTests: XCTestCase {
     func fetch<T>(from dataProvider: SingleValueProvider<T>) -> Result<T?, Error>? {
         let expectation = XCTestExpectation()
 
-        let fetchOperation = dataProvider.fetch { _ in
+        let fetchWrapper = dataProvider.fetch { _ in
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationDuration)
 
-        return fetchOperation.result
+        return fetchWrapper.targetOperation.result
     }
 }

@@ -34,11 +34,12 @@ public protocol SingleValueProviderProtocol {
      *
      *  - parameters:
      *    - completionBlock: Block to call on completion. `Result` value is passed as a parameter.
-     *  - returns: Operation object to cancel if there is a need or to chain with other operations.
-     *  **Don't try** to override operation's completion block but provide completion block to the function instead.
+     *  - returns: Operation object wrapper to cancel if there is a need or to chain with other operations.
+     *  **Don't try** to override target operation's completion block but provide completion
+     *  block to the function instead.
      */
 
-    func fetch(with completionBlock: ((Result<Model?, Error>?) -> Void)?) -> BaseOperation<Model?>
+    func fetch(with completionBlock: ((Result<Model?, Error>?) -> Void)?) -> CompoundOperationWrapper<Model?>
 
     /**
      *  Adds observer to notify when there are changes in local storage.
@@ -137,9 +138,9 @@ public protocol SingleValueProviderSourceProtocol {
     /**
      *  Fetches then object from remote source.
      *
-     *  - returns: Operation object to cancel if needed or chain with other
+     *  - returns: Operation wrapper object to cancel if needed or chain with other
      *  operations.
      */
 
-    func fetchOperation() -> BaseOperation<Model?>
+    func fetchOperation() -> CompoundOperationWrapper<Model?>
 }

@@ -14,7 +14,7 @@ import Foundation
 public final class AnySingleValueProviderSource<T>: SingleValueProviderSourceProtocol {
     public typealias Model = T
 
-    private let _fetch: () -> BaseOperation<Model?>
+    private let _fetch: () -> CompoundOperationWrapper<Model?>
 
     /**
      *  Initializes type erasure object with implementation of single value provider source protocol.
@@ -27,11 +27,11 @@ public final class AnySingleValueProviderSource<T>: SingleValueProviderSourcePro
         _fetch = source.fetchOperation
     }
 
-    public init(fetch: @escaping () -> BaseOperation<Model?>) {
+    public init(fetch: @escaping () -> CompoundOperationWrapper<Model?>) {
         _fetch = fetch
     }
 
-    public func fetchOperation() -> BaseOperation<Model?> {
+    public func fetchOperation() -> CompoundOperationWrapper<Model?> {
         return _fetch()
     }
 }

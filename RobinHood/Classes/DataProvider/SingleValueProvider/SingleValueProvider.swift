@@ -121,11 +121,11 @@ extension SingleValueProvider {
             return
         }
 
-        let sourceOperation = source.fetchOperation()
+        let sourceWrapper = source.fetchOperation()
 
         let repositoryOperation = repository.fetchOperation(by: targetIdentifier)
 
-        let differenceOperation = createDifferenceOperation(dependingOn: sourceOperation,
+        let differenceOperation = createDifferenceOperation(dependingOn: sourceWrapper.targetOperation,
                                                             repositoryOperation: repositoryOperation)
 
         let saveOperation = createSaveRepositoryOperation(dependingOn: differenceOperation)
@@ -156,13 +156,13 @@ extension SingleValueProvider {
         repositoryUpdateOperation = saveOperation
 
         if let syncOperation = lastSyncOperation, !syncOperation.isFinished {
-            sourceOperation.addDependency(syncOperation)
+            sourceWrapper.allOperations.forEach { $0.addDependency(syncOperation) }
             repositoryOperation.addDependency(syncOperation)
         }
 
         lastSyncOperation = saveOperation
 
-        let operations = [sourceOperation, repositoryOperation, differenceOperation, saveOperation]
+        let operations = sourceWrapper.allOperations + [repositoryOperation, differenceOperation, saveOperation]
 
         executionQueue.addOperations(operations, waitUntilFinished: false)
     }

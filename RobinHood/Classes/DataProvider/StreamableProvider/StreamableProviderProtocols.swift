@@ -35,14 +35,15 @@ public protocol StreamableProviderProtocol {
      *    - completionBlock: Block to call on completion. `Result` value is passed as a parameter.
      *    Note that remote objects may not be delivered in the completion closure and the client needs to add
      *    an observer to receive remained part of the list.
-     *  - returns: Operation object to cancel if there is a need or to chain with other operations.
-     *  **Don't try** to override operation's completion block but provide completion block to the function instead.
+     *  - returns: Operation wrapper object to cancel if there is a need or to chain with other operations.
+     *  **Don't try** to override target operation's completion block but provide completion
+     *  block to the function instead.
      */
 
     func fetch(offset: Int,
                count: Int,
                synchronized: Bool,
-               with completionBlock: @escaping (Result<[Model], Error>?) -> Void) -> BaseOperation<[Model]>
+               with completionBlock: @escaping (Result<[Model], Error>?) -> Void) -> CompoundOperationWrapper<[Model]>
 
     /**
      *  Adds observer to notify when there are changes in local storage.

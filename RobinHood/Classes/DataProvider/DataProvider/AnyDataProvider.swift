@@ -12,8 +12,8 @@ import Foundation
 public final class AnyDataProvider<T: Identifiable & Equatable>: DataProviderProtocol {
     public typealias Model = T
 
-    private let _fetchById: (String, ((Result<T?, Error>?) -> Void)?) -> BaseOperation<T?>
-    private let _fetchPage: (UInt, ((Result<[T], Error>?) -> Void)?) -> BaseOperation<[T]>
+    private let _fetchById: (String, ((Result<T?, Error>?) -> Void)?) -> CompoundOperationWrapper<T?>
+    private let _fetchPage: (UInt, ((Result<[T], Error>?) -> Void)?) -> CompoundOperationWrapper<[T]>
 
     private let _addObserver: (AnyObject, DispatchQueue?,
     @escaping ([DataProviderChange<T>]) -> Void, @escaping (Error) -> Void, DataProviderObserverOptions) -> Void
@@ -40,11 +40,13 @@ public final class AnyDataProvider<T: Identifiable & Equatable>: DataProviderPro
         self.executionQueue = dataProvider.executionQueue
     }
 
-    public func fetch(by modelId: String, completionBlock: ((Result<T?, Error>?) -> Void)?) -> BaseOperation<T?> {
+    public func fetch(by modelId: String,
+                      completionBlock: ((Result<T?, Error>?) -> Void)?) -> CompoundOperationWrapper<T?> {
         return _fetchById(modelId, completionBlock)
     }
 
-    public func fetch(page index: UInt, completionBlock: ((Result<[T], Error>?) -> Void)?) -> BaseOperation<[T]> {
+    public func fetch(page index: UInt,
+                      completionBlock: ((Result<[T], Error>?) -> Void)?) -> CompoundOperationWrapper<[T]> {
         return _fetchPage(index, completionBlock)
     }
 
