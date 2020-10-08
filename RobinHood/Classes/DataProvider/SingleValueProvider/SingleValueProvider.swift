@@ -49,13 +49,18 @@ public final class SingleValueProvider<T: Codable & Equatable> {
     /// Identifier of the object to manage.
     public private(set) var targetIdentifier: String
 
+    /// Encoder to serialize value for storage
+
+    public lazy var encoder = JSONEncoder()
+
+    /// Decoder to deserialize value from storage
+
+    public lazy var decoder = JSONDecoder()
+
     var observers: [DataProviderObserver<T, DataProviderObserverOptions>] = []
     var pendingObservers: [DataProviderPendingObserver<SingleValueProviderObject?>] = []
     var lastSyncOperation: Operation?
     var repositoryUpdateOperation: Operation?
-
-    lazy var encoder = JSONEncoder()
-    lazy var decoder = JSONDecoder()
 
     /**
      *  Creates data provider object.
@@ -282,21 +287,27 @@ extension SingleValueProvider {
     private func findChanges(sourceResult: T?, repositoryResult: SingleValueProviderObject?) throws
         -> DataProviderChange<T>? {
 
-            guard let existingRepositoryResult = repositoryResult else {
-                if let existingSourceResult = sourceResult {
-                    return DataProviderChange.insert(newItem: existingSourceResult)
+            guard let existingSourceResult = sourceResult else {
+                if repositoryResult != nil {
+                    // no source data or broken, just remove inconsistent local data
+                    return DataProviderChange.delete(deletedIdentifier: targetIdentifier)
                 } else {
                     return nil
                 }
             }
 
-            guard
-                let existingSourceResult = sourceResult,
-                let existingSourceData = try? encoder.encode(existingSourceResult) else {
-                    return DataProviderChange.delete(deletedIdentifier: targetIdentifier)
+            guard let existingRepositoryResult = repositoryResult else {
+                // new data received and no local data, so insert new one
+                return DataProviderChange.insert(newItem: existingSourceResult)
             }
 
-            if existingSourceData != existingRepositoryResult.payload {
+            guard let existingLocalValue = try? decoder.decode(T.self, from: existingRepositoryResult.payload) else {
+                // local data is broken but remote one is ok, so just update local one
+                return DataProviderChange.update(newItem: existingSourceResult)
+            }
+
+            if existingSourceResult != existingLocalValue {
+                // remote data change so update local one
                 return DataProviderChange.update(newItem: existingSourceResult)
             } else {
                 return nil
