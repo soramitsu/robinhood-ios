@@ -19,13 +19,13 @@ public protocol DataProviderRepositoryProtocol {
      *  Creates operation which fetches object by identifier.
      *
      *  - parameters:
-     *    - modelId: Identifier of the object to fetch.
+     *    - modelIdClosure: Closure that returs identifier to fetch.
      *    - options: Options to define fetch logic and caching policy.
      *  - returns: Operation that results in an object or nil if there is
      *  no object with specified identifier.
      */
 
-    func fetchOperation(by modelId: String,
+    func fetchOperation(by modelIdClosure: @escaping () throws -> String,
                         options: RepositoryFetchOptions) -> BaseOperation<Model?>
 
     /**
@@ -175,4 +175,21 @@ public protocol DataProviderRepositoryObservable {
      */
 
     func removeObserver(_ observer: AnyObject)
+}
+
+public extension DataProviderRepositoryProtocol {
+    /**
+     *  Creates operation which fetches object by identifier.
+     *
+     *  - parameters:
+     *    - modelId: Identifier of the object to fetch.
+     *    - options: Options to define fetch logic and caching policy.
+     *  - returns: Operation that results in an object or nil if there is
+     *  no object with specified identifier.
+     */
+
+    func fetchOperation(by modelId: String,
+                        options: RepositoryFetchOptions) -> BaseOperation<Model?> {
+        fetchOperation(by: { modelId }, options: options)
+    }
 }
