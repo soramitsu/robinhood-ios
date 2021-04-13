@@ -12,7 +12,7 @@ import Foundation
 public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepositoryProtocol {
     public typealias Model = T
 
-    private let _fetchByModelId: (String, RepositoryFetchOptions) -> BaseOperation<Model?>
+    private let _fetchByModelId: (@escaping () throws -> String, RepositoryFetchOptions) -> BaseOperation<Model?>
     private let _fetchAll: (RepositoryFetchOptions) -> BaseOperation<[Model]>
     private let _fetchByOffsetCount: (RepositorySliceRequest, RepositoryFetchOptions)
     -> BaseOperation<[Model]>
@@ -38,9 +38,9 @@ public final class AnyDataProviderRepository<T: Identifiable>: DataProviderRepos
         _fetchCount = repository.fetchCountOperation
     }
 
-    public func fetchOperation(by modelId: String,
+    public func fetchOperation(by modelIdClosure: @escaping () throws -> String,
                                options: RepositoryFetchOptions) -> BaseOperation<T?> {
-        return _fetchByModelId(modelId, options)
+        return _fetchByModelId(modelIdClosure, options)
     }
 
     public func fetchOperation(by request: RepositorySliceRequest,

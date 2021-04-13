@@ -6,7 +6,7 @@
 import Foundation
 
 extension CoreDataRepository: DataProviderRepositoryProtocol {
-    public func fetchOperation(by modelId: String,
+    public func fetchOperation(by modelIdClosure: @escaping () throws -> String,
                                options: RepositoryFetchOptions) -> BaseOperation<Model?> {
         ClosureOperation {
             var model: Model?
@@ -14,7 +14,7 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
 
             let semaphore = DispatchSemaphore(value: 0)
 
-            self.fetch(by: modelId,
+            self.fetch(by: modelIdClosure,
                        options: options,
                        runCompletionIn: nil) { (optionalModel, optionalError) in
                         model = optionalModel

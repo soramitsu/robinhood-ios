@@ -59,8 +59,8 @@ public final class SingleValueProvider<T: Codable & Equatable> {
 
     var observers: [DataProviderObserver<T, DataProviderObserverOptions>] = []
     var pendingObservers: [DataProviderPendingObserver<SingleValueProviderObject?>] = []
-    var lastSyncOperation: Operation?
-    var repositoryUpdateOperation: Operation?
+    weak var lastSyncOperation: Operation?
+    weak var repositoryUpdateOperation: Operation?
 
     /**
      *  Creates data provider object.

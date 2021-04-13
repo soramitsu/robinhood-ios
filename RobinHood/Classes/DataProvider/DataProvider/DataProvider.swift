@@ -34,8 +34,8 @@ public final class DataProvider<T: Identifiable & Equatable> {
 
     var observers: [DataProviderObserver<T, DataProviderObserverOptions>] = []
     var pendingObservers: [DataProviderPendingObserver<[T]>] = []
-    var lastSyncOperation: Operation?
-    var repositoryUpdateOperation: Operation?
+    weak var lastSyncOperation: Operation?
+    weak var repositoryUpdateOperation: Operation?
 
     /**
      *  Creates data provider object.

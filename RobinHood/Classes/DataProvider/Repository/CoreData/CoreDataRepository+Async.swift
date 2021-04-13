@@ -7,7 +7,7 @@ import Foundation
 import CoreData
 
 extension CoreDataRepository {
-    func fetch(by modelId: String,
+    func fetch(by modelIdClosure: @escaping () throws -> String,
                options: RepositoryFetchOptions,
                runCompletionIn queue: DispatchQueue?,
                executing block: @escaping (Model?, Error?) -> Void) {
@@ -21,6 +21,7 @@ extension CoreDataRepository {
                 do {
                     let entityName = String(describing: U.self)
                     let fetchRequest = NSFetchRequest<U>(entityName: entityName)
+                    let modelId = try modelIdClosure()
                     var predicate = NSPredicate(format: "%K == %@",
                                                 strongSelf.dataMapper.entityIdentifierFieldName,
                                                 modelId)
