@@ -12,7 +12,7 @@ import CoreData
  *  contains a field to store identifier.
  */
 
-public protocol CoreDataMapperProtocol: class {
+public protocol CoreDataMapperProtocol: AnyObject {
     associatedtype DataProviderModel: Identifiable
     associatedtype CoreDataEntity: NSManagedObject
 

@@ -59,7 +59,7 @@ public protocol DataProviderTriggerProtocol {
  *  from data provider trigger.
  */
 
-public protocol DataProviderTriggerDelegate: class {
+public protocol DataProviderTriggerDelegate: AnyObject {
     /**
      *  Notifies delegate about triggering.
      */

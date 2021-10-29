@@ -10,7 +10,7 @@ import Foundation
  *  of URLRequest.
  */
 
-public protocol NetworkRequestFactoryProtocol: class {
+public protocol NetworkRequestFactoryProtocol: AnyObject {
     /**
      *  Creates URLRequest.
      *  - returns: URLRequest object.
