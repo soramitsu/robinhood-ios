@@ -79,12 +79,12 @@ public final class AnyNetworkResultFactory<T>: NetworkResultFactoryProtocol {
      */
 
     public convenience init(successResponseBlock: @escaping NetworkResultFactorySuccessResponseBlock<ResultType>) {
-        self.init { (_, response, error) -> Result<ResultType, Error> in
+        self.init { (data, response, error) -> Result<ResultType, Error> in
             if let connectionError = error {
                 return .failure(connectionError)
             }
 
-            if let error = NetworkOperationHelper.createError(from: response) {
+            if let error = NetworkOperationHelper.createError(from: response, data: data) {
                 return .failure(error)
             }
 
@@ -109,7 +109,7 @@ public final class AnyNetworkResultFactory<T>: NetworkResultFactoryProtocol {
                 return .failure(connectionError)
             }
 
-            if let error = NetworkOperationHelper.createError(from: response) {
+            if let error = NetworkOperationHelper.createError(from: response, data: data) {
                 return .failure(error)
             }
 

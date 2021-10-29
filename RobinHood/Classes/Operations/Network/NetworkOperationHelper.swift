@@ -37,11 +37,11 @@ public final class NetworkOperationHelper {
      *  otherwise - ```nil```.
      */
 
-    public static func createError(from response: URLResponse?) -> Error? {
+    public static func createError(from response: URLResponse?, data: Data?) -> Error? {
         guard let httpUrlResponse = response as? HTTPURLResponse else {
             return NetworkBaseError.unexpectedResponseObject
         }
 
-        return NetworkResponseError.createFrom(statusCode: httpUrlResponse.statusCode)
+        return NetworkResponseError.createFrom(statusCode: httpUrlResponse.statusCode, data: data)
     }
 }

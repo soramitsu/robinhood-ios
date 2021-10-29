@@ -32,36 +32,52 @@ public enum NetworkBaseError: Error {
  *  Enum is designed to define errors corresponding to http status codes.
  */
 
-public enum NetworkResponseError: Error {
+public enum NetworkResponseError: Error, Equatable {
     /// Status code 400 - invalid parameters in request.
-    case invalidParameters
+    case invalidParameters(Data?)
 
     /// Status code 404 - resource not found.
-    case resourceNotFound
+    case resourceNotFound(Data?)
 
     /// Status code 401 - can't authorize the request.
-    case authorizationError
+    case authorizationError(Data?)
+
+    /// Status code 403 - access is forbidden.
+    case accessForbidden(Data?)
 
     /// Status code 500 - internal server error.
-    case internalServerError
+    case internalServerError(Data?)
 
     /// Unexpected status code.
-    case unexpectedStatusCode
+    case unexpectedStatusCode(Int, Data?)
 
-    static func createFrom(statusCode: Int) -> NetworkResponseError? {
+    static func createFrom(statusCode: Int, data: Data?) -> NetworkResponseError? {
         switch statusCode {
         case 200:
             return nil
         case 400:
-            return NetworkResponseError.invalidParameters
+            return NetworkResponseError.invalidParameters(data)
         case 401:
-            return NetworkResponseError.authorizationError
+            return NetworkResponseError.authorizationError(data)
+        case 403:
+            return NetworkResponseError.accessForbidden(data)
         case 404:
-            return NetworkResponseError.resourceNotFound
+            return NetworkResponseError.resourceNotFound(data)
         case 500:
-            return NetworkResponseError.internalServerError
+            return NetworkResponseError.internalServerError(data)
         default:
-            return NetworkResponseError.unexpectedStatusCode
+            return NetworkResponseError.unexpectedStatusCode(statusCode, data)
+        }
+    }
+
+    public var withoutData: Self {
+        switch self {
+        case .invalidParameters: return .invalidParameters(nil)
+        case .authorizationError: return .authorizationError(nil)
+        case .accessForbidden: return .accessForbidden(nil)
+        case .resourceNotFound: return .resourceNotFound(nil)
+        case .internalServerError: return .internalServerError(nil)
+        case let .unexpectedStatusCode(code, _): return .unexpectedStatusCode(code, nil)
         }
     }
 }

@@ -140,7 +140,7 @@ class StreamableDataProviderFetchTests: XCTestCase {
 
         let operationManager = OperationManager()
 
-        let expectedError = NetworkResponseError.resourceNotFound
+        let expectedError = NetworkResponseError.resourceNotFound(nil)
 
         let source: AnyStreamableSource<FeedData> = createStreamableSourceMock(returns: expectedError)
 
@@ -162,7 +162,7 @@ class StreamableDataProviderFetchTests: XCTestCase {
             XCTFail("Error expected")
         } catch {
             if let error = error as? NetworkResponseError {
-                XCTAssertEqual(error, expectedError)
+                XCTAssertEqual(error.withoutData, expectedError)
             } else {
                 XCTFail("Unexpected error")
             }
