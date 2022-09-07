@@ -102,6 +102,12 @@ extension CoreDataService {
             throw CoreDataServiceError.modelInitializationFailed
         }
 
+        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
+
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.persistentStoreCoordinator = coordinator
+        var options: [AnyHashable: Any]?
+
         switch configuration.storageType {
         case .persistent(let settings):
             guard let databaseURL = optionalDatabaseURL  else {
@@ -113,22 +119,19 @@ extension CoreDataService {
 
                 try fileManager.removeItem(at: databaseURL)
             }
+            
+            options = settings.options
 
             storageType = NSSQLiteStoreType
         case .inMemory:
             storageType = NSInMemoryStoreType
         }
 
-        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
-
-        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        context.persistentStoreCoordinator = coordinator
-
         try coordinator.addPersistentStore(
             ofType: storageType,
             configurationName: nil,
             at: optionalDatabaseURL,
-            options: nil
+            options: options
         )
 
         self.context = context
