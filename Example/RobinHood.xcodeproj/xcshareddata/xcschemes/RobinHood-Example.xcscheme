@@ -60,6 +60,11 @@
                BlueprintName = "RobinHood_Tests"
                ReferencedContainer = "container:RobinHood.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "NetworkOperationTests/testRandomOperations()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
