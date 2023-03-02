@@ -5,7 +5,7 @@
 
 import Foundation
 
-extension CompoundOperationWrapper {
+public extension CompoundOperationWrapper {
     static func createWithError(_ error: Error) -> CompoundOperationWrapper<ResultType> {
         let operation = BaseOperation<ResultType>()
         operation.result = .failure(error)
