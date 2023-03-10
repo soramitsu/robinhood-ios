@@ -16,6 +16,19 @@ public protocol DataProviderRepositoryProtocol {
     associatedtype Model: Identifiable
 
     /**
+     *  Creates operation which fetches objects by identifier.
+     *
+     *  - parameters:
+     *    - modelIdsClosure: Closure that returs identifiers to fetch.
+     *    - options: Options to define fetch logic and caching policy.
+     *  - returns: Operation that results in an array of objects or empty if there is
+     *  no objects with specified identifiers.
+     */
+
+    func fetchOperation(by modelIdsClosure: @escaping () throws -> [String],
+                        options: RepositoryFetchOptions) -> BaseOperation<[Model]>
+    
+    /**
      *  Creates operation which fetches object by identifier.
      *
      *  - parameters:
@@ -191,5 +204,10 @@ public extension DataProviderRepositoryProtocol {
     func fetchOperation(by modelId: String,
                         options: RepositoryFetchOptions) -> BaseOperation<Model?> {
         fetchOperation(by: { modelId }, options: options)
+    }
+    
+    func fetchOperation(by modelIds: [String],
+                        options: RepositoryFetchOptions) -> BaseOperation<[Model]> {
+        fetchOperation(by: { modelIds }, options: options)
     }
 }
