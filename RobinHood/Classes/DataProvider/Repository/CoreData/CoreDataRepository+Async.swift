@@ -7,6 +7,47 @@ import Foundation
 import CoreData
 
 extension CoreDataRepository {
+    func fetch(by modelIdsClosure: @escaping () throws -> [String],
+               options: RepositoryFetchOptions,
+               runCompletionIn queue: DispatchQueue?,
+               executing block: @escaping ([Model]?, Error?) -> Void) {
+
+        databaseService.performAsync { [weak self] (optionalContext, optionalError) in
+            guard let strongSelf = self else {
+                return
+            }
+
+            if let context = optionalContext {
+                do {
+                    let entityName = String(describing: U.self)
+                    let fetchRequest = NSFetchRequest<U>(entityName: entityName)
+                    let modelIds = try modelIdsClosure()
+                    var predicate = NSPredicate(format: "%K in %@",
+                                                strongSelf.dataMapper.entityIdentifierFieldName,
+                                                modelIds)
+
+                    if let filter = strongSelf.filter {
+                        predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filter, predicate])
+                    }
+
+                    fetchRequest.predicate = predicate
+
+                    fetchRequest.includesPropertyValues = options.includesProperties
+                    fetchRequest.includesSubentities = options.includesSubentities
+
+                    let entities = try context.fetch(fetchRequest)
+                    let models = try entities.map { try strongSelf.dataMapper.transform(entity: $0) }
+
+                    strongSelf.call(block: block, model: models, error: nil, queue: queue)
+                } catch {
+                    strongSelf.call(block: block, model: nil, error: error, queue: queue)
+                }
+            } else {
+                strongSelf.call(block: block, model: nil, error: optionalError, queue: queue)
+            }
+        }
+    }
+    
     func fetch(by modelIdClosure: @escaping () throws -> String,
                options: RepositoryFetchOptions,
                runCompletionIn queue: DispatchQueue?,
