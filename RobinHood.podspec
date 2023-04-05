@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'RobinHood'
-  s.version          = '2.6.6'
+  s.version          = '2.6.7'
   s.summary          = 'Takes data from "rich" remote source and caches them in originaly "poor" local storage to speed up user interface.'
 
   s.description      = <<-DESC
