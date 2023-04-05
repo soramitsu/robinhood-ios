@@ -1,6 +1,6 @@
 PODS:
   - FireMock (3.1)
-  - RobinHood (2.6.2)
+  - RobinHood (2.6.3)
   - SwiftLint (0.30.1)
 
 DEPENDENCIES:
@@ -9,7 +9,7 @@ DEPENDENCIES:
   - SwiftLint
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/Specs.git:
     - FireMock
     - SwiftLint
 
@@ -19,7 +19,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FireMock: 3eed872059c12f94855413347da83b9d6d1a6fac
-  RobinHood: fe6c8892d85185cd5341f4be116eedba4f1a91e8
+  RobinHood: 5aee8ca6d02a1932e0b7c1ea0c431e1bcc51a992
   SwiftLint: a54bf1fe12b55c68560eb2a7689dfc81458508f7
 
 PODFILE CHECKSUM: ce07c85c2de1a228bbe7958eddb7a705103f1f5b
