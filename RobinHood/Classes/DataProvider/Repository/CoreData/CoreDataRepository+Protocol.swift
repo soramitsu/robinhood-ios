@@ -156,6 +156,38 @@ extension CoreDataRepository: DataProviderRepositoryProtocol {
             }
         }
     }
+    
+    public func saveBatchOperation(
+        _ updateModelsBlock: @escaping () throws -> [T],
+        _ deleteIdsBlock: @escaping () throws -> [String]
+    ) -> BaseOperation<Void> {
+        ClosureOperation {
+            var error: Error?
+
+            let updatedModels = try updateModelsBlock()
+            let deletedIds = try deleteIdsBlock()
+
+            if updatedModels.count == 0, deletedIds.count == 0 {
+                return
+            }
+
+            let semaphore = DispatchSemaphore(value: 0)
+
+            self.saveBatch(updating: updatedModels,
+                      deleting: deletedIds,
+                      runCompletionIn: nil) { (optionalError) in
+                        error = optionalError
+                        semaphore.signal()
+            }
+
+            semaphore.wait()
+
+            if let existingError = error {
+                throw existingError
+            }
+        }
+    }
+    
 
     public func replaceOperation(_ newModelsBlock: @escaping () throws -> [Model])
         -> BaseOperation<Void> {
