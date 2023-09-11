@@ -98,6 +98,16 @@ public final class CoreDataRepository<T: Identifiable, U: NSManagedObject> {
             try dataMapper.populate(entity: entity, from: model, using: context)
         }
     }
+    
+    func saveBatch(models: [Model], in context: NSManagedObjectContext) throws {
+        let objects = try models.map { try dataMapper.dict(for: $0) }
+        let insertRequest = NSBatchInsertRequest(entity: U.entity(), objects: objects)
+        insertRequest.resultType = .objectIDs
+        let result = try context.execute(insertRequest) as? NSBatchInsertResult
+        let objs = result?.result as? [NSManagedObjectID] ?? []
+        let changes: [AnyHashable: Any] = [NSInsertedObjectIDsKey: objs]
+        NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [context])
+    }
 
     func create(models: [Model], in context: NSManagedObjectContext) throws {
         try models.forEach { (model) in

@@ -39,9 +39,18 @@ public protocol CoreDataMapperProtocol: AnyObject {
      */
 
     func populate(entity: CoreDataEntity, from model: DataProviderModel, using context: NSManagedObjectContext) throws
+    
+    /// Create dict value for batch saves (Optional for mappers)
+    /// - Parameter model: Swift model to populate NSManagedObject from.
+    /// - Returns: [String: Any]
+    func dict(for model: DataProviderModel) throws -> [String: Any]
 
     /// Name of idetifier field to access NSManagedObject by.
     var entityIdentifierFieldName: String { get }
+}
+
+extension CoreDataMapperProtocol {
+    public func dict(for model: DataProviderModel) throws -> [String: Any] { [:] }
 }
 
 /**
@@ -54,6 +63,7 @@ public final class AnyCoreDataMapper<T: Identifiable, U: NSManagedObject>: CoreD
 
     private let _transform: (CoreDataEntity) throws -> DataProviderModel
     private let _populate: (CoreDataEntity, DataProviderModel, NSManagedObjectContext) throws -> Void
+    private let _dict: (DataProviderModel) throws -> [String: Any]
     private let _entityIdentifierFieldName: String
 
     /**
@@ -67,6 +77,7 @@ public final class AnyCoreDataMapper<T: Identifiable, U: NSManagedObject>: CoreD
         _transform = mapper.transform
         _populate = mapper.populate
         _entityIdentifierFieldName = mapper.entityIdentifierFieldName
+        _dict = mapper.dict
     }
 
     public func transform(entity: CoreDataEntity) throws -> DataProviderModel {
@@ -77,6 +88,10 @@ public final class AnyCoreDataMapper<T: Identifiable, U: NSManagedObject>: CoreD
                          from model: DataProviderModel,
                          using context: NSManagedObjectContext) throws {
         try _populate(entity, model, context)
+    }
+    
+    public func dict(for model: DataProviderModel) throws -> [String: Any] {
+        try _dict(model)
     }
 
     public var entityIdentifierFieldName: String {
@@ -149,5 +164,14 @@ U: NSManagedObject & CoreDataCodable>: CoreDataMapperProtocol {
         let container = try JSONDecoder().decode(CoreDataDecodingContainer.self,
                                                  from: data)
         try container.populate(entity: entity, using: context)
+    }
+    
+    public func dict(for model: T) throws -> [String : Any] {
+        let data = try JSONEncoder().encode(model)
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let json = json else {
+            throw CoreDataRepositoryError.creationFailed
+        }
+        return json
     }
 }
