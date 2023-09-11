@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.documentation_url = 'https://github.com/soramitsu/robinhood-ios/wiki'
   s.source           = { :git => 'https://github.com/soramitsu/robinhood-ios.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '13.0'
 
   s.source_files = 'RobinHood/Classes/**/*'
   s.swift_version = '5.0'
